@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu
 import os
 import base64
 import time
+from streamlit_autorefresh import st_autorefresh
 # 1. Сонгогдсон цэсийг санах ойд хадгалах (Энэ нь гацалтыг засна)
 if 'selected_menu' not in st.session_state:
     st.session_state.selected_menu = "Нүүр хуудас"
@@ -133,18 +134,28 @@ elif st.session_state.selected_menu == "Сорил":
         # Сорил эхэлсэн үе (Хугацаа явна)
         import time
         remaining = (40 * 60) - (time.time() - st.session_state.start_time)
-        
-        if remaining <= 0:
-            st.error("⏰ Хугацаа дууслаа!")
-            st.session_state.test_started = False
-            if st.button("Буцах"): st.rerun()
-        else:
+
+else:
+            # Секунд бүр хуудсыг автоматаар шинэчилнэ
+            from streamlit_autorefresh import st_autorefresh
+            st_autorefresh(interval=1000, key="quizrefresh")
+
             mins, secs = divmod(int(remaining), 60)
-            st.sidebar.metric("⏱️ Үлдсэн хугацаа", f"{mins:02d}:{secs:02d}")
-            st.subheader(st.session_state.active_unit)
             
+            # Хажуугийн цэсэнд хугацаа харуулах
+            st.sidebar.markdown(f"""
+                <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center;">
+                    <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
+                    <p style="color: white; margin: 0;">Үлдсэн хугацаа</p>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            st.subheader(st.session_state.active_unit)
             st.write("---")
-            q1 = st.radio("1. Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
+            
+            # Асуулт
+            q1 = st.radio("1. Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
+                          ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
             
             if st.button("✅ Сорил дуусгах"):
                 st.session_state.test_started = False
