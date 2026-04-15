@@ -11,7 +11,7 @@ if 'menu_option' not in st.session_state:
 # 2. Сайтын ерөнхий тохиргоо
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
-# 3. ДИЗАЙН (Таны анхны цэнхэр загвар)
+# 3. ДИЗАЙН (CSS)
 st.markdown("""
     <style>
     .stApp { background-color: #f8f9fa; }
@@ -22,6 +22,7 @@ st.markdown("""
     .custom-card { background: white; border-radius: 25px; padding: 35px 20px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.3s ease; border: 1px solid #eee; height: 280px; margin-bottom: 20px; }
     .card-icon { font-size: 60px; margin-bottom: 15px; }
     .card-title { color: #004aad; font-size: 24px; font-weight: bold; }
+    .logo-container { display: flex; justify-content: center; align-items: center; padding: 10px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -45,28 +46,42 @@ with st.sidebar:
     )
     st.session_state.menu_option = selected
 
-# 5. АГУУЛГА УДИРДАХ
-# --- НҮҮР ХУУДАС ---
+# 5. ХУУДАСНУУД
 if st.session_state.menu_option == "Нүүр хуудас":
-    st.markdown('<p class="main-header">Бидний зорилго</p>', unsafe_allow_html=True)
-    st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
-    st.write("") # Зай авах
+    # Лого болон Зорилго хэсэг
+    col_logo, col_goal = st.columns([1, 1.4], gap="large")
     
-    col1, col2, col3 = st.columns(3)
-    with col1:
+    with col_logo:
+        logo_path = "logo.gif" 
+        if os.path.exists(logo_path):
+            with open(logo_path, "rb") as f:
+                data = f.read()
+                data_url = base64.b64encode(data).decode("utf-8")
+            st.markdown(f'<div class="logo-container"><img src="data:image/gif;base64,{data_url}" width="100%"></div>', unsafe_allow_html=True)
+        else:
+            st.warning("logo.gif файл олдсонгүй.")
+
+    with col_goal:
+        st.markdown('<p class="main-header" style="text-align:left;">Бидний зорилго</p>', unsafe_allow_html=True)
+        st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
+
+    st.write("---") # Зай авах зураас
+
+    # Картууд
+    c1, c2, c3 = st.columns(3)
+    with c1:
         st.markdown('<div class="custom-card"><div class="card-icon">📺</div><div class="card-title">Цахим контент</div></div>', unsafe_allow_html=True)
-        if st.button("Үзэх", key="btn_content"):
+        if st.button("Үзэх", key="go_content"):
             st.session_state.menu_option = "Цахим контент"; st.rerun()
-    with col2:
+    with c2:
         st.markdown('<div class="custom-card"><div class="card-icon">📚</div><div class="card-title">Даалгаврын сан</div></div>', unsafe_allow_html=True)
-        if st.button("Нээх", key="btn_bank"):
+        if st.button("Нээх", key="go_bank"):
             st.session_state.menu_option = "Даалгаврын сан"; st.rerun()
-    with col3:
+    with c3:
         st.markdown('<div class="custom-card"><div class="card-icon">📝</div><div class="card-title">Сорил</div></div>', unsafe_allow_html=True)
-        if st.button("Эхлэх", key="btn_test"):
+        if st.button("Эхлэх", key="go_test"):
             st.session_state.menu_option = "Сорил"; st.rerun()
 
-# --- СОРИЛ ХЭСЭГ ---
 elif st.session_state.menu_option == "Сорил":
     st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
     
@@ -84,12 +99,11 @@ elif st.session_state.menu_option == "Сорил":
     for i, unit_name in enumerate(units, 1):
         with st.expander(f"🔹 {unit_name}"):
             st.write("Аль хувилбарыг бөглөх вэ?")
-            c1, c2, c3, c4 = st.columns(4)
+            col_a, col_b, col_c, col_d = st.columns(4)
             for j, var in enumerate(['A', 'B', 'C', 'D']):
-                if [c1, c2, c3, c4][j].button(f"{var} хувилбар", key=f"v_{i}_{var}"):
-                    st.success(f"{unit_name}-ын {var} хувилбар удахгүй нэмэгдэнэ.")
+                if [col_a, col_b, col_c, col_d][j].button(f"{var} хувилбар", key=f"v_{i}_{var}"):
+                    st.info(f"{unit_name}-ын {var} хувилбар удахгүй нэмэгдэнэ.")
 
-# --- БУСАД ХУУДАС ---
 else:
     st.markdown(f'<p class="main-header">{st.session_state.menu_option}</p>', unsafe_allow_html=True)
-    st.write("Энэ хуудасны агуулга бэлтгэгдэж байна.")
+    st.write("Төслийн энэ хэсэг удахгүй бэлэн болно.")
