@@ -1,69 +1,75 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
+import os
+import base64
 import time
 
 # 1. Сонгогдсон цэсийг санах ойд хадгалах
 if 'menu_option' not in st.session_state:
     st.session_state.menu_option = "Нүүр хуудас"
 
-# Вэбсайтын тохиргоо
-st.set_page_config(page_title="Математикийн сургалт", layout="wide")
+# 2. Сайтын ерөнхий тохиргоо
+st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
-# CSS загвар (Таны өөрийн загвар)
+# 3. ДИЗАЙН (Таны анхны цэнхэр загвар)
 st.markdown("""
     <style>
-    .main-header { font-size: 36px; font-weight: bold; color: #1E88E5; text-align: center; margin-bottom: 30px; }
-    .custom-card { background-color: #f8f9fa; padding: 20px; border-radius: 15px; border: 1px solid #dee2e6; text-align: center; height: 200px; }
-    .card-icon { font-size: 50px; margin-bottom: 10px; }
-    .card-title { font-size: 20px; font-weight: bold; color: #333; }
+    .stApp { background-color: #f8f9fa; }
+    [data-testid="stSidebar"] { background-color: #004aad !important; min-width: 300px !important; }
+    .sidebar-title { color: #ffffff !important; text-align: center; font-size: 40px !important; font-weight: bold; padding: 20px 0; border-bottom: 2px solid rgba(255,255,255,0.3); margin-bottom: 20px; }
+    .main-header { color: #004aad !important; font-size: 55px !important; font-weight: 900; margin: 0px 0px 15px 0px !important; line-height: 1.1 !important; text-align: center; }
+    .goal-text { font-size: 24px !important; color: #333; line-height: 1.6; background: white; padding: 35px; border-left: 15px solid #004aad; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align: justify; }
+    .custom-card { background: white; border-radius: 25px; padding: 35px 20px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.3s ease; border: 1px solid #eee; height: 280px; margin-bottom: 20px; }
+    .card-icon { font-size: 60px; margin-bottom: 15px; }
+    .card-title { color: #004aad; font-size: 24px; font-weight: bold; }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Зүүн талын цэс
-menu_list = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшлөө МХБ"]
+# 4. SIDEBAR (Цэс)
+menu_list = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшил МХБ"]
 
 with st.sidebar:
+    st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
     selected = option_menu(
-        "ЦЭС", 
-        menu_list,
+        menu_title=None, 
+        options=menu_list,
         icons=['house', 'play-btn', 'book', 'pencil-square', 'people', 'heart'],
-        menu_icon="cast", 
         default_index=menu_list.index(st.session_state.menu_option),
-        key="main_menu_key"
+        key="main_menu",
+        styles={
+            "container": {"background-color": "#004aad", "padding": "0"},
+            "icon": {"color": "white", "font-size": "20px"}, 
+            "nav-link": {"font-size": "17px", "color": "white", "font-weight": "bold", "margin": "5px"},
+            "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
+        }
     )
     st.session_state.menu_option = selected
 
-# --- ХУУДАСНУУДЫН УДИРДЛАГА ---
-
-# 🏠 НҮҮР ХУУДАС
+# 5. АГУУЛГА УДИРДАХ
+# --- НҮҮР ХУУДАС ---
 if st.session_state.menu_option == "Нүүр хуудас":
-    st.markdown('<p class="main-header">Математикийн сургалтын систем</p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">Бидний зорилго</p>', unsafe_allow_html=True)
+    st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
+    st.write("") # Зай авах
     
     col1, col2, col3 = st.columns(3)
-    
     with col1:
         st.markdown('<div class="custom-card"><div class="card-icon">📺</div><div class="card-title">Цахим контент</div></div>', unsafe_allow_html=True)
-        if st.button("Үзэх", key="go_content"):
-            st.session_state.menu_option = "Цахим контент"
-            st.rerun()
-
+        if st.button("Үзэх", key="btn_content"):
+            st.session_state.menu_option = "Цахим контент"; st.rerun()
     with col2:
         st.markdown('<div class="custom-card"><div class="card-icon">📚</div><div class="card-title">Даалгаврын сан</div></div>', unsafe_allow_html=True)
-        if st.button("Нээх", key="go_bank"):
-            st.session_state.menu_option = "Даалгаврын сан"
-            st.rerun()
-
+        if st.button("Нээх", key="btn_bank"):
+            st.session_state.menu_option = "Даалгаврын сан"; st.rerun()
     with col3:
         st.markdown('<div class="custom-card"><div class="card-icon">📝</div><div class="card-title">Сорил</div></div>', unsafe_allow_html=True)
-        if st.button("Эхлэх", key="go_test"):
-            st.session_state.menu_option = "Сорил"
-            st.rerun()
+        if st.button("Эхлэх", key="btn_test"):
+            st.session_state.menu_option = "Сорил"; st.rerun()
 
-# 📝 СОРИЛ ХЭСЭГ
+# --- СОРИЛ ХЭСЭГ ---
 elif st.session_state.menu_option == "Сорил":
-    st.markdown('<h1 style="text-align: center;">📝 Онлайн сорилтын систем</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
     
-    # Таны хүссэн нэршлүүд
     units = [
         "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
         "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
@@ -78,17 +84,12 @@ elif st.session_state.menu_option == "Сорил":
     for i, unit_name in enumerate(units, 1):
         with st.expander(f"🔹 {unit_name}"):
             st.write("Аль хувилбарыг бөглөх вэ?")
-            col_a, col_b, col_c, col_d = st.columns(4)
-            # 4 хувилбарын товчлуур
-            if col_a.button(f"A хувилбар", key=f"a_{i}"):
-                st.info(f"{unit_name}-ын A хувилбар бэлтгэгдэж байна.")
-            if col_b.button(f"B хувилбар", key=f"b_{i}"):
-                st.info(f"{unit_name}-ын B хувилбар бэлтгэгдэж байна.")
-            if col_c.button(f"C хувилбар", key=f"c_{i}"):
-                st.info(f"{unit_name}-ын C хувилбар бэлтгэгдэж байна.")
-            if col_d.button(f"D хувилбар", key=f"d_{i}"):
-                st.info(f"{unit_name}-ын D хувилбар бэлтгэгдэж байна.")
+            c1, c2, c3, c4 = st.columns(4)
+            for j, var in enumerate(['A', 'B', 'C', 'D']):
+                if [c1, c2, c3, c4][j].button(f"{var} хувилбар", key=f"v_{i}_{var}"):
+                    st.success(f"{unit_name}-ын {var} хувилбар удахгүй нэмэгдэнэ.")
 
-# БУСАД ХУУДАСНУУД
+# --- БУСАД ХУУДАС ---
 else:
-    st.write(f"### {st.session_state.menu_option} хуудас бэлтгэгдэж байна.")
+    st.markdown(f'<p class="main-header">{st.session_state.menu_option}</p>', unsafe_allow_html=True)
+    st.write("Энэ хуудасны агуулга бэлтгэгдэж байна.")
