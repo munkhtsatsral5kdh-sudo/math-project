@@ -167,5 +167,4 @@ else:
                     st.rerun()
 
 # --- ЭНЭ МӨРӨНД ЗАЙ БАЙХГҮЙ, ХАМГИЙН УРД ТАЛААС ЭХЛЭХ ЁСТОЙ ---
-elif st.session_state.selected_menu not in ["Нүүр хуудас", "Сорил"]:
-    st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")    
+
