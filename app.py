@@ -68,80 +68,82 @@ elif selected == "Сорил":
     import time
     from streamlit_autorefresh import st_autorefresh
 
-    # Секунд бүр хуудсыг шинэчлэх
+    # Секунд бүр хуудсыг шинэчлэх (requirements.txt-д streamlit-autorefresh нэмсэн байх шаардлагатай)
     st_autorefresh(interval=1000, key="timer_refresh")
 
     st.markdown('<p class="main-header" style="text-align: center;">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
 
-    # 1. Сорилын жагсаалт (Энд та 8 нэгжээ нэмж болно)
-    unit_tests = [
-        {"id": 1, "name": "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур", "time": 40},
-        {"id": 2, "name": "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент", "time": 40},
-        {"id": 3, "name": "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл", "time": 40},
-        {"id": 4, "name": "Үнэлгээний нэгж 4. Дараалал, функц", "time": 40},
-        {"id": 5, "name": "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт", "time": 40},
-        {"id": 6, "name": "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт", "time": 40},
-        {"id": 7, "name": "Үнэлгээний нэгж 7. Хэмжигдэхүүн", "time": 40},
-        {"id": 8, "name": "Үнэлгээний нэгж 8. Магадлал, статистик", "time": 40},
-    ]
-
-    # 2. Сорил сонгох хүснэгт (iMath шиг харагдац)
+    # 1. Сорил сонгогдоогүй үед жагсаалтыг харуулах
     if 'current_test' not in st.session_state:
-        st.write("### 📋 Боломжит сорилууд")
+        st.write("### 📋 Үнэлгээний нэгжүүд")
         
-        # Хүснэгтийн толгой
-        cols = st.columns([1, 4, 2, 2])
-        cols[0].write("**#**")
-        cols[1].write("**Сорилын нэр**")
-        cols[2].write("**Хугацаа**")
-        cols[3].write("**Үйлдэл**")
-        st.write("---")
+        # 8 нэгжийн жагсаалт
+        units = [
+            "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур",
+            "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
+            "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл",
+            "Үнэлгээний нэгж 4. Дараалал, функц",
+            "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
+            "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
+            "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
+            "Үнэлгээний нэгж 8. Магадлал, статистик"
+        ]
 
-        for test in unit_tests:
-            c1, c2, c3, c4 = st.columns([1, 4, 2, 2])
-            c1.write(f"{test['id']}")
-            c2.write(f"{test['name']}")
-            c3.write(f"{test['time']}:00")
-            if c4.button("Сорил эхлэх", key=f"start_{test['id']}"):
-                st.session_state.current_test = test
-                st.session_state.test_start_time = time.time()
-                st.rerun()
+        for i, unit_name in enumerate(units, 1):
+            with st.expander(f"🔹 {unit_name}"):
+                st.write("Аль хувилбарыг бөглөх вэ?")
+                col1, col2, col3, col4 = st.columns(4)
+                
+                # Хувилбар бүрт "Эхлэх" товчлуур
+                for j, variant in enumerate(['A', 'B', 'C', 'D']):
+                    with [col1, col2, col3, col4][j]:
+                        if st.button(f"{variant} хувилбар", key=f"btn_{i}_{variant}"):
+                            st.session_state.current_test = {"unit": i, "variant": variant, "name": unit_name}
+                            st.session_state.test_start_time = time.time()
+                            st.rerun()
 
-    # 3. Шалгалт өгөх хэсэг
+    # 2. Шалгалт өгөх явц
     else:
-        current = st.session_state.current_test
+        test = st.session_state.current_test
         elapsed = time.time() - st.session_state.test_start_time
-        remaining = (current['time'] * 60) - elapsed
+        total_time = 40 * 60 # 40 минут
+        remaining = total_time - elapsed
 
         if remaining > 0:
             mins, secs = divmod(int(remaining), 60)
             
-            # Дээд хэсэгт хугацаа болон нэрийг харуулах
-            st.info(f"📖 {current['name']}")
+            # Толгой хэсэг: Нэр болон Хугацаа
+            st.info(f"📖 {test['name']} | **{test['variant']} ХУВИЛБАР**")
             st.markdown(f"""
                 <div style="text-align: center; background-color: #1e1e1e; padding: 10px; border-radius: 10px; border: 2px solid #ffca28;">
                     <h2 style="margin:0; color: white;">🕒 Үлдсэн хугацаа: <span style="color: #ff4b4b;">{mins:02d}:{secs:02d}</span></h2>
                 </div>
             """, unsafe_allow_html=True)
 
-            if current['id'] == 5:
-                # Зөвхөн Нэгж 5-ын асуултууд (Таны PDF-ээс авсан)
-                with st.form("test_form"):
+            # Асуултуудыг Нэгж ба Хувилбараар ялгаж харуулах
+            if test['unit'] == 5 and test['variant'] == 'A':
+                with st.form("variant_a_form"):
                     st.write("### I ХЭСЭГ. СОНГОХ ДААЛГАВАР")
+                    # PDF-ээс авсан асуултууд
                     q1 = st.radio("1. Тэгш өнцөгт △ABC-ийн ∠C=90° бол sinA харьцааг нэрлэнэ үү.", ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], index=None)
-                    # ... бусад асуултуудыг энд нэмж болно ...
+                    # ... бусад асуултууд ...
                     
                     if st.form_submit_button("Шалгалтыг дуусгах"):
-                        st.success("Сорил дууслаа!")
+                        st.balloons()
+                        st.success("Шалгалт дууслаа!")
+                        time.sleep(2)
                         del st.session_state.current_test
                         st.rerun()
             else:
-                st.warning(f"Уучлаарай, {current['name']}-ын асуултууд одоогоор бэлтгэгдэж байна.")
+                st.warning(f"Уучлаарай, {test['unit']}-р нэгжийн {test['variant']} хувилбарын асуултууд хараахан ороогүй байна.")
                 if st.button("Буцах"):
                     del st.session_state.current_test
                     st.rerun()
         else:
             st.error("⌛ Хугацаа дууслаа!")
+            if st.button("Цэс рүү буцах"):
+                del st.session_state.current_test
+                st.rerun()
             if st.button("Сорил руу буцах"):
                 del st.session_state.current_test
                 st.rerun()
