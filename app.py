@@ -55,15 +55,28 @@ if selected == "Нүүр хуудас":
         st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
     st.markdown("<br><br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3, gap="medium")
-    cards = [
-        {"icon": "📺", "title": "Цахим контент", "desc": "Видео хичээл болон интерактив материалууд"},
-        {"icon": "📚", "title": "Даалгаврын сан", "desc": "Өөрийгөө сорих бодлого, дасгалууд"},
-        {"icon": "📝", "title": "Сорил", "desc": "Мэдлэгээ шалгах онлайн шалгалтууд"}
-    ]
-    for i, col in enumerate([c1, c2, c3]):
-        with col:
-            st.markdown(f'<div class="custom-card"><div class="card-icon">{cards[i]["icon"]}</div><div class="card-title">{cards[i]["title"]}</div><p style="color:#777; font-size:15px; margin-top:10px;">{cards[i]["desc"]}</p></div>', unsafe_allow_html=True)
+    # Нүүр хуудасны картуудыг товчлуур болгох
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown('<div class="custom-card"><div class="card-icon">📺</div><div class="card-title">Цахим контент</div></div>', unsafe_allow_html=True)
+        if st.button("Үзэх", key="btn_content"):
+            st.session_state.menu_option = "Цахим контент"
+            st.rerun()
 
+    with col2:
+        st.markdown('<div class="custom-card"><div class="card-icon">📚</div><div class="card-title">Даалгаврын сан</div></div>', unsafe_allow_html=True)
+        if st.button("Нээх", key="btn_bank"):
+            st.session_state.menu_option = "Даалгаврын сан"
+            st.rerun()
+
+    with col3:
+        st.markdown('<div class="custom-card"><div class="card-icon">📝</div><div class="card-title">Сорил</div></div>', unsafe_allow_html=True)
+        if st.button("Эхлэх", key="btn_test"):
+            # Энэ товчийг дарахад зүүн талын цэсний "Сорил" сонгогдоно
+            st.query_params["page"] = "Сорил" 
+            st.session_state.menu_option = "Сорил"
+            st.rerun()
 elif selected == "Сорил":
     import time
     from streamlit_autorefresh import st_autorefresh
