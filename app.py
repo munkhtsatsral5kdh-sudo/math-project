@@ -2,15 +2,17 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import os
 import base64
+import time
 
-# 1. Сонгогдсон цэсийг санах ойд хадгалах (Энэ нь гацалтыг засна)
+# 1. Сонгогдсон төлөвүүдийг санах (Гацалтаас сэргийлнэ)
 if 'selected_menu' not in st.session_state:
     st.session_state.selected_menu = "Нүүр хуудас"
+if 'test_started' not in st.session_state:
+    st.session_state.test_started = False
 
-# 2. Вэбсайтын ерөнхий тохиргоо
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
-# 3. ДИЗАЙН (CSS)
+# 2. ДИЗАЙН (Өөрчлөгдөөгүй, таны хүссэн цэнхэр загвар)
 st.markdown("""
     <style>
     .stApp { background-color: #f8f9fa; }
@@ -19,19 +21,14 @@ st.markdown("""
     .main-header { color: #004aad !important; font-size: 50px !important; font-weight: 900; text-align: center; margin-bottom: 20px; }
     .goal-text { font-size: 22px !important; color: #333; line-height: 1.6; background: white; padding: 30px; border-left: 15px solid #004aad; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .custom-card { background: white; border-radius: 25px; padding: 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #eee; height: 250px; }
-    .card-icon { font-size: 50px; margin-bottom: 10px; }
     .card-title { color: #004aad; font-size: 22px; font-weight: bold; }
     </style>
     """, unsafe_allow_html=True)
 
-# 4. SIDEBAR (Цэс) - Энд manual_select ашиглаж гацалтыг шийдэв
+# 3. SIDEBAR
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
-    
-    # Цэсний жагсаалт
     options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшил МХБ"]
-    
-    # Сонгогдсон индексийг олох
     current_index = options.index(st.session_state.selected_menu)
     
     selected = option_menu(
@@ -39,75 +36,75 @@ with st.sidebar:
         options=options,
         icons=['house', 'play-btn', 'book', 'pencil-square', 'people', 'heart'],
         default_index=current_index,
-        key='menu_widget', # Түлхүүр үг өгснөөр гацалт арилна
-        styles={
-            "container": {"background-color": "#004aad"},
-            "nav-link": {"color": "white", "font-weight": "bold"},
-            "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
-        }
+        key='menu_widget',
+        styles={"container": {"background-color": "#004aad"}, "nav-link": {"color": "white", "font-weight": "bold"}, "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"}}
     )
-    # Цэс дээр дарж шилжих үед төлөвийг шинэчлэх
     st.session_state.selected_menu = selected
 
-# 5. ХУУДАСНУУДЫН УДИРДЛАГА
-# --- НҮҮР ХУУДАС ---
+# 4. ХУУДАСНУУД
 if st.session_state.selected_menu == "Нүүр хуудас":
     col1, col2 = st.columns([1, 1.5], gap="large")
     with col1:
-        # ЛОГО ОРУУЛАХ ХЭСЭГ
         if os.path.exists("logo.gif"):
             with open("logo.gif", "rb") as f:
                 data = f.read()
-                data_url = base64.b64encode(data).decode("utf-8")
-            st.markdown(f'<img src="data:image/gif;base64,{data_url}" width="100%">', unsafe_allow_html=True)
-        else:
-            st.warning("logo.gif олдсонгүй")
-            
+                st.markdown(f'<img src="data:image/gif;base64,{base64.b64encode(data).decode()}" width="100%">', unsafe_allow_html=True)
     with col2:
         st.markdown('<p class="main-header" style="text-align:left;">Бидний зорилго</p>', unsafe_allow_html=True)
-        st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
-
-    st.write("---")
+        st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл...</div>', unsafe_allow_html=True)
     
-    # Картууд
+    # "Эхлэх" товч Сорил руу үсэрнэ
+    st.write("---")
     c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown('<div class="custom-card"><div class="card-icon">📺</div><div class="card-title">Цахим контент</div></div>', unsafe_allow_html=True)
-        if st.button("Үзэх", key="go_content"):
-            st.session_state.selected_menu = "Цахим контент"
-            st.rerun()
-    with c2:
-        st.markdown('<div class="custom-card"><div class="card-icon">📚</div><div class="card-title">Даалгаврын сан</div></div>', unsafe_allow_html=True)
-        if st.button("Нээх", key="go_bank"):
-            st.session_state.selected_menu = "Даалгаврын сан"
-            st.rerun()
     with c3:
-        st.markdown('<div class="custom-card"><div class="card-icon">📝</div><div class="card-title">Сорил</div></div>', unsafe_allow_html=True)
-        if st.button("Эхлэх", key="go_quiz"):
-            st.session_state.selected_menu = "Сорил" # "Сорил" цэс рүү үсэрнэ
-            st.rerun() # Хуудсыг дахин ачаалж шилжүүлнэ
+        st.markdown('<div class="custom-card"><div style="font-size:50px;">📝</div><div class="card-title">Сорил</div></div>', unsafe_allow_html=True)
+        if st.button("Эхлэх", key="jump_to_test"):
+            st.session_state.selected_menu = "Сорил"
+            st.rerun()
 
-# --- СОРИЛ ХЭСЭГ ---
 elif st.session_state.selected_menu == "Сорил":
     st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
     
-    units = [
-        "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
-        "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
-        "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
-        "Үнэлгээний нэгж 4. Дараалал, функц",
-        "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
-        "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
-        "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
-        "Үнэлгээний нэгж 8. Магадлал, статистик"
-    ]
+    if not st.session_state.test_started:
+        # 8 нэгж харуулах
+        units = [f"Үнэлгээний нэгж {i}" for i in range(1, 9)]
+        for i, unit in enumerate(units, 1):
+            with st.expander(f"🔹 {unit}"):
+                cols = st.columns(4)
+                for j, var in enumerate(['A', 'B', 'C', 'D']):
+                    if cols[j].button(f"{var} хувилбар", key=f"v_{i}_{var}"):
+                        st.session_state.active_unit = f"{unit} - {var} хувилбар"
+                        st.session_state.show_controls = True
+                
+                if st.session_state.get('show_controls') and unit in st.session_state.active_unit:
+                    st.write("---")
+                    c1, c2, c3, c4 = st.columns(4)
+                    with c1:
+                        if st.button("🟢 Сорил эхлэх", key=f"start_{i}"):
+                            st.session_state.test_started = True
+                            st.session_state.start_time = time.time()
+                            st.rerun()
+                    with c2: st.button("🔵 Дүн харах", key=f"res_{i}")
+                    with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
+                    with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
 
-    for i, unit_name in enumerate(units, 1):
-        with st.expander(f"🔹 {unit_name}"):
-            cols = st.columns(4)
-            for j, var in enumerate(['A', 'B', 'C', 'D']):
-                if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
-                    st.info(f"{unit_name}-ын {var} хувилбар удахгүй нэмэгдэнэ.")
+    else:
+        # СОРИЛ ЯВЖ БАЙХ ҮЕ (40 МИНУТ)
+        time_limit = 40 * 60 # 40 минут
+        elapsed = time.time() - st.session_state.start_time
+        remaining = time_limit - elapsed
 
-else:
-    st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")
+        if remaining <= 0:
+            st.error("⏰ Хугацаа дууслаа!")
+            st.session_state.test_started = False
+        else:
+            mins, secs = divmod(int(remaining), 60)
+            st.sidebar.metric("⏱️ Үлдсэн хугацаа", f"{mins:02d}:{secs:02d}")
+            
+            st.subheader(st.session_state.active_unit)
+            st.write("1. Тэгш өнцөгт $\triangle ABC$-ийн $\angle C=90^{\circ}$ бол $\sin A$ харьцааг нэрлэнэ үү.")
+            st.radio("Хариулт:", ["A. AC/AB", "B. BC/AB", "C. BC/AC", "D. AC/BC"])
+            
+            if st.button("Сорил дуусгах"):
+                st.session_state.test_started = False
+                st.rerun()
