@@ -65,21 +65,48 @@ if selected == "Нүүр хуудас":
             st.markdown(f'<div class="custom-card"><div class="card-icon">{cards[i]["icon"]}</div><div class="card-title">{cards[i]["title"]}</div><p style="color:#777; font-size:15px; margin-top:10px;">{cards[i]["desc"]}</p></div>', unsafe_allow_html=True)
 
 elif selected == "Сорил":
-    st.markdown('<p class="main-header" style="text-align: center;">📝 Өөрийгөө сориорой</p>', unsafe_allow_html=True)
-    st.markdown('<div class="quiz-card">', unsafe_allow_html=True)
-    st.subheader("Бодлого 1")
-    st.write("Дараах илэрхийллийн утгыг олоорой:")
-    st.latex(r"2 \times (15 - 7) + 24 \div 6 = ?")
-    choice = st.radio("Зөв хариултыг сонгоно уу:", [16, 20, 18, 22], index=None)
-    if st.button("Хариуг шалгах"):
-        if choice == 20:
-            st.success("Зөв байна! Та маш сайн байна. 🎉")
-            st.balloons()
-        elif choice is None:
-            st.warning("Та хариултаа сонгоогүй байна.")
-        else:
-            st.error("Буруу байна, дахин бодоод үзээрэй. 😊")
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('<p class="main-header" style="text-align: center;">⏳ Үнэлгээний нэгж 5: Сорил (40 минут)</p>', unsafe_allow_html=True)
+    
+    with st.form("math_test_form"):
+        st.info("Санамж: 1-12 хүртэлх асуултаас зөв хариултыг сонгоно. 13-15 хүртэлх асуултад зөвхөн тоон хариултыг бичнэ үү.")
+        st.write("### I ХЭСЭГ. СОНГОХ ДААЛГАВАР")
+        
+        q1 = st.radio("1. Тэгш өнцөгт △ABC-ийн ∠C=90° бол sinA харьцааг нэрлэнэ үү?", ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], index=None)
+        q2 = st.radio("2. Гурвалжны медианууд огтлолцлын цэгээрээ оройгоосоо тоолбол ямар харьцаагаар хуваагддаг вэ?", ["1:1", "1:2", "2:1", "3:1"], index=None)
+        q3 = st.radio("3. Гурвалжны нэг оройгоос татсан биссектрис эсрэг талаа 4 см ба 6 см хэрчмүүдэд хуваажээ. Налсан нэг тал нь 8 см бол нөгөө талын уртыг ол.", ["12 см", "10 см", "14 см", "16 см"], index=None)
+        q4 = st.radio("4. Тэгш өнцөгт гурвалжны катетууд 9 см ба 12 см бол гипотенузын уртыг ол.", ["13 см", "15 см", "17 см", "20 см"], index=None)
+        q5 = st.radio("5. Тойргийн төвөөс хөвчид буусан перпендикуляр нь уг хөвчийг хэрхэн хуваадаг вэ?", ["2:1 харьцаагаар", "Хагаслан хуваана", "Гурав хуваана", "Хуваахгүй"], index=None)
+        q6 = st.radio("6. Тойрогт багтсан өнцөг 40° бол түүнд тулсан нумын хэмжээг ол.", ["20°", "40°", "80°", "160°"], index=None)
+        q7 = st.radio("7. △ABC-ийн ∠C=90°, AC=12 см, tanA=3/4 бол катетын уртыг ол.", ["8 см", "9 см", "10 см", "16 см"], index=None)
+        q8 = st.radio("8. Адил хажуут гурвалжны суурь 16 см, хажуу тал 10 см бол суурьт буусан өндрийг ол.", ["6 см", "8 см", "12 см", "5 см"], index=None)
+        q9 = st.radio("9. Тойргийн радиус 13 см. Тойргийн төвөөс 5 см зайд орших хөвчийн уртыг ол.", ["12 см", "24 см", "26 см", "10 см"], index=None)
+        q10 = st.radio("10. Тойргийн огтлолцсон хоёр хөвчийн нэг нь 4 см ба 9 см хэрчмүүдэд хуваагджээ. Нөгөө хөвчийн нэг хэсэг нь 6 см бол үлдсэн хэсгийг ол.", ["4 см", "5 см", "6 см", "8 см"], index=None)
+        q11 = st.radio("11. Тойргийн гадна цэгээс татсан шүргэгч 12 см, огтлогчийн гадна хэсэг 8 см бол огтлогчийн нийт уртыг ол.", ["15 см", "16 см", "18 см", "20 см"], index=None)
+        q12 = st.radio("12. Тойргийн гадна оройтой өнцгийн хашиж буй их нум 110°, бага нум 30° бол уг өнцгийн хэмжээг ол.", ["80°", "140°", "40°", "70°"], index=None)
 
-else:
-    st.markdown(f"<h1 style='color: #004aad; text-align: center; margin-top: 50px;'>{selected} хуудас бэлтгэгдэж байна.</h1>", unsafe_allow_html=True)
+        st.write("---")
+        st.write("### II ХЭСЭГ. НӨХӨХ ДААЛГАВАР")
+        q13 = st.text_input("13. Хөвчийг хагаслан хуваах хэрчмийн урт (Пифагороор):")
+        q14 = st.text_input("14. Унины катет (өндрийн зөрүү 230-150) хэд вэ?")
+        q15 = st.text_input("15. Их нум 130°, бага нум 50° бол харах өнцөг хэдэн градус вэ?")
+
+        submitted = st.form_submit_button("Шалгалтыг дуусгах")
+        if submitted:
+            score = 0
+            if q1 == "BC/AB": score += 1
+            if q2 == "2:1": score += 1
+            if q3 == "12 см": score += 1
+            if q4 == "15 см": score += 1
+            if q5 == "Хагаслан хуваана": score += 1
+            if q6 == "80°": score += 1
+            if q7 == "9 см": score += 1
+            if q8 == "6 см": score += 1
+            if q9 == "24 см": score += 1
+            if q10 == "6 см": score += 1
+            if q11 == "18 см": score += 1
+            if q12 == "40°": score += 1
+            if q13 == "12": score += 2
+            if q14 == "80": score += 2
+            if q15 == "40": score += 2
+            st.balloons()
+            st.success(f"Сорил амжилттай дууслаа! Таны авсан оноо: {score}")
