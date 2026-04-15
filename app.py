@@ -136,5 +136,39 @@ if selected == "Нүүр хуудас":
                     <p style='color:#777; font-size:15px; margin-top:10px;'>{cards[i]['desc']}</p>
                 </div>
             """, unsafe_allow_html=True)
-else:
-    st.markdown(f"<h1 style='color: #004aad; text-align: center; margin-top: 50px;'>{selected}</h1>", unsafe_allow_html=True)
+elif selected == "Сорил":
+        st.markdown('<p class="main-header" style="text-align: center;">📝 Өөрийгөө сориорой</p>', unsafe_allow_html=True)
+        
+        st.markdown("""
+            <style>
+            .quiz-card {
+                background: white;
+                padding: 30px;
+                border-radius: 20px;
+                border-top: 10px solid #004aad;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                margin-top: 20px;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+        st.markdown('<div class="quiz-card">', unsafe_allow_html=True)
+        st.subheader("Бодлого 1")
+        st.write("Дараах илэрхийллийн утгыг олоорой:")
+        st.latex(r"2 \times (15 - 7) + 24 \div 6 = ?")
+        
+        choice = st.radio("Зөв хариултыг сонгоно уу:", [16, 20, 18, 22], index=None)
+        
+        if st.button("Хариуг шалгах"):
+            if choice == 20:
+                st.success("Зөв байна! Та маш сайн байна. 🎉")
+                st.balloons()
+            elif choice is None:
+                st.warning("Та хариултаа сонгоогүй байна.")
+            else:
+                st.error("Буруу байна, дахин бодоод үзээрэй. 😊")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # Бусад цэснүүдэд хоосон хуудас гаргах
+    elif selected != "Нүүр хуудас":
+        st.markdown(f"<h1 style='color: #004aad; text-align: center; margin-top: 50px;'>{selected} хуудас бэлтгэгдэж байна.</h1>", unsafe_allow_html=True)
