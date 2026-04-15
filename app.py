@@ -170,5 +170,5 @@ elif selected == "Сорил":
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Бусад цэснүүдэд хоосон хуудас гаргах
-    elif selected != "Нүүр хуудас":
+            elif selected != "Нүүр хуудас":
         st.markdown(f"<h1 style='color: #004aad; text-align: center; margin-top: 50px;'>{selected} хуудас бэлтгэгдэж байна.</h1>", unsafe_allow_html=True)
