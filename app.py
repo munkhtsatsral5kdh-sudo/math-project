@@ -88,11 +88,13 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             st.session_state.selected_menu = "Сорил" # "Сорил" цэс рүү үсэрнэ
             st.rerun() # Хуудсыг дахин ачаалж шилжүүлнэ
 
-# --- СОРИЛ ХЭСЭГ (Мөр 91-ээс эхэлнэ) ---
+# --- СОРИЛ ХЭСЭГ ---
 elif st.session_state.selected_menu == "Сорил":
+    if 'test_started' not in st.session_state:
+        st.session_state.test_started = False
+
     st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
     
-    # А. Сорил хараахан эхлээгүй байх үед (Нэгжүүд харагдана)
     if not st.session_state.test_started:
         units = [
             "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
@@ -108,6 +110,38 @@ elif st.session_state.selected_menu == "Сорил":
         for i, unit_name in enumerate(units, 1):
             with st.expander(f"🔹 {unit_name}"):
                 cols = st.columns(4)
+                for j, var in enumerate(['A', 'B', 'C', 'D']):
+                    if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
+                        st.session_state.active_unit = f"{unit_name} - {var} хувилбар"
+                        st.session_state.show_options = True
+                
+                if st.session_state.get('show_options') and unit_name in st.session_state.get('active_unit', ''):
+                    st.write("---")
+                    c1, c2, c3, c4 = st.columns(4)
+                    with c1:
+                        if st.button("🟢 Сорил эхлэх", key=f"start_{i}"):
+                            st.session_state.test_started = True
+                            st.session_state.start_time = time.time()
+                            st.rerun()
+                    with c2: st.button("🔵 Дүн харах", key=f"res_{i}")
+                    with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
+                    with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
+    else:
+        # Сорил эхэлсэн үеийн код
+        remaining = (40 * 60) - (time.time() - st.session_state.start_time)
+        if remaining <= 0:
+            st.error("⏰ Хугацаа дууслаа!")
+            st.session_state.test_started = False
+            if st.button("Буцах"): st.rerun()
+        else:
+            mins, secs = divmod(int(remaining), 60)
+            st.sidebar.metric("⏱️ Үлдсэн хугацаа", f"{mins:02d}:{secs:02d}")
+            st.subheader(st.session_state.active_unit)
+            st.write("1. Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?")
+            q1 = st.radio("Хариулт:", ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
+            if st.button("✅ Сорил дуусгах"):
+                st.session_state.test_started = False
+                st.rerun()
                 for j, var in enumerate(['A', 'B', 'C', 'D']):
                     if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
                         st.session_state.active_unit = f"{unit_name} - {var} хувилбар"
