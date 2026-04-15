@@ -3,11 +3,11 @@ from streamlit_option_menu import option_menu
 import os
 import base64
 
-# 1. Сонгогдсон цэсийг санах ойд хадгалах (Энэ нь гацалтаас сэргийлнэ)
-if 'menu_option' not in st.session_state:
-    st.session_state.menu_option = "Нүүр хуудас"
+# 1. Сонгогдсон цэсийг санах ойд хадгалах (Энэ нь гацалтыг засна)
+if 'selected_menu' not in st.session_state:
+    st.session_state.selected_menu = "Нүүр хуудас"
 
-# 2. Вэбсайтын тохиргоо
+# 2. Вэбсайтын ерөнхий тохиргоо
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
 # 3. ДИЗАЙН (CSS)
@@ -24,32 +24,45 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 4. SIDEBAR (Цэс)
+# 4. SIDEBAR (Цэс) - Энд manual_select ашиглаж гацалтыг шийдэв
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
+    
+    # Цэсний жагсаалт
+    options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшил МХБ"]
+    
+    # Сонгогдсон индексийг олох
+    current_index = options.index(st.session_state.selected_menu)
+    
     selected = option_menu(
         menu_title=None, 
-        options=["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшил МХБ"],
+        options=options,
         icons=['house', 'play-btn', 'book', 'pencil-square', 'people', 'heart'],
-        default_index=0, # Анх ороход Нүүр хуудас харагдана
+        default_index=current_index,
+        key='menu_widget', # Түлхүүр үг өгснөөр гацалт арилна
         styles={
             "container": {"background-color": "#004aad"},
             "nav-link": {"color": "white", "font-weight": "bold"},
             "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
         }
     )
+    # Цэс дээр дарж шилжих үед төлөвийг шинэчлэх
+    st.session_state.selected_menu = selected
 
-# 5. ХУУДАСНУУД
+# 5. ХУУДАСНУУДЫН УДИРДЛАГА
 # --- НҮҮР ХУУДАС ---
-if selected == "Нүүр хуудас":
+if st.session_state.selected_menu == "Нүүр хуудас":
     col1, col2 = st.columns([1, 1.5], gap="large")
     with col1:
-        # Лого оруулах хэсэг
+        # ЛОГО ОРУУЛАХ ХЭСЭГ
         if os.path.exists("logo.gif"):
             with open("logo.gif", "rb") as f:
                 data = f.read()
                 data_url = base64.b64encode(data).decode("utf-8")
             st.markdown(f'<img src="data:image/gif;base64,{data_url}" width="100%">', unsafe_allow_html=True)
+        else:
+            st.warning("logo.gif олдсонгүй")
+            
     with col2:
         st.markdown('<p class="main-header" style="text-align:left;">Бидний зорилго</p>', unsafe_allow_html=True)
         st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
@@ -60,16 +73,22 @@ if selected == "Нүүр хуудас":
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown('<div class="custom-card"><div class="card-icon">📺</div><div class="card-title">Цахим контент</div></div>', unsafe_allow_html=True)
-        st.button("Үзэх", key="btn1")
+        if st.button("Үзэх", key="go_content"):
+            st.session_state.selected_menu = "Цахим контент"
+            st.rerun()
     with c2:
         st.markdown('<div class="custom-card"><div class="card-icon">📚</div><div class="card-title">Даалгаврын сан</div></div>', unsafe_allow_html=True)
-        st.button("Нээх", key="btn2")
+        if st.button("Нээх", key="go_bank"):
+            st.session_state.selected_menu = "Даалгаврын сан"
+            st.rerun()
     with c3:
         st.markdown('<div class="custom-card"><div class="card-icon">📝</div><div class="card-title">Сорил</div></div>', unsafe_allow_html=True)
-        st.button("Эхлэх", key="btn3")
+        if st.button("Эхлэх", key="go_quiz"):
+            st.session_state.selected_menu = "Сорил" # "Сорил" цэс рүү үсэрнэ
+            st.rerun() # Хуудсыг дахин ачаалж шилжүүлнэ
 
 # --- СОРИЛ ХЭСЭГ ---
-elif selected == "Сорил":
+elif st.session_state.selected_menu == "Сорил":
     st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
     
     units = [
@@ -87,7 +106,8 @@ elif selected == "Сорил":
         with st.expander(f"🔹 {unit_name}"):
             cols = st.columns(4)
             for j, var in enumerate(['A', 'B', 'C', 'D']):
-                cols[j].button(f"{var} хувилбар", key=f"q_{i}_{var}")
+                if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
+                    st.info(f"{unit_name}-ын {var} хувилбар удахгүй нэмэгдэнэ.")
 
 else:
-    st.write(f"### {selected} хуудас бэлтгэгдэж байна.")
+    st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")
