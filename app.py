@@ -134,9 +134,8 @@ elif st.session_state.selected_menu == "Сорил":
         # Сорил эхэлсэн үе (Хугацаа явна)
         import time
         remaining = (40 * 60) - (time.time() - st.session_state.start_time)
-
-else:
-            # Секунд бүр хуудсыг автоматаар шинэчилнэ
+    else:
+            # Секунд бүр хуудсыг автоматаар шинэчилнэ (Цаг гүйж харагдуулах)
             from streamlit_autorefresh import st_autorefresh
             st_autorefresh(interval=1000, key="quizrefresh")
 
@@ -154,7 +153,8 @@ else:
             st.write("---")
             
             # Асуулт
-            q1 = st.radio("1. Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
+            st.write("### Асуулт 1")
+            q1 = st.radio("Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
                           ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
             
             if st.button("✅ Сорил дуусгах"):
@@ -165,3 +165,4 @@ else:
 # --- Бусад цэс сонгогдсон үед ---
 elif st.session_state.selected_menu not in ["Нүүр хуудас", "Сорил"]:
     st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")
+
