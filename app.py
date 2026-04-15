@@ -160,6 +160,19 @@ elif st.session_state.selected_menu == "Сорил":
                     with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
                     with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
 
+    # Хувилбар сонгогдсон үед 4 товчлуур гарч ирнэ
+        if st.session_state.get('show_options') and unit_name in st.session_state.get('active_unit', ''):
+            st.write("---")
+            c1, c2, c3, c4 = st.columns(4)
+            with c1:
+                if st.button("🟢 Сорил эхлэх", key=f"start_{i}"):
+                    st.session_state.test_started = True
+                    st.session_state.start_time = time.time()
+                    st.rerun()
+            with c2: st.button("🔵 Дүн харах", key=f"res_{i}")
+            with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
+            with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
+
     # Б. "Сорил эхлэх" дээр дармагц (Асуулт ба Хугацаа харагдана)
     else:
         remaining = (40 * 60) - (time.time() - st.session_state.start_time)
@@ -173,14 +186,15 @@ elif st.session_state.selected_menu == "Сорил":
             st.sidebar.metric("⏱️ Үлдсэн хугацаа", f"{mins:02d}:{secs:02d}")
             st.subheader(st.session_state.active_unit)
             
-            # Энд асуултуудаа нэмнэ
+            # Асуултууд
+            st.write("---")
             q1 = st.radio("1. sinA харьцааг нэрлэнэ үү?", ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
             
             if st.button("✅ Сорил дуусгах"):
                 st.session_state.test_started = False
                 st.success("Сорил дууслаа!")
                 st.rerun()
-                    st.info(f"{unit_name}-ын {var} хувилбар удахгүй нэмэгдэнэ.")
 
-else:
+# --- Бусад цэс сонгогдсон үед ---
+elif st.session_state.selected_menu != "Сорил" and st.session_state.selected_menu != "Нүүр хуудас":
     st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")
