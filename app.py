@@ -166,6 +166,6 @@ else:
                     st.success("Сорил дууслаа!")
                     st.rerun()
 
-# --- Бусад цэс сонгогдсон үед ---
+# --- ЭНЭ ХЭСЭГ МАШ ЧУХАЛ: Хамгийн урд талын зайнаас эхлэх ёстой ---
 elif st.session_state.selected_menu not in ["Нүүр хуудас", "Сорил"]:
     st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")
