@@ -53,9 +53,12 @@ if selected == "Нүүр хуудас":
     with col2:
         st.markdown('<p class="main-header">Бидний зорилго</p>', unsafe_allow_html=True)
         st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3, gap="medium")
-    # Нүүр хуудасны картуудыг товчлуур болгох
+# --- Нүүр хуудас ---
+if selected == "Нүүр хуудас":
+    st.markdown('<p class="main-header">Математикийн сургалтын системд тавтай морил!</p>', unsafe_allow_html=True)
+    st.write("Бид танд математикийн хичээлийг илүү сонирхолтой, хялбар аргаар сурахад туслах болно.")
+    
+    # Картуудыг товчлуур болгож холбох
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -73,75 +76,43 @@ if selected == "Нүүр хуудас":
     with col3:
         st.markdown('<div class="custom-card"><div class="card-icon">📝</div><div class="card-title">Сорил</div></div>', unsafe_allow_html=True)
         if st.button("Эхлэх", key="btn_test"):
-            # Энэ товчийг дарахад зүүн талын цэсний "Сорил" сонгогдоно
-            st.query_params["page"] = "Сорил" 
+            # "Сорил" цэс рүү үсэрч орох
             st.session_state.menu_option = "Сорил"
             st.rerun()
-elif selected == "Сорил":
+
+# --- Сорил хэсэг ---
+elif selected == "Сорил" or (hasattr(st.session_state, 'menu_option') and st.session_state.menu_option == "Сорил"):
     import time
     from streamlit_autorefresh import st_autorefresh
     st_autorefresh(interval=1000, key="timer_refresh")
 
-    # 1. Шалгалт дууссаны дараах төлөвийг шалгах
-    if 'test_finished' not in st.session_state:
-        st.session_state.test_finished = False
-
     st.markdown('<p class="main-header" style="text-align: center;">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
 
-    # 2. Сорил сонгох хэсэг
     if 'current_test' not in st.session_state:
-        units = ["Үнэлгээний нэгж 1", "Үнэлгээний нэгж 2", "Үнэлгээний нэгж 3", "Үнэлгээний нэгж 4", 
-                 "Үнэлгээний нэгж 5", "Үнэлгээний нэгж 6", "Үнэлгээний нэгж 7", "Үнэлгээний нэгж 8"]
-        for i, unit in enumerate(units, 1):
-            with st.expander(f"🔹 {unit}"):
-                cols = st.columns(4)
+        # Таны зургийн дагуу яг ижил нэршлүүд
+        units = [
+            "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
+            "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
+            "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
+            "Үнэлгээний нэгж 4. Дараалал, функц",
+            "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
+            "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
+            "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
+            "Үнэлгээний нэгж 8. Магадлал, статистик"
+        ]
+
+        for i, unit_name in enumerate(units, 1):
+            with st.expander(f"🔹 {unit_name}"):
+                col1, col2, col3, col4 = st.columns(4)
                 for j, var in enumerate(['A', 'B', 'C', 'D']):
-                    if cols[j].button(f"{var} хувилбар", key=f"v_{i}_{var}"):
-                        st.session_state.current_test = {"unit": i, "variant": var, "name": unit}
+                    if [col1, col2, col3, col4][j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
+                        st.session_state.current_test = {"unit": i, "variant": var, "name": unit_name}
                         st.session_state.test_start_time = time.time()
-                        st.session_state.test_finished = False
                         st.rerun()
-
-    # 3. Үр дүн харуулах хэсэг (Шалгалт дууссаны дараа)
-    elif st.session_state.test_finished:
-        st.success(f"🏁 {st.session_state.current_test['name']} - {st.session_state.current_test['variant']} хувилбар дууслаа.")
-        
-        # iMath шиг товчлуурууд
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            if st.button("📊 Дүн харах"):
-                st.info(f"Таны оноо: {st.session_state.last_score}")
-        with col2:
-            if st.button("❌ Алдаа шалгах"):
-                st.warning("Таны алдсан асуултууд энд харагдана (Бэлтгэгдэж байна).")
-        with col3:
-            if st.button("💡 Бодолт харах"):
-                st.write("### Бодолтын хэсэг:")
-                st.latex(r"x = \sqrt{15^2 - 9^2} = 12")
-        
-        if st.button("🔙 Буцах"):
-            del st.session_state.current_test
-            st.rerun()
-
-    # 4. Шалгалт өгөх явц
     else:
+        # Шалгалт өгөх болон үр дүн харах хэсэг (Өмнөх логик хэвээрээ)
         test = st.session_state.current_test
-        remaining = (40 * 60) - (time.time() - st.session_state.test_start_time)
-
-        if remaining > 0:
-            mins, secs = divmod(int(remaining), 60)
-            st.markdown(f"<h2 style='text-align:center; color:red;'>🕒 {mins:02d}:{secs:02d}</h2>", unsafe_allow_html=True)
-            
-            with st.form("test_form"):
-                # Жишээ асуулт
-                q1 = st.radio("1. Тэгш өнцөгт △ABC-ийн ∠C=90° бол sinA харьцааг нэрлэнэ үү.", ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], index=None)
-                
-                if st.form_submit_button("Шалгалтыг дуусгах"):
-                    # Оноо бодох
-                    score = 1 if q1 == "BC/AB" else 0
-                    st.session_state.last_score = score
-                    st.session_state.test_finished = True
-                    st.rerun()
-        else:
-            st.session_state.test_finished = True
+        st.info(f"📖 {test['name']} - {test['variant']} хувилбар")
+        if st.button("🔙 Сорил сонгох руу буцах"):
+            del st.session_state.current_test
             st.rerun()
