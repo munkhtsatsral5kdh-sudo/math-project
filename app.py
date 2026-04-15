@@ -130,39 +130,42 @@ elif st.session_state.selected_menu == "Сорил":
                     with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
                     with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
     
-    else:
-        # Сорил эхэлсэн үе (Хугацаа явна)
-        import time
-        remaining = (40 * 60) - (time.time() - st.session_state.start_time)
-    else:
-            # Секунд бүр хуудсыг автоматаар шинэчилнэ (Цаг гүйж харагдуулах)
+else:
+            # Сорил эхэлсэн үе (Хугацаа секундээр гүйж харагдуулах)
             from streamlit_autorefresh import st_autorefresh
             st_autorefresh(interval=1000, key="quizrefresh")
 
-            mins, secs = divmod(int(remaining), 60)
+            remaining = (40 * 60) - (time.time() - st.session_state.start_time)
             
-            # Хажуугийн цэсэнд хугацаа харуулах
-            st.sidebar.markdown(f"""
-                <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center;">
-                    <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
-                    <p style="color: white; margin: 0;">Үлдсэн хугацаа</p>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            st.subheader(st.session_state.active_unit)
-            st.write("---")
-            
-            # Асуулт
-            st.write("### Асуулт 1")
-            q1 = st.radio("Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
-                          ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
-            
-            if st.button("✅ Сорил дуусгах"):
+            if remaining <= 0:
+                st.error("⏰ Хугацаа дууслаа!")
                 st.session_state.test_started = False
-                st.success("Сорил дууслаа!")
-                st.rerun()
+                if st.button("Буцах"):
+                    st.rerun()
+            else:
+                mins, secs = divmod(int(remaining), 60)
+                
+                # Хажуугийн цэсэнд хугацаа харуулах
+                st.sidebar.markdown(f"""
+                    <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center;">
+                        <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
+                        <p style="color: white; margin: 0;">Үлдсэн хугацаа</p>
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                st.subheader(st.session_state.active_unit)
+                st.write("---")
+                
+                # Асуулт
+                st.write("### Асуулт 1")
+                q1 = st.radio("Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
+                              ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
+                
+                if st.button("✅ Сорил дуусгах"):
+                    st.session_state.test_started = False
+                    st.success("Сорил дууслаа!")
+                    st.rerun()
 
 # --- Бусад цэс сонгогдсон үед ---
 elif st.session_state.selected_menu not in ["Нүүр хуудас", "Сорил"]:
     st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")
-
