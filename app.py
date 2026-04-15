@@ -2,11 +2,12 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import os
 import base64
-
+import time
 # 1. Сонгогдсон цэсийг санах ойд хадгалах (Энэ нь гацалтыг засна)
 if 'selected_menu' not in st.session_state:
     st.session_state.selected_menu = "Нүүр хуудас"
-
+if 'test_started' not in st.session_state:
+    st.session_state.test_started = False
 # 2. Вэбсайтын ерөнхий тохиргоо
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
@@ -87,26 +88,64 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             st.session_state.selected_menu = "Сорил" # "Сорил" цэс рүү үсэрнэ
             st.rerun() # Хуудсыг дахин ачаалж шилжүүлнэ
 
-# --- СОРИЛ ХЭСЭГ ---
+# --- СОРИЛ ХЭСЭГ (Мөр 91-ээс эхэлнэ) ---
 elif st.session_state.selected_menu == "Сорил":
     st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
     
-    units = [
-        "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
-        "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
-        "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
-        "Үнэлгээний нэгж 4. Дараалал, функц",
-        "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
-        "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
-        "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
-        "Үнэлгээний нэгж 8. Магадлал, статистик"
-    ]
+    # А. Сорил хараахан эхлээгүй байх үед (Нэгжүүд харагдана)
+    if not st.session_state.test_started:
+        units = [
+            "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
+            "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
+            "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
+            "Үнэлгээний нэгж 4. Дараалал, функц",
+            "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
+            "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
+            "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
+            "Үнэлгээний нэгж 8. Магадлал, статистик"
+        ]
 
-    for i, unit_name in enumerate(units, 1):
-        with st.expander(f"🔹 {unit_name}"):
-            cols = st.columns(4)
-            for j, var in enumerate(['A', 'B', 'C', 'D']):
-                if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
+        for i, unit_name in enumerate(units, 1):
+            with st.expander(f"🔹 {unit_name}"):
+                cols = st.columns(4)
+                for j, var in enumerate(['A', 'B', 'C', 'D']):
+                    if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
+                        st.session_state.active_unit = f"{unit_name} - {var} хувилбар"
+                        st.session_state.show_options = True
+                
+                # Хувилбар сонгогдсон үед 4 товчлуур гарч ирнэ
+                if st.session_state.get('show_options') and unit_name in st.session_state.active_unit:
+                    st.write("---")
+                    c1, c2, c3, c4 = st.columns(4)
+                    with c1:
+                        if st.button("🟢 Сорил эхлэх", key=f"start_{i}"):
+                            st.session_state.test_started = True
+                            st.session_state.start_time = time.time() # Цаг эхэллээ
+                            st.rerun()
+                    with c2: st.button("🔵 Дүн харах", key=f"res_{i}")
+                    with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
+                    with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
+
+    # Б. "Сорил эхлэх" дээр дармагц (Асуулт ба Хугацаа харагдана)
+    else:
+        remaining = (40 * 60) - (time.time() - st.session_state.start_time)
+        
+        if remaining <= 0:
+            st.error("⏰ Хугацаа дууслаа!")
+            st.session_state.test_started = False
+            if st.button("Буцах"): st.rerun()
+        else:
+            mins, secs = divmod(int(remaining), 60)
+            st.sidebar.metric("⏱️ Үлдсэн хугацаа", f"{mins:02d}:{secs:02d}")
+            st.subheader(st.session_state.active_unit)
+            
+            # Энд асуултуудаа нэмнэ
+            q1 = st.radio("1. sinA харьцааг нэрлэнэ үү?", ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
+            
+            if st.button("✅ Сорил дуусгах"):
+                st.session_state.test_started = False
+                st.success("Сорил дууслаа!")
+                st.rerun()
                     st.info(f"{unit_name}-ын {var} хувилбар удахгүй нэмэгдэнэ.")
 
 else:
