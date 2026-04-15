@@ -66,37 +66,24 @@ if selected == "Нүүр хуудас":
 
 elif selected == "Сорил":
     import time
-    from datetime import datetime
-
     st.markdown('<p class="main-header" style="text-align: center;">⏳ Үнэлгээний нэгж 5: Сорил</p>', unsafe_allow_html=True)
 
-    # 1. Шалгалт эхлэх цагийг хадгалах
     if 'test_start_time' not in st.session_state:
         st.session_state.test_start_time = time.time()
     
-    # Цаг харуулах хоосон зай үүсгэх
     timer_placeholder = st.empty()
-
-    # 2. Хугацаа тооцох (40 минут)
     total_seconds = 40 * 60 
-    elapsed_time = time.time() - st.session_state.test_start_time
-    remaining_seconds = total_seconds - elapsed_time
+    remaining_seconds = total_seconds - (time.time() - st.session_state.test_start_time)
 
     if remaining_seconds > 0:
-        # Цагийг "Минут : Секунд" хэлбэрт оруулах
         mins, secs = divmod(int(remaining_seconds), 60)
-        
-        # Цагийг загварлаг харуулах
-        if remaining_seconds < 300: # 5 минут үлдэхэд улаан болно
-            timer_placeholder.markdown(f"<h2 style='text-align: center; color: red;'>⏰ Үлдсэн хугацаа: {mins:02d}:{secs:02d}</h2>", unsafe_allow_html=True)
-        else:
-            timer_placeholder.markdown(f suicide="<h2 style='text-align: center; color: #ffca28;'>🕒 Үлдсэн хугацаа: {mins:02d}:{secs:02d}</h2>", unsafe_allow_html=True)
+        color = "red" if remaining_seconds < 300 else "#ffca28"
+        timer_placeholder.markdown(f"<h2 style='text-align: center; color: {color};'>🕒 Үлдсэн хугацаа: {mins:02d}:{secs:02d}</h2>", unsafe_allow_html=True)
 
         with st.form("math_test_form"):
-            st.info("Санамж: 1-12 хүртэлх асуултаас зөв хариултыг сонгоно. 13-15 хүртэлх асуултад зөвхөн тоон хариултыг бичнэ үү.")
+            st.info("Санамж: 1-12 хүртэл сонгох, 13-15 хүртэл нөхөх даалгавар.")
             
             st.write("### I ХЭСЭГ. СОНГОХ ДААЛГАВАР")
-            # PDF-ээс авсан асуултууд
             q1 = st.radio("1. Тэгш өнцөгт △ABC-ийн ∠C=90° бол sinA харьцааг нэрлэнэ үү?", ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], index=None)
             q2 = st.radio("2. Гурвалжны медианууд огтлолцлын цэгээрээ оройгоосоо тоолбол ямар харьцаагаар хуваагддаг вэ?", ["1:1", "1:2", "2:1", "3:1"], index=None)
             q3 = st.radio("3. Биссектрис эсрэг талаа 4 см ба 6 см-ээр хуваасан, налсан тал нь 8 см бол нөгөө талыг ол.", ["12 см", "10 см", "14 см", "16 см"], index=None)
@@ -113,14 +100,13 @@ elif selected == "Сорил":
             st.write("---")
             st.write("### II ХЭСЭГ. НӨХӨХ ДААЛГАВАР")
             st.latex(r"x = \sqrt{15^2 - 9^2}")
-            q13 = st.text_input("13. Хөвчийг хагаслан хуваах хэрчмийн урт x-ийг ол:")
+            q13 = st.text_input("13. Хөвчийг хагаслан хуваах хэрчмийн урт x:")
             st.latex(r"h = 230 - 150")
-            q14 = st.text_input("14. Унины өндрийн зөрүү h (катет) хэд вэ?")
-            st.latex(r"\alpha = \frac{130^\circ - 50^\circ}{2}")
-            q15 = st.text_input("15. Сурагчийн харах өнцөг \alpha-ийн хэмжээ:")
+            q14 = st.text_input("14. Унины өндрийн зөрүү h:")
+            st.latex(r"\alpha = (130^\circ - 50^\circ) / 2")
+            q15 = st.text_input("15. Сурагчийн харах өнцөг:")
 
             submitted = st.form_submit_button("Шалгалтыг дуусгах")
-
             if submitted:
                 score = 0
                 if q1 == "BC/AB": score += 1
@@ -138,12 +124,10 @@ elif selected == "Сорил":
                 if q13 == "12": score += 2
                 if q14 == "80": score += 2
                 if q15 == "40": score += 2
-                
                 st.balloons()
                 st.success(f"Сорил дууслаа! Таны авсан оноо: {score}")
-
     else:
         st.error("⌛ Шалгалтын хугацаа дууссан байна!")
-        if st.button("Шалгалтыг дахин эхлүүлэх"):
+        if st.button("Дахин эхлүүлэх"):
             del st.session_state.test_start_time
             st.rerun()
