@@ -23,35 +23,45 @@ def smart_math_render(text):
         text = f"$\\displaystyle {clean_text}$"
     return text
 
-# 2. ДИЗАЙН (Хуучин загварт яг тааруулсан CSS)
+# 2. ДИЗАЙН (Засварласан CSS)
 st.markdown("""
     <style>
     .stApp { background-color: white; }
     
-    /* Хажуугийн цэс */
+    /* ХАЖУУГИЙН ЦЭС - Өргөнийг багасгасан (300px -> 260px) */
     [data-testid="stSidebar"] { 
         background-color: #0b4ab1 !important; 
-        min-width: 300px !important;
+        min-width: 260px !important;
+        max-width: 260px !important;
     }
     
+    /* Цэсний гарчиг - Хэмжээг багасгасан (45px -> 30px) */
     .sidebar-title { 
-        color: white; text-align: center; font-size: 45px; font-weight: bold; 
-        padding: 40px 0; margin-bottom: 10px;
+        color: white; text-align: center; font-size: 30px; font-weight: bold; 
+        padding: 20px 0; margin-bottom: 5px;
     }
 
     /* "Бидний зорилго" хайрцаг */
     .goal-box {
-        background: white; padding: 30px; border-radius: 20px;
+        background: white; padding: 25px; border-radius: 20px;
         border: 1px solid #f0f2f6;
         border-left: 10px solid #0b4ab1; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
-    .main-header { color: #0b4ab1; font-size: 55px; font-weight: 800; margin-bottom: 10px; }
+    
+    /* ГАРЧИГ - Мөр хоорондын зайг багасгасан (line-height: 1.1) */
+    .main-header { 
+        color: #0b4ab1; 
+        font-size: 45px; 
+        font-weight: 800; 
+        margin-bottom: 10px;
+        line-height: 1.1; 
+    }
 
-    /* Төв хэсгийн 3 товчлуур - Хэмжээг нь ижилсүүлэх */
+    /* Төв хэсгийн 3 товчлуур */
     div.stButton > button {
         width: 100% !important; 
-        height: 280px !important;    /* Бүх товчлуурын өндөр адилхан байна */
+        height: 280px !important; 
         border-radius: 25px !important; 
         border: 1px solid #f0f0f0 !important;
         background: #fdfdfd !important;
@@ -64,29 +74,19 @@ st.markdown("""
         transition: all 0.3s ease-in-out !important;
     }
 
-    /* Хулгана очих үед өөрчлөгдөх загвар */
-    div.stButton > button:hover {
-        transform: translateY(-8px) !important;
-        box-shadow: 0 15px 35px rgba(11, 74, 177, 0.1) !important;
-        border: 1px solid #0b4ab1 !important;
-        background: #ffffff !important;
-    }
-
-    /* Товчлуур доторх бичиг */
     div.stButton > button p {
-        font-size: 26px !important; 
+        font-size: 24px !important; 
         font-weight: bold !important;
         color: #0b4ab1 !important;
-        line-height: 1.4 !important;
+        line-height: 1.3 !important;
     }
 
     div.stButton > button:hover {
-        transform: translateY(-10px) !important;
+        transform: translateY(-8px) !important;
         box-shadow: 0 15px 40px rgba(0,74,177,0.15) !important;
         border: 1px solid #0b4ab1 !important;
     }
 
-    /* Бодлогын карт */
     .math-card {
         background: white; padding: 25px; border-radius: 15px;
         border: 1px solid #e0e0e0; margin-bottom: 20px;
@@ -108,8 +108,8 @@ with st.sidebar:
         default_index=current_index,
         styles={
             "container": {"background-color": "#0b4ab1", "padding": "0"},
-            "icon": {"color": "white", "font-size": "22px"}, 
-            "nav-link": {"font-size": "18px", "color": "white", "font-family": "Arial", "font-weight": "bold", "margin": "10px"},
+            "icon": {"color": "white", "font-size": "20px"}, 
+            "nav-link": {"font-size": "16px", "color": "white", "font-family": "Arial", "font-weight": "bold", "margin": "8px"},
             "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
         }
     )
@@ -131,8 +131,8 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             <div class="goal-box">
                 <div class="main-header">Математикийн ертөнцөд тавтай морил!</div>
                 <div style="
-                    font-size: 20px; 
-                    line-height: 1.6; 
+                    font-size: 19px; 
+                    line-height: 1.5; 
                     color: #444; 
                     text-align: justify; 
                     text-indent: 20px;
@@ -142,7 +142,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
         """, unsafe_allow_html=True)
 
     st.markdown("<br><br>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3, gap="large")
+    c1, c2, c3 = st.columns([1, 1, 1], gap="large")
     
     with c1:
         if st.button("📺\n\nЦахим контент\n\nҮзэх", key="btn_1"):
@@ -195,7 +195,6 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
     else:
         st.warning("data_bank.xlsx файл олдсонгүй.")
 
-# Бусад цэсүүд
 else:
     st.markdown(f"<h1 style='color: #0b4ab1; text-align: center; margin-top: 50px;'>{st.session_state.selected_menu}</h1>", unsafe_allow_html=True)
     st.info("Энэ хэсэг удахгүй нэмэгдэнэ.")
