@@ -92,19 +92,20 @@ if selected == "Нүүр хуудас":
                 </div>
             </div>
         """, unsafe_allow_html=True)
-
-    # Доод хэсэг: 3 Сонгох карт
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3, gap="medium")
-    card_items = [
-        {"icon": "📺", "title": "Цахим контент", "btn": "Үзэх"},
-        {"icon": "📚", "title": "Даалгаврын сан", "btn": "Нээх"},
-        {"icon": "📝", "title": "Сорил", "btn": "Эхлэх"}
-    ]
-    for i, col in enumerate([c1, c2, c3]):
-        with col:
-            st.markdown(f"""
-                <div class="card-container">
+    with c1:
+        if st.button("📺\n\n**Цахим контент**\n\nҮзэх", key="btn_1"):
+            st.session_state.selected_menu = "Цахим контент"
+            st.rerun()
+            
+    with c2:
+        if st.button("📚\n\n**Даалгаврын сан**\n\nНээх", key="btn_2"):
+            st.session_state.selected_menu = "Даалгаврын сан"
+            st.rerun()
+            
+    with c3:
+        if st.button("📝\n\n**Сорил**\n\nЭхлэх", key="btn_3"):
+            st.session_state.selected_menu = "Сорил"
+            st.rerun()
                     <div>
                         <div class="card-icon">{card_items[i]['icon']}</div>
                         <div class="card-title">{card_items[i]['title']}</div>
