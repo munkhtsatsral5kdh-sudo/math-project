@@ -19,18 +19,22 @@ st.set_page_config(page_title="Математик Багш", page_icon="📐", l
 def smart_math_render(text):
     if not isinstance(text, str): return text
     
-    # Сонголтуудыг (A. B. C. D.) доош нь мөр шилжүүлж цувуулах
+    # 1. Сонголтуудыг (A. B. C. D.) доош нь цувуулах
     for label in ['A.', 'B.', 'C.', 'D.']:
         if label in text:
             text = text.replace(label, f'\n\n **{label}**')
 
-    # LaTeX кодыг таних (\sqrt, \frac г.м)
-    special_chars = ['\\', '^', '_', '{', '}']
-    if any(char in text for char in special_chars) and '$' not in text:
-        text = f"$ {text} $"
-    
-    # Энгийн 6/13 гэсэн бичиглэлийг LaTeX \displaystyle бутархай болгох (илүү том харагдана)
-    text = re.sub(r'(\d+)/(\d+)', r' $\\displaystyle \\frac{\1}{\2}$ ', text)
+    # 2. Текст доторх LaTeX командууд (\frac, \sqrt, \displaystyle г.м) 
+    # байвал шууд $...$ тэмдэгт хавчуулж математик болгоно.
+    if ('\\' in text or '^' in text) and '$' not in text:
+        # Бүх текстийг биш, зөвхөн томьёог танихын тулд илүү ухаалаг хандана
+        text = text.replace('\\displaystyle', '').strip() # Давхардал үүсэхээс сэргийлнэ
+        text = f"$\\displaystyle {text}$"
+
+    # 3. Хэрэв Excel дээр 6/13 гэж бичсэн бол түүнийг гоё бутархай болгоно
+    # Ингэхдээ аль хэдийн LaTeX болсон бол оролдохгүй
+    if '\\frac' not in text:
+        text = re.sub(r'(\d+)/(\d+)', r' $\\displaystyle \\frac{\1}{\2}$ ', text)
         
     return text
 
