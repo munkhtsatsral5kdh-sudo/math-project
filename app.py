@@ -103,98 +103,89 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
 
 # 7. СОРИЛ
 elif st.session_state.selected_menu == "Сорил":
-    st.markdown("<h1 style='color: #0b4ab1; text-align: center;'>📝 Математикийн Улсын Шалгалт</h1>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #0b4ab1;'>📝 Онлайн сорил, шалгалт</h2>", unsafe_allow_html=True)
     
-    # Сэдвийн нэрс (Таны илгээсэн зургаас)
-    unit_names = [
-        "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
-        "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
-        "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
-        "Үнэлгээний нэгж 4. Дараалал, функц",
-        "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
-        "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
-        "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
-        "Үнэлгээний нэгж 8. Магадлал, статистик"
+    # --- СЭДВҮҮД (Таны зургаас) ---
+    units = [
+        "Тоон олонлог, зэрэг, язгуур", "Харьцаа, пропорц, процент",
+        "Алгебрын илэрхийлэл, тэгшитгэл", "Дараалал, функц",
+        "Өнцөг, дүрс, байгуулалт", "Байршил, хөдөлгөөн, хувиргалт",
+        "Хэмжигдэхүүн", "Магадлал, статистик"
     ]
 
     # Төлөв хадгалах
-    if 'active_unit' not in st.session_state: st.session_state.active_unit = None
-    if 'show_results' not in st.session_state: st.session_state.show_results = False
+    if 'quiz_page' not in st.session_state: st.session_state.quiz_page = "list"
+    if 'current_unit' not in st.session_state: st.session_state.current_unit = None
+    if 'show_mode' not in st.session_state: st.session_state.show_mode = None # "test", "result", "error"
 
-    # --- ЭХНИЙ ЦОНХ: 8 НЭГЖИЙН НЭР ---
-    if st.session_state.active_unit is None:
-        st.info("Шалгалт өгөх нэгжээ сонгоно уу:")
-        # 8 нэгжийг товчлуур хэлбэрээр жагсаах
-        for unit in unit_names:
-            if st.button(unit, use_container_width=True, key=f"btn_{unit}"):
-                st.session_state.active_unit = unit
-                st.session_state.show_results = False
-                if 'current_quiz_df' in st.session_state: del st.session_state.current_quiz_df
-                st.rerun()
-    
-    # --- ХОЁРДУГААР ЦОНХ: СОРИЛ (НЭГЖИЙГ СОНГОСОН ҮЕД) ---
-    else:
-        # Дээд хэсэг: Хугацаа, Оноо, Алдаа харах, Буцах
-        m1, m2, m3, m4 = st.columns([1, 1, 1, 1])
-        with m1:
-            if st.button("⬅️ Буцах", use_container_width=True):
-                st.session_state.active_unit = None
-                st.rerun()
-        with m2:
-            st.metric("🎯 Оноо", st.session_state.get('quiz_score', 0))
-        with m3:
-            if st.button("❌ Алдаа/Бодолт", use_container_width=True):
-                st.session_state.show_results = True
-                st.rerun()
-        with m4:
-            st.markdown("<div style='background:black; color:red; padding:8px; border-radius:10px; text-align:center; font-family:monospace; font-size:20px;'>⏳ 40:00</div>", unsafe_allow_html=True)
-
-        st.markdown(f"### 📍 {st.session_state.active_unit}")
+    # --- 1. ЖАГСААЛТ ХАРАГДАХ ХЭСЭГ (image_bfe462.jpg загвар) ---
+    if st.session_state.quiz_page == "list":
+        # Хүснэгтийн толгой
+        h1, h2, h3, h4, h5, h6 = st.columns([0.5, 3, 1.5, 1.5, 1.5, 1.5])
+        h1.write("**#**"); h2.write("**Сорилын нэр**"); h3.write("**Сорил**"); h4.write("**Дүн**"); h5.write("**Алдаа**"); h6.write("**Бодолт**")
         st.write("---")
+
+        for i, unit_name in enumerate(units):
+            c1, c2, c3, c4, c5, c6 = st.columns([0.5, 3, 1.5, 1.5, 1.5, 1.5])
+            c1.write(f"{i+1}")
+            c2.write(f"IX анги | {unit_name}")
+            
+            # Товчлуурууд
+            if c3.button("🚀 Эхлэх", key=f"start_{i}"):
+                st.session_state.current_unit = unit_name
+                st.session_state.quiz_page = "active"
+                st.session_state.show_mode = "test"
+                st.rerun()
+            if c4.button("📊 Дүн", key=f"score_{i}"):
+                st.toast(f"{unit_name}: Сүүлийн оноо 0")
+            if c5.button("❌ Алдаа", key=f"err_{i}"):
+                st.session_state.current_unit = unit_name
+                st.session_state.quiz_page = "active"
+                st.session_state.show_mode = "error"
+                st.rerun()
+            if c6.button("📖 Бодолт", key=f"sol_{i}"):
+                st.session_state.current_unit = unit_name
+                st.session_state.quiz_page = "active"
+                st.session_state.show_mode = "solution"
+                st.rerun()
+            st.write("---")
+
+    # --- 2. СОРИЛ ЭСВЭЛ БОДОЛТ ХАРАГДАХ ХЭСЭГ ---
+    elif st.session_state.quiz_page == "active":
+        col_back, col_time = st.columns([5, 1])
+        if col_back.button("⬅️ Жагсаалт руу буцах"):
+            st.session_state.quiz_page = "list"
+            st.rerun()
+        col_time.markdown("<div style='background:black; color:red; padding:5px; text-align:center; border-radius:5px;'>40:00</div>", unsafe_allow_html=True)
+        
+        st.subheader(f"📍 {st.session_state.current_unit}")
 
         if os.path.exists("data_bank.xlsx"):
             df = pd.read_excel("data_bank.xlsx")
-            
-            # Excel-ээс тухайн нэгжийг дугаараар нь шүүх
-            unit_id = re.search(r'\d+', st.session_state.active_unit).group()
-            
-            if 'current_quiz_df' not in st.session_state:
-                # Тухайн нэгжээс бодлого шүүх
-                unit_df = df[df['Нэгж'].astype(str).str.contains(unit_id)]
-                if unit_df.empty:
-                    st.warning("Энэ нэгжид бодлого хараахан ороогүй байна.")
-                    st.stop()
-                st.session_state.current_quiz_df = unit_df.sample(n=min(5, len(unit_df)))
+            # Сэдвийн дугаараар шүүх (Нэгж баганаас)
+            unit_id = i + 1 
+            q_df = df[df['Нэгж'].astype(str).str.contains(str(unit_id))].head(5)
 
-            user_answers = {}
-            for i, (idx, row) in enumerate(st.session_state.current_quiz_df.iterrows()):
-                st.markdown(f"**Бодлого {i+1}:**")
-                st.markdown(smart_math_render(row['Асуулт'])) #
+            if q_df.empty:
+                st.warning("Энэ нэгжид бодлого хараахан ороогүй байна.")
+            else:
+                for idx, row in q_df.iterrows():
+                    st.markdown(f"**Бодлого:**")
+                    st.markdown(smart_math_render(row['Асуулт']))
+                    
+                    # 4 хувилбарт сонголт
+                    ans = st.radio(f"Хариулт:", ["A", "B", "C", "D"], key=f"q_{idx}", horizontal=True)
+                    
+                    # Алдаа болон Бодолт харах горимд тайлбар харуулна
+                    if st.session_state.show_mode in ["error", "solution"]:
+                        st.info(f"✅ Зөв хариу: {row['Хариу']}\n\n💡 Бодолт: {row.get('Тайлбар', 'Тайлбар байхгүй')}")
+                    st.write("---")
                 
-                # 4 ХУВИЛБАРТАЙ (A, B, C, D)
-                user_answers[idx] = st.radio(f"Сонгох {i+1}:", ["A", "B", "C", "D"], key=f"q_{idx}", horizontal=True)
-                
-                # ЗӨВ БОДОЛТ (Алдаа харах дарахад гарна)
-                if st.session_state.show_results:
-                    correct = str(row['Хариу']).strip().upper()
-                    if user_answers[idx] == correct:
-                        st.success(f"Зөв! ✅ (Хариу: {correct})")
-                    else:
-                        st.error(f"Буруу! ❌ (Зөв хариу: {correct})")
-                    with st.expander("📝 ЗӨВ БОДОЛТ ХАРАХ"):
-                        st.info(row.get('Тайлбар', 'Бодолт одоогоор байхгүй байна.'))
-                st.write("---")
-
-            if not st.session_state.show_results:
-                if st.button("🏁 Шалгалт дуусгах", use_container_width=True):
-                    score = 0
-                    for idx, row in st.session_state.current_quiz_df.iterrows():
-                        if user_answers[idx] == str(row['Хариу']).strip().upper():
-                            score += 1
-                    st.session_state.quiz_score = score
-                    st.session_state.show_results = True
-                    st.balloons()
-                    st.rerun()
+                if st.session_state.show_mode == "test":
+                    if st.button("🏁 Шалгалт дуусгах", use_container_width=True):
+                        st.success("Шалгалт дууслаа. Та дүнгээ 'Дүн харах' хэсгээс үзнэ үү.")
+                        st.session_state.quiz_page = "list"
+                        st.rerun()
 # 8. КЛУБЫН МЭДЭЭЛЭЛ
 elif st.session_state.selected_menu == "Клубын мэдээлэл":
     st.markdown("<h1 style='color: #0b4ab1;'>👥 Математикийн клуб</h1>", unsafe_allow_html=True)
