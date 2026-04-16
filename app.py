@@ -182,36 +182,18 @@ elif st.session_state.selected_menu == "Сорил":
                 st.rerun()
 
 # --- ДААЛГАВРЫН САН ---
-elif st.session_state.selected_menu == "Даалгаврын сан":
+    elif st.session_state.selected_menu == "Даалгаврын сан":
         import pandas as pd
         st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
-        
-        # --- ФОНТ БОЛОН ЗАЙГ ТОХИРУУЛАХ CSS ---
-        st.markdown("""
-            <style>
-            @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
-            .question-box {
-                font-family: 'Times New Roman', serif;
-                font-size: 18px;
-                line-height: 1.8;
-                color: #2c3e50;
-                background-color: #f9f9f9;
-                padding: 15px;
-                border-left: 5px solid #3498db;
-                border-radius: 5px;
-                margin-bottom: 10px;
-            }
-            </style>
-        """, unsafe_allow_html=True)
-
-try:
+        try:
             df = pd.read_excel("data_bank.xlsx")
             for unit_name in ["Нэгж 1"]:
                 with st.expander(f"🔹 {unit_name}", expanded=True):
                     unit_df = df[df['Нэгж'] == unit_name]
                     for i, row in unit_df.iterrows():
                         st.markdown(f"#### 🔹 Бодлого {i+1}:")
-                        # Excel-ийн нэг мөр текстийг автоматаар салгаж харуулах
+                        
+                        # Текстийг автоматаар шинэ мөрөнд шилжүүлэх (A, B, C, D-г доош нь цувуулна)
                         raw_q = str(row['Асуулт'])
                         q_text = raw_q.replace("A.", "\n\nA.").replace("B.", "\n\nB.").replace("C.", "\n\nC.").replace("D.", "\n\nD.")
                         st.markdown(q_text)
@@ -230,11 +212,9 @@ try:
                                 with st.expander("💡 Тайлбар харах"):
                                     st.info(str(row['Бодолт']))
                         st.write("---")
-            # Загвар тохируулах
             st.markdown("<style>.stMarkdown p {font-family:'Times New Roman'; font-size:18px; line-height:1.8;}</style>", unsafe_allow_html=True)
         except Exception as e:
-            st.error(f"Файл уншихад алдаа гарлаа: {e}")
-            st.info("data_bank.xlsx файл GitHub-д байгаа эсэхийг шалгаарай.")
+            st.error(f"Алдаа гарлаа: {e}")
 
     elif st.session_state.selected_menu == "Цахим контент":
         st.markdown('<p class="main-header">📺 Цахим контент</p>', unsafe_allow_html=True)
