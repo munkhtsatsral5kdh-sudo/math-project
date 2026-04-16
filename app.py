@@ -197,7 +197,7 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                     unit_df = df[df['Нэгж'] == unit_name]
                     
                     for i, row in unit_df.iterrows():
-                        st.write(f"**Бодлого {i+1}:** {row['Асуулт']}")
+                        st.markdown(f"**Бодлого {i+1}:** {row['Асуулт']}")
                         
                         # Хариу шалгах талбар
                         u_ans = st.text_input(f"Хариу оруулах ({i+1}):", key=f"q_input_{i}")
