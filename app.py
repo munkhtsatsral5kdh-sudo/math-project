@@ -131,7 +131,7 @@ elif st.session_state.selected_menu == "Сорил":
                     with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
     
 else:
-            # Сорил эхэлсэн үе (Хугацаа секундээр гүйж харагдуулах)
+            # Сорил эхэлсэн үе (Зөвхөн "Сорил" цэс дээр харагдана)
             from streamlit_autorefresh import st_autorefresh
             st_autorefresh(interval=1000, key="quizrefresh")
 
@@ -144,8 +144,6 @@ else:
                     st.rerun()
             else:
                 mins, secs = divmod(int(remaining), 60)
-                
-                # Хажуугийн цэсэнд хугацаа харуулах
                 st.sidebar.markdown(f"""
                     <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-top: 20px;">
                         <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
@@ -155,8 +153,6 @@ else:
                 
                 st.subheader(st.session_state.active_unit)
                 st.write("---")
-                
-                # Асуулт
                 st.write("### Асуулт 1")
                 q1 = st.radio("Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
                               ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
@@ -166,14 +162,19 @@ else:
                     st.success("Сорил дууслаа!")
                     st.rerun()
 
-# --- Энэ хэсэг нь бусад цэсүүдийг зөв харуулна ---
+# --- БУСАД ЦЭСҮҮДИЙН ХЭСЭГ (Энэ хэсэг маш чухал) ---
 elif st.session_state.selected_menu == "Даалгаврын сан":
-    st.header("📚 Даалгаврын сан")
-    st.write("Энэ хэсэгт удахгүй даалгаврууд нэмэгдэнэ.")
+    st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
+    st.info("Удахгүй энэ хэсэгт даалгаврууд нэмэгдэнэ.")
 
 elif st.session_state.selected_menu == "Цахим контент":
-    st.header("📺 Цахим контент")
-    st.write("Видео хичээлүүд бэлтгэгдэж байна.")
+    st.markdown('<p class="main-header">📺 Цахим контент</p>', unsafe_allow_html=True)
+    st.info("Видео хичээлүүд бэлтгэгдэж байна.")
 
-elif st.session_state.selected_menu not in ["Нүүр хуудас", "Сорил"]:
-    st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")
+elif st.session_state.selected_menu == "Клубын мэдээлэл":
+    st.markdown('<p class="main-header">👥 Клубын мэдээлэл</p>', unsafe_allow_html=True)
+    st.info("Математикийн клубын мэдээлэл энд харагдана.")
+
+elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил МХБ":
+    st.markdown('<p class="main-header">❤️ Хүмүүжил төлөвшил</p>', unsafe_allow_html=True)
+    st.info("Хүүхдийн хүмүүжил төлөвшлийн зөвлөгөө, мэдээлэл.")
