@@ -8,16 +8,18 @@ import re
 # 1. Сайтын ерөнхий тохиргоо
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
-# --- СИСТЕМ: ЦЭСНИЙ УДИРДЛАГА (ЭНЭ ХЭСЭГ ЗААВАЛ БАЙХ ЁСТОЙ) ---
+# --- СИСТЕМ: ЦЭСНИЙ УДИРДЛАГА (Session State) ---
 if 'selected_menu' not in st.session_state:
     st.session_state.selected_menu = "Нүүр хуудас"
 
-# УХААЛАГ МАТЕМАТИК ТАНИГЧ
+# УХААЛАГ МАТЕМАТИК ТАНИГЧ (LaTeX засагч)
 def smart_math_render(text):
     if not isinstance(text, str): return text
+    # Сонголтуудыг (A. B. C. D.) доош нь цувуулах
     for label in ['A.', 'B.', 'C.', 'D.']:
         if label in text:
             text = text.replace(label, f'\n\n**{label}**')
+    # LaTeX бичиглэлийг долларын тэмдэгт хавчуулж математик болгоно
     if ('\\' in text or '^' in text or '/' in text) and '$' not in text:
         clean_text = text.replace('\\displaystyle', '').strip()
         text = f"$\\displaystyle {clean_text}$"
@@ -29,18 +31,30 @@ st.markdown("""
     .stApp { background-color: #f0f2f6; }
     [data-testid="stSidebar"] { background-color: #004aad !important; }
     .sidebar-title { color: white; text-align: center; font-size: 32px; font-weight: bold; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.2); }
-    .goal-box { background: white; padding: 40px; border-radius: 20px; border-left: 10px solid #004aad; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    
+    /* Зорилгын хайрцаг */
+    .goal-box {
+        background: white; padding: 40px; border-radius: 20px;
+        border-left: 10px solid #004aad; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
     .main-header { color: #004aad; font-size: 45px; font-weight: 800; margin-bottom: 20px; }
     
     /* Товчлуурыг карт шиг харагдуулах загвар */
     div.stButton > button {
         width: 100%; border-radius: 20px; border: none; background: white;
         padding: 40px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        transition: all 0.3s ease; height: 250px;
+        transition: all 0.3s ease; height: 220px; color: #004aad;
     }
-    div.stButton > button:hover { transform: translateY(-5px); border: 1px solid #004aad; }
+    div.stButton > button:hover {
+        transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,74,173,0.15);
+        background-color: white; border: 1px solid #004aad;
+    }
     
-    .math-card { background: white; padding: 25px; border-radius: 15px; border: 1px solid #e0e0e0; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .math-card {
+        background: white; padding: 25px; border-radius: 15px;
+        border: 1px solid #e0e0e0; margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -53,10 +67,10 @@ with st.sidebar:
         icons=['house', 'play-btn', 'book', 'pencil-square', 'people', 'heart'],
         manual_select=st.session_state.selected_menu,
         default_index=0,
-        key='menu_key',
         styles={
-            "container": {"background-color": "#004aad"},
-            "nav-link": {"color": "white", "font-weight": "bold"},
+            "container": {"background-color": "#004aad", "padding": "0"},
+            "icon": {"color": "white", "font-size": "20px"}, 
+            "nav-link": {"font-size": "17px", "color": "white", "font-family": "Arial", "font-weight": "bold", "margin": "5px"},
             "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
         }
     )
@@ -64,6 +78,7 @@ with st.sidebar:
 
 # 4. НҮҮР ХУУДАС
 if st.session_state.selected_menu == "Нүүр хуудас":
+    # Дээд хэсэг: Зураг болон Зорилго
     col1, col2 = st.columns([1, 1.2], gap="large")
     with col1:
         if os.path.exists("logo.gif"):
@@ -83,7 +98,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             </div>
         """, unsafe_allow_html=True)
 
-    # ДООД ТАЛЫН 3 КАРТ (БАГАНУУДЫГ ЗАРЛАВ)
+    # ДООД ТАЛЫН 3 КАРТ (Товчлуур)
     st.markdown("<br><br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3, gap="medium")
     
@@ -105,6 +120,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
 # 5. ДААЛГАВРЫН САН
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown("<h1 style='color: #004aad; text-align: center;'>📚 Бодлогын сан</h1>", unsafe_allow_html=True)
+    
     if os.path.exists("data_bank.xlsx"):
         df = pd.read_excel("data_bank.xlsx")
         c1, c2 = st.columns(2)
@@ -114,6 +130,7 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
             level = st.radio("Түвшин:", ["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"], horizontal=True)
             
         f_df = df[(df['Нэгж'] == unit) & (df['Түвшин'] == level)]
+        
         if f_df.empty:
             st.info("Энэ хэсэгт бодлого хараахан ороогүй байна.")
         else:
