@@ -19,14 +19,20 @@ st.set_page_config(page_title="Математик Багш", page_icon="📐", l
 def smart_math_render(text):
     if not isinstance(text, str): return text
     
-    # LaTeX тэмдэглэгээг таних (\sqrt, \frac, ^, \mathbb г.м)
+    # 1. Сонголтуудыг (A. B. C. D.) доош нь мөр шилжүүлж цувуулах
+    for label in ['A.', 'B.', 'C.', 'D.']:
+        if label in text:
+            # Сонголтын өмнө шинэ мөр авч, тод болгоно
+            text = text.replace(label, f'\n\n **{label}**')
+
+    # 2. LaTeX кодыг таних (\sqrt, \frac г.м)
     special_chars = ['\\', '^', '_', '{', '}']
     if any(char in text for char in special_chars) and '$' not in text:
         text = f"$ {text} $"
     
-    # Энгийн 1/3 гэсэн бичиглэлийг LaTeX бутархай болгох
-    if '/' in text and '$' not in text:
-        text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
+    # 3. Энгийн 6/13 гэсэн бичиглэлийг LaTeX бутархай болгох
+    # Текст доторх тоо/тоо хэлбэртэй бүх зүйлийг гоё бутархай болгоно
+    text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
         
     return text
 
@@ -71,24 +77,25 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
         unit = st.selectbox("Сэдэв сонгох:", df['Нэгж'].unique())
         tabs = st.tabs(["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"])
         
-        for idx, lvl in enumerate(["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"]):
-            with tabs[idx]:
-                f_df = df[(df['Нэгж'] == unit) & (df['Түвшин'] == lvl)]
-                for i, row in f_df.iterrows():
+for i, row in f_df.iterrows():
                     st.markdown('<div class="math-card">', unsafe_allow_html=True)
-                    st.write(f"**Бодлого {i+1}**")
                     
-                    # 1. Асуулт болон сонголтуудыг нэг дор харуулах
+                    # 1. Бодлогын дугаарыг тод гарчиг болгох
+                    st.markdown(f"### 📝 Бодлого {i+1}")
+                    
+                    # 2. Асуултыг ухаалгаар засаж харуулах (Сонголтууд энд цуврана)
                     st.markdown(smart_math_render(row['Асуулт']))
                     
-                    # 2. Хариулт сонгох хэсэг (KeyError-оос сэргийлж багана шалгахгүй)
-                    ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], key=f"ans_{lvl}_{i}", horizontal=True)
+                    # 3. Хариулт сонгох radio button
+                    ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], 
+                                   key=f"ans_{lvl}_{idx}_{i}", horizontal=True)
                     
-                    # 3. Шалгах товчлуур
-                    if st.button("Шалгах", key=f"chk_{lvl}_{i}"):
+                    # 4. Шалгах товчлуур
+                    if st.button("Шалгах", key=f"chk_{lvl}_{idx}_{i}"):
                         correct_ans = str(row['Хариу']).strip().upper()
                         if str(ans).strip().upper() == correct_ans:
                             st.success("Зөв! ✅"); st.balloons()
                         else: 
                             st.error(f"Буруу. Зөв хариу: {correct_ans}")
+                            
                     st.markdown('</div>', unsafe_allow_html=True)
