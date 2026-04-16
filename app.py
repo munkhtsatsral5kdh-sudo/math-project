@@ -182,6 +182,7 @@ elif st.session_state.selected_menu == "Сорил":
             st.rerun()
 
     # --- ДААЛГАВРЫН САН ---
+    # --- ДААЛГАВРЫН САН ---
     elif st.session_state.selected_menu == "Даалгаврын сан":
         import pandas as pd
         st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
@@ -209,6 +210,12 @@ elif st.session_state.selected_menu == "Сорил":
                                     st.error(f"Буруу. Зөв хариу: {row['Хариу']}")
                         with c2:
                             if pd.notnull(row['Бодолт']):
+                                with st.expander("💡 Тайлбар харах"):
+                                    st.info(str(row['Бодолт']))
+                        st.write("---")
+            st.markdown("<style>.stMarkdown p {font-family:'Times New Roman'; font-size:18px; line-height:1.8;}</style>", unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"Алдаа гарлаа: {e}")
                                 with st.expander("💡 Тайлбар харах"):
                                     st.info(str(row['Бодолт']))
                         st.write("---")
