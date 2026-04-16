@@ -18,12 +18,24 @@ st.set_page_config(page_title="Математик Багш", page_icon="📐", l
 # 2. УХААЛАГ МАТЕМАТИК ТАНИГЧ (2400 бодлогыг автоматаар бутархай болгоно)
 def smart_math_render(text):
     if not isinstance(text, str): return text
-    # Бутархайг засах: 3/4 -> \frac{3}{4}
-    text = re.sub(r'(\d+)/(\d+)', r'$\\frac{\1}{\2}$', text)
-    # Зэргийг засах: x^2 -> x^{2}
-    text = re.sub(r'(\w+)\^(\d+)', r'$\1^{\2}$', text)
-    # Сонголтуудыг (A. B. C. D.) шинэ мөрөнд гаргах
-    text = re.sub(r'([A-D]\.)', r'\n\n**\1**', text)
+    
+    # 1. Энгийн бутархайг таних (Жишээ нь: 3/4 эсвэл (x+1)/(y-2))
+    # Бутархайнуудыг $ \frac{a}{b} $ формат руу хөрвүүлнэ
+    text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
+    
+    # 2. Зэргийг таних (Жишээ нь: x^2, 10^5)
+    text = re.sub(r'(\w+)\^(\d+)', r' $\1^{\2}$ ', text)
+    
+    # 3. Хэрэв таны Excel дээр \frac{3}{4} гэж бичсэн бол тэдгээрийг $ $ дотор оруулна
+    if '\\frac' in text and '$' not in text:
+        text = f"${text}$"
+    
+    # 4. Сонголтуудыг (A. B. C. D.) маш цэгцтэй доош нь харуулах
+    # Сонголт бүрийн өмнө 2 шинэ мөр авч, тодоор харуулна
+    for label in ['A.', 'B.', 'C.', 'D.']:
+        if label in text:
+            text = text.replace(label, f'\n\n**{label}**')
+            
     return text
 
 # 3. ДИЗАЙН (Таны илгээсэн зургуудын өнгө)
