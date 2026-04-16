@@ -188,9 +188,9 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
     for unit in units:
         with st.expander(f"🔹 {unit}"):
             tab1, tab2, tab3 = st.tabs(["🧠 Мэдлэг ойлголт", "🛠️ Чадвар", "🚀 Хэрэглээ"])
-            with tab1: st.info(f"{unit}-ийн Мэдлэг ойлголтын 50 бодлого энд байршина.")
-            with tab2: st.info(f"{unit}-ийн Чадварын 50 бодлого энд байршина.")
-            with tab3: st.info(f"{unit}-ийн Хэрэглээний 50 бодлого энд байршина.")
+            with tab1: st.info(f"{unit}-ийн Мэдлэг ойлголтын 100 бодлого энд байршина.")
+            with tab2: st.info(f"{unit}-ийн Чадварын 100 бодлого энд байршина.")
+            with tab3: st.info(f"{unit}-ийн Хэрэглээний 100 бодлого энд байршина.")
 
 # --- БУСАД ЦЭСҮҮД ---
 elif st.session_state.selected_menu == "Цахим контент":
