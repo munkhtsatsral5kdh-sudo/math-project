@@ -101,79 +101,108 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                     st.markdown('</div>', unsafe_allow_html=True)
     else: st.warning("data_bank.xlsx файл олдсонгүй.")
 
-# 7. СОРИЛ
+# 7. СОРИЛ (Оноо, Алдаа, Бодолттой хувилбар)
 elif st.session_state.selected_menu == "Сорил":
-    st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📝 Онлайн сорил, шалгалт</h3>", unsafe_allow_html=True)
-    
-    # Нэгжүүд
-    units = [
-        "Тоон олонлог, зэрэг, язгуур", "Харьцаа, пропорц, процент",
-        "Алгебрын илэрхийлэл, тэгшитгэл", "Дараалал, функц",
-        "Өнцөг, дүрс, байгуулалт", "Байршил, хөдөлгөөн",
-        "Хэмжигдэхүүн", "Магадлал, статистик"
-    ]
-
+    # Шаардлагатай session_state-уудыг үүсгэх
     if 'quiz_active' not in st.session_state: st.session_state.quiz_active = False
+    if 'quiz_finished' not in st.session_state: st.session_state.quiz_finished = False
 
-    # --- ЖАГСААЛТ ХАРАГДАХ (Цэгцтэй хүснэгт) ---
-    if not st.session_state.quiz_active:
-        # Хүснэгтийн толгой
+    # --- 1-Р ШАТ: ЖАГСААЛТ ХАРАГДАХ ХЭСЭГ ---
+    if not st.session_state.quiz_active and not st.session_state.quiz_finished:
+        st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📝 Онлайн сорил, шалгалт</h3>", unsafe_allow_html=True)
         st.markdown("""
-            <div style='background-color: #343a40; color: white; padding: 8px; border-radius: 5px; display: flex; font-size: 14px;'>
-                <div style='width: 5%;'>#</div>
-                <div style='width: 50%;'>Сорилын нэр (IX анги)</div>
-                <div style='width: 45%; text-align: center;'>Хувилбарууд</div>
+            <div style='background-color: #343a40; color: white; padding: 10px; border-radius: 5px; display: flex; font-weight: bold;'>
+                <div style='width: 5%;'>#</div><div style='width: 65%;'>Сорилын нэр (IX анги)</div><div style='width: 30%; text-align: center;'>Хувилбарууд</div>
             </div>
         """, unsafe_allow_html=True)
 
-        for i, name in enumerate(units):
-            col_name, col_vars = st.columns([0.55, 0.45])
-            
-            with col_name:
-                st.write(f"**{i+1}.** {name}")
-            
-            with col_vars:
-                # 4 хувилбарыг маш жижиг товчлуур болгож зэрэгцүүлэх
-                v1, v2, v3, v4 = st.columns(4)
-                if v1.button("A", key=f"vA_{i}"):
-                    st.session_state.unit_name = name; st.session_state.variant = "A"; st.session_state.quiz_active = True; st.rerun()
-                if v2.button("B", key=f"vB_{i}"):
-                    st.session_state.unit_name = name; st.session_state.variant = "B"; st.session_state.quiz_active = True; st.rerun()
-                if v3.button("C", key=f"vC_{i}"):
-                    st.session_state.unit_name = name; st.session_state.variant = "C"; st.session_state.quiz_active = True; st.rerun()
-                if v4.button("D", key=f"vD_{i}"):
-                    st.session_state.unit_name = name; st.session_state.variant = "D"; st.session_state.quiz_active = True; st.rerun()
-            st.markdown("<hr style='margin: 0; opacity: 0.2;'>", unsafe_allow_html=True)
+        quiz_units = [
+            "Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох", "Харьцаа, пропорц, процент",
+            "Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш", "Дараалал, функц",
+            "Өнцөг, дүрс, байгуулалт", "Байршил, хөдөлгөөн, хувиргалт",
+            "Хэмжигдэхүүн", "Магадлал, статистик"
+        ]
 
-    # --- СОРИЛЫН ЦОНХ ---
-    else:
-        c_back, c_time = st.columns([5, 1])
-        if c_back.button("⬅️ Буцах"):
+        for i, name in enumerate(quiz_units):
+            col_n, col_v = st.columns([0.7, 0.3])
+            col_n.markdown(f"<div style='padding: 15px 0; border-bottom: 1px solid #eee;'>{i+1}. {name}</div>", unsafe_allow_html=True)
+            with col_v:
+                v_cols = st.columns(4)
+                for j, v in enumerate(["A", "B", "C", "D"]):
+                    if v_cols[j].button(v, key=f"q_{i}_{v}"):
+                        st.session_state.quiz_file = f"quiz_{i+1}_{v}.xlsx"
+                        st.session_state.quiz_active = True
+                        st.session_state.start_time = time.time()
+                        st.rerun()
+
+    # --- 2-Р ШАТ: СОРИЛ БОДОЖ БАЙХ ҮЕ ---
+    elif st.session_state.quiz_active:
+        remaining = max(0, 2400 - int(time.time() - st.session_state.start_time))
+        c_back, c_timer = st.columns([5, 1])
+        if c_back.button("⬅️ Жагсаалт руу буцах"):
             st.session_state.quiz_active = False; st.rerun()
-        c_time.error(f"⏳ 40:00")
+        
+        mins, secs = divmod(remaining, 60)
+        c_timer.error(f"⏳ {mins:02d}:{secs:02d}")
 
-        st.info(f"📍 {st.session_state.unit_name} | Хувилбар {st.session_state.variant}")
-
-        if os.path.exists("data_bank.xlsx"):
-            df = pd.read_excel("data_bank.xlsx")
-            unit_num = units.index(st.session_state.unit_name) + 1
-            
-            # Шүүлтүүр: Нэгж ба Хувилбар
-            if 'Хувилбар' in df.columns:
-                q_df = df[(df['Нэгж'].astype(str).str.contains(str(unit_num))) & (df['Хувилбар'] == st.session_state.variant)]
-            else:
-                q_df = df[df['Нэгж'].astype(str).str.contains(str(unit_num))].head(5)
-
-            if q_df.empty:
-                st.warning("Бодлого ороогүй байна.")
-            else:
-                for idx, row in q_df.iterrows():
+        if os.path.exists(st.session_state.quiz_file):
+            df_q = pd.read_excel(st.session_state.quiz_file)
+            with st.form("quiz_form"):
+                user_answers = {}
+                for idx, row in df_q.iterrows():
+                    st.markdown(f"**Бодлого {idx+1}:**")
                     st.markdown(smart_math_render(row['Асуулт']))
-                    st.radio("Хариу:", ["A", "B", "C", "D"], key=f"q_{idx}", horizontal=True)
-                    st.write("---")
+                    user_answers[idx] = st.radio("Сонгох:", ["A", "B", "C", "D"], key=f"ans_{idx}", horizontal=True)
                 
-                if st.button("🏁 Дуусгах", use_container_width=True):
-                    st.success("Дууслаа!"); st.session_state.quiz_active = False; st.rerun()
+                if st.form_submit_button("🏁 Дуусгах"):
+                    st.session_state.results = user_answers
+                    st.session_state.quiz_active = False
+                    st.session_state.quiz_finished = True
+                    st.rerun()
+        
+        if remaining > 0: time.sleep(1); st.rerun()
+
+    # --- 3-Р ШАТ: ОНОО, АЛДАА, БОДОЛТ ХАРАХ ХЭСЭГ ---
+    elif st.session_state.quiz_finished:
+        st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📊 Сорилын дүн</h3>", unsafe_allow_html=True)
+        df_q = pd.read_excel(st.session_state.quiz_file)
+        
+        # Оноо тооцох
+        correct_count = 0
+        for idx, row in df_q.iterrows():
+            if str(st.session_state.results[idx]) == str(row['Хариу']).strip().upper():
+                correct_count += 1
+        
+        score_percent = (correct_count / len(df_q)) * 100
+        
+        # Онооны самбар
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Нийт асуулт", len(df_q))
+        c2.metric("Зөв хариулсан", correct_count)
+        c3.metric("Гүйцэтгэл", f"{score_percent:.1f}%")
+
+        st.divider()
+
+        # Алдаа болон Бодолт хянах
+        st.subheader("📝 Алдаа болон Бодолт хянах")
+        for idx, row in df_q.iterrows():
+            user_ans = st.session_state.results[idx]
+            correct_ans = str(row['Хариу']).strip().upper()
+            
+            with st.expander(f"Бодлого {idx+1}: {'✅ Зөв' if user_ans == correct_ans else '❌ Буруу'}"):
+                st.markdown(smart_math_render(row['Асуулт']))
+                st.write(f"**Таны хариулт:** {user_ans}")
+                st.write(f"**Зөв хариулт:** {correct_ans}")
+                
+                if 'Бодолт' in row and pd.notna(row['Бодолт']):
+                    st.info("**Бодолт:**")
+                    st.markdown(smart_math_render(row['Бодолт']))
+                else:
+                    st.warning("Энэ бодлогод тайлбар оруулаагүй байна.")
+
+        if st.button("Дахин сорил өгөх"):
+            st.session_state.quiz_finished = False
+            st.rerun()
 # 8. КЛУБЫН МЭДЭЭЛЭЛ
 elif st.session_state.selected_menu == "Клубын мэдээлэл":
     st.markdown("<h1 style='color: #0b4ab1;'>👥 Математикийн клуб</h1>", unsafe_allow_html=True)
