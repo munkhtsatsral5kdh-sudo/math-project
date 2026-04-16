@@ -209,28 +209,17 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
             for unit_name in ["Нэгж 1"]:
                 with st.expander(f"🔹 {unit_name}", expanded=True):
                     unit_df = df[df['Нэгж'] == unit_name]
-                    
-            for i, row in unit_df.iterrows():
-                        # 1. Бодлогын дугаар
+                    for i, row in unit_df.iterrows():
                         st.markdown(f"#### 🔹 Бодлого {i+1}:")
+                        # Excel-ийн нэг мөр текстийг автоматаар салгаж харуулах (Цаг хэмнэнэ)
+                        q_text = str(row['Асуулт']).replace("A.", "\n\nA.").replace("B.", "\n\nB.").replace("C.", "\n\nC.").replace("D.", "\n\nD.")
+                        st.markdown(q_text)
                         
-                        # 2. Текстийг автоматаар шинэ мөрөнд шилжүүлэх (A, B, C, D-г доош нь цувуулна)
-                        # Excel-ээс ирсэн текстийг Python өөрөө засаж харуулна
-                        raw_text = str(row['Асуулт'])
-                        formatted_text = raw_text.replace("A.", "<br>A.").replace("B.", "<br>B.").replace("C.", "<br>C.").replace("D.", "<br>D.")
-                        
-                        # 3. Асуултыг LaTeX-тэй нь хамт харуулах
-                        st.markdown(formatted_text, unsafe_allow_html=True)
-                        
-                        # 4. Мөр хоорондын зай болон фонтыг тохируулах
-                        st.markdown("""<style>.stMarkdown p {font-family: 'Times New Roman', serif; font-size: 19px; line-height: 1.8;}</style>""", unsafe_allow_html=True)
-                        
-                        # 5. Хариу оруулах хэсэг
-                        u_ans = st.text_input(f"Хариу (A, B, C, D):", key=f"q_in_{i}", placeholder="Жишээ нь: A")
-                        
+                        # Хариу оруулах болон шалгах
+                        u_ans = st.text_input(f"Хариу (A, B, C, D):", key=f"q_{i}", placeholder="Жишээ нь: A")
                         c1, c2 = st.columns([1, 4])
                         with c1:
-                            if st.button(f"🔍 Шалгах", key=f"btn_{i}"):
+                            if st.button(f"🔍 Шалгах", key=f"b_{i}"):
                                 if str(u_ans).strip().upper() == str(row['Хариу']).strip().upper():
                                     st.success("Зөв! ✅")
                                 else:
@@ -238,6 +227,12 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                         with c2:
                             if pd.notnull(row['Бодолт']):
                                 with st.expander("💡 Тайлбар харах"):
+                                    st.info(row['Бодолт'])
+                        st.write("---")
+            # Фонт болон зайг тохируулах (Алдаа гаргахгүй байхаар нэг мөрөнд)
+            st.markdown("<style>.stMarkdown p {font-family:'Times New Roman'; font-size:18px; line-height:1.8;}</style>", unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"Алдаа: {e}")
                                     st.info(row['Бодолт'])
                         st.write("---")
                             </style>
