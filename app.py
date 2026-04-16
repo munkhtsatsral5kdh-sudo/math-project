@@ -157,13 +157,12 @@ elif st.session_state.selected_menu == "Сорил":
     else:
             st_autorefresh(interval=1000, key="quizrefresh")
             remaining = (40 * 60) - (time.time() - st.session_state.start_time)
-
-            if remaining <= 0:
+if remaining <= 0:
                 st.error("⏰ Хугацаа дууслаа!")
                 st.session_state.test_started = False
                 if st.button("Буцах"):
                     st.rerun()
-    else:
+            else:
                 mins, secs = divmod(int(remaining), 60)
                 st.sidebar.markdown(f"""
                     <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-top: 20px;">
@@ -179,7 +178,6 @@ elif st.session_state.selected_menu == "Сорил":
                 if st.button("✅ Сорил дуусгах"):
                     st.session_state.test_started = False
                     st.rerun()
-
     # --- ДААЛГАВРЫН САН ---
     elif st.session_state.selected_menu == "Даалгаврын сан":
         import pandas as pd
