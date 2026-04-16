@@ -162,7 +162,7 @@ elif st.session_state.selected_menu == "Сорил":
             st.error("⏰ Хугацаа дууслаа!")
             st.session_state.test_started = False
             if st.button("Буцах"): st.rerun()
-        else:
+    else:
             mins, secs = divmod(int(remaining), 60)
             st.sidebar.markdown(f"""
                 <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-top: 20px;">
@@ -181,7 +181,6 @@ elif st.session_state.selected_menu == "Сорил":
             st.session_state.test_started = False
             st.rerun()
 
-    # --- ДААЛГАВРЫН САН ---
     # --- ДААЛГАВРЫН САН ---
     elif st.session_state.selected_menu == "Даалгаврын сан":
         import pandas as pd
