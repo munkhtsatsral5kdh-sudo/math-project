@@ -78,29 +78,69 @@ elif st.session_state.selected_menu == "Цахим контент":
     st.write("Доорх хичээлүүдийг үзэж мэдлэгээ баталгаажуулаарай.")
     st.video("https://www.youtube.com/watch?v=your_video_id") # Жишээ видео
 
-# 6. ДААЛГАВРЫН САН
+# 5. ДААЛГАВРЫН САН (24 ФАЙЛТАЙ ХҮСНЭГТЭН ЗАГВАР)
 elif st.session_state.selected_menu == "Даалгаврын сан":
-    st.markdown("<h1 style='color: #0b4ab1; text-align: center;'>📚 Бодлогын сан</h1>", unsafe_allow_html=True)
-    if os.path.exists("data_bank.xlsx"):
-        df = pd.read_excel("data_bank.xlsx")
-        sc1, sc2 = st.columns(2)
-        with sc1: unit = st.selectbox("Сэдэв сонгох:", df['Нэгж'].unique())
-        with sc2: level = st.radio("Түвшин:", ["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"], horizontal=True)
-        f_df = df[(df['Нэгж'] == unit) & (df['Түвшин'] == level)]
-        if f_df.empty: st.info("Энэ хэсэгт бодлого хараахан ороогүй байна.")
-        else:
-            for i, row in f_df.iterrows():
-                with st.form(key=f"form_{i}"):
-                    st.markdown('<div class="math-card">', unsafe_allow_html=True)
-                    st.markdown(f"### 📝 Бодлого {i+1}"); st.markdown(smart_math_render(row['Асуулт']))
-                    ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], key=f"ans_{i}", horizontal=True)
-                    if st.form_submit_button("Шалгах"):
-                        correct = str(row['Хариу']).strip().upper()
-                        if ans == correct: st.success("Зөв! ✅"); st.balloons()
-                        else: st.error(f"Буруу байна. Зөв хариу: {correct}")
-                    st.markdown('</div>', unsafe_allow_html=True)
-    else: st.warning("data_bank.xlsx файл олдсонгүй.")
+    st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📚 Бодлогын сан</h3>", unsafe_allow_html=True)
+    
+    # Таны илгээсэн яг тэр нэрс
+    units = [
+        "Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
+        "Харьцаа, пропорц, процент",
+        "Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
+        "Дараалал, функц",
+        "Өнцөг, дүрс, байгуулалт",
+        "Байршил, хөдөлгөөн, хувиргалт",
+        "Хэмжигдэхүүн",
+        "Магадлал, статистик"
+    ]
+    
+    # Сэдэв болон Түвшин сонгох (Зураг дээрх шиг)
+    col_u, col_l = st.columns([0.6, 0.4])
+    with col_u:
+        u_choice = st.selectbox("Сэдэв сонгох:", units)
+    with col_l:
+        l_choice = st.radio("Түвшин:", ["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"], horizontal=True)
 
+    # Файлын нэр үүсгэх (Нэгж_Түвшин.xlsx)
+    u_idx = units.index(u_choice) + 1
+    levels = {"Мэдлэг ойлголт": 1, "Чадвар": 2, "Хэрэглээ": 3}
+    l_idx = levels[l_choice]
+    f_path = f"task_{u_idx}_{l_idx}.xlsx"
+
+    st.divider()
+
+    # Excel файлыг уншиж бодлогуудыг харуулах
+    if os.path.exists(f_path):
+        try:
+            df_tasks = pd.read_excel(f_path)
+            st.success(f"📍 {u_choice} - {l_choice} түвшний {len(df_tasks)} бодлого олдлоо.")
+            
+            for idx, row in df_tasks.iterrows():
+                # Бодлого бүрийг цэвэрхэн хайрцагт харуулах
+                with st.container():
+                    st.markdown(f"#### 📝 Бодлого {idx+1}")
+                    st.markdown(smart_math_render(row['Асуулт']))
+                    
+                    # Хариулт сонгох хэсэг
+                    user_ans = st.radio(f"Хариу сонгох ({idx+1}):", ["A", "B", "C", "D"], 
+                                       key=f"task_ans_{u_idx}_{l_idx}_{idx}", 
+                                       horizontal=True, label_visibility="collapsed")
+                    
+                    # Шалгах товчлуур
+                    if st.button(f"Шалгах {idx+1}", key=f"check_{idx}"):
+                        correct_ans = str(row['Хариу']).strip().upper()
+                        if user_ans == correct_ans:
+                            st.success(f"✅ Зөв! (Хариу: {correct_ans})")
+                        else:
+                            st.error(f"❌ Буруу. Зөв хариу: {correct_ans}")
+                            if 'Бодолт' in row and pd.notna(row['Бодолт']):
+                                with st.expander("Бодолт харах"):
+                                    st.markdown(smart_math_render(row['Бодолт']))
+                st.write("---")
+        except Exception as e:
+            st.error(f"Файл уншихад алдаа гарлаа: {e}")
+    else:
+        st.warning(f"⚠️ '{f_path}' файл олдсонгүй. Файлаа системд байршуулна уу.")
 # 7. СОРИЛ (Оноо, Алдаа, Бодолттой хувилбар)
 elif st.session_state.selected_menu == "Сорил":
     # Шаардлагатай session_state-уудыг үүсгэх
