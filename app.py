@@ -118,17 +118,50 @@ elif st.session_state.selected_menu == "Сорил":
                     with c2: st.button("🔵 Дүн харах", key=f"res_{i}")
                     with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
                     with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
+   # --- СОРИЛ ХЭСЭГ ---
+elif st.session_state.selected_menu == "Сорил":
+    st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
+    
+    if not st.session_state.test_started:
+        units = [
+            "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
+            "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
+            "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
+            "Үнэлгээний нэгж 4. Дараалал, функц",
+            "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
+            "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
+            "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
+            "Үнэлгээний нэгж 8. Магадлал, статистик"
+        ]
+
+        for i, unit_name in enumerate(units, 1):
+            with st.expander(f"🔹 {unit_name}"):
+                cols = st.columns(4)
+                for j, var in enumerate(['A', 'B', 'C', 'D']):
+                    if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
+                        st.session_state.active_unit = f"{unit_name} - {var} хувилбар"
+                        st.session_state.show_options = True
+                
+                if st.session_state.get('show_options') and unit_name in st.session_state.get('active_unit', ''):
+                    st.write("---")
+                    c1, c2, c3, c4 = st.columns(4)
+                    with c1:
+                        if st.button("🟢 Сорил эхлэх", key=f"start_{i}"):
+                            st.session_state.test_started = True
+                            st.session_state.start_time = time.time()
+                            st.rerun()
+                    with c2: st.button("🔵 Дүн харах", key=f"res_{i}")
+                    with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
+                    with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
     
     else:
-        # Сорил эхэлсэн үе
         st_autorefresh(interval=1000, key="quizrefresh")
         remaining = (40 * 60) - (time.time() - st.session_state.start_time)
         
         if remaining <= 0:
             st.error("⏰ Хугацаа дууслаа!")
             st.session_state.test_started = False
-            if st.button("Буцах"):
-                st.rerun()
+            if st.button("Буцах"): st.rerun()
         else:
             mins, secs = divmod(int(remaining), 60)
             st.sidebar.markdown(f"""
@@ -146,57 +179,28 @@ elif st.session_state.selected_menu == "Сорил":
             
             if st.button("✅ Сорил дуусгах"):
                 st.session_state.test_started = False
-                st.success("Сорил дууслаа!")
                 st.rerun()
 
-# --- БУСАД ЦЭСҮҮД ---
+# --- ДААЛГАВРЫН САН ---
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
-    elif st.session_state.selected_menu == "Даалгаврын сан":
-    st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
-    
-    # 1. Үнэлгээний нэгжүүд (Сорил хэсэгтэй адил жагсаалт)
-    units = [
-        "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
-        "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
-        "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
-        "Үнэлгээний нэгж 4. Дараалал, функц",
-        "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
-        "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
-        "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
-        "Үнэлгээний нэгж 8. Магадлал, статистик"
-    ]
-
-    # Нэгж бүрийг Expander дотор харуулах
+    units = ["Нэгж 1", "Нэгж 2", "Нэгж 3", "Нэгж 4", "Нэгж 5", "Нэгж 6", "Нэгж 7", "Нэгж 8"]
     for unit in units:
         with st.expander(f"🔹 {unit}"):
-            # 2. Мэдлэг, Чадвар, Хэрэглээ гэсэн 3 таб үүсгэх
             tab1, tab2, tab3 = st.tabs(["🧠 Мэдлэг ойлголт", "🛠️ Чадвар", "🚀 Хэрэглээ"])
-            
-            with tab1:
-                st.write("### Мэдлэг ойлголтын бодлогууд")
-                # Энд 50 бодлогоо жагсааж бичих эсвэл зураг оруулж болно
-                st.info("Энд 'Мэдлэг ойлголт' чиглэлийн 50 бодлого байршина.")
-                # Жишээ:
-                # for i in range(1, 51):
-                #     st.write(f"{i}. Бодлогын текст энд байна...")
+            with tab1: st.info(f"{unit}-ийн Мэдлэг ойлголтын 50 бодлого энд байршина.")
+            with tab2: st.info(f"{unit}-ийн Чадварын 50 бодлого энд байршина.")
+            with tab3: st.info(f"{unit}-ийн Хэрэглээний 50 бодлого энд байршина.")
 
-            with tab2:
-                st.write("### Чадварын бодлогууд")
-                st.info("Энд 'Чадвар' чиглэлийн 50 бодлого байршина.")
-
-            with tab3:
-                st.write("### Хэрэглээний бодлогууд")
-                st.info("Энд 'Хэрэглээ' чиглэлийн 50 бодлого байршина.")
-
+# --- БУСАД ЦЭСҮҮД ---
 elif st.session_state.selected_menu == "Цахим контент":
     st.markdown('<p class="main-header">📺 Цахим контент</p>', unsafe_allow_html=True)
     st.info("Видео хичээлүүд бэлтгэгдэж байна.")
 
 elif st.session_state.selected_menu == "Клубын мэдээлэл":
     st.markdown('<p class="main-header">👥 Клубын мэдээлэл</p>', unsafe_allow_html=True)
-    st.info("Математикийн клубын мэдээлэл энд харагдана.")
+    st.info("Математикийн клубын мэдээлэл.")
 
 elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил МХБ":
     st.markdown('<p class="main-header">❤️ Хүмүүжил төлөвшил</p>', unsafe_allow_html=True)
-    st.info("Хүүхдийн хүмүүжил төлөвшлийн зөвлөгөө, мэдээлэл.")
+    st.info("Зөвлөгөө мэдээлэл.")
