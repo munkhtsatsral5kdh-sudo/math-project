@@ -4,11 +4,13 @@ import os
 import base64
 import time
 from streamlit_autorefresh import st_autorefresh
-# 1. Сонгогдсон цэсийг санах ойд хадгалах (Энэ нь гацалтыг засна)
+
+# 1. Сонгогдсон цэсийг санах ойд хадгалах
 if 'selected_menu' not in st.session_state:
     st.session_state.selected_menu = "Нүүр хуудас"
 if 'test_started' not in st.session_state:
     st.session_state.test_started = False
+
 # 2. Вэбсайтын ерөнхий тохиргоо
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
@@ -26,14 +28,10 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 4. SIDEBAR (Цэс) - Энд manual_select ашиглаж гацалтыг шийдэв
+# 4. SIDEBAR (Цэс)
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
-    
-    # Цэсний жагсаалт
     options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшил МХБ"]
-    
-    # Сонгогдсон индексийг олох
     current_index = options.index(st.session_state.selected_menu)
     
     selected = option_menu(
@@ -41,14 +39,13 @@ with st.sidebar:
         options=options,
         icons=['house', 'play-btn', 'book', 'pencil-square', 'people', 'heart'],
         default_index=current_index,
-        key='menu_widget', # Түлхүүр үг өгснөөр гацалт арилна
+        key='menu_widget',
         styles={
             "container": {"background-color": "#004aad"},
             "nav-link": {"color": "white", "font-weight": "bold"},
             "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
         }
     )
-    # Цэс дээр дарж шилжих үед төлөвийг шинэчлэх
     st.session_state.selected_menu = selected
 
 # 5. ХУУДАСНУУДЫН УДИРДЛАГА
@@ -56,7 +53,6 @@ with st.sidebar:
 if st.session_state.selected_menu == "Нүүр хуудас":
     col1, col2 = st.columns([1, 1.5], gap="large")
     with col1:
-        # ЛОГО ОРУУЛАХ ХЭСЭГ
         if os.path.exists("logo.gif"):
             with open("logo.gif", "rb") as f:
                 data = f.read()
@@ -70,8 +66,6 @@ if st.session_state.selected_menu == "Нүүр хуудас":
         st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
 
     st.write("---")
-    
-    # Картууд
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown('<div class="custom-card"><div class="card-icon">📺</div><div class="card-title">Цахим контент</div></div>', unsafe_allow_html=True)
@@ -86,14 +80,11 @@ if st.session_state.selected_menu == "Нүүр хуудас":
     with c3:
         st.markdown('<div class="custom-card"><div class="card-icon">📝</div><div class="card-title">Сорил</div></div>', unsafe_allow_html=True)
         if st.button("Эхлэх", key="go_quiz"):
-            st.session_state.selected_menu = "Сорил" # "Сорил" цэс рүү үсэрнэ
-            st.rerun() # Хуудсыг дахин ачаалж шилжүүлнэ
+            st.session_state.selected_menu = "Сорил"
+            st.rerun()
 
 # --- СОРИЛ ХЭСЭГ ---
 elif st.session_state.selected_menu == "Сорил":
-    if 'test_started' not in st.session_state:
-        st.session_state.test_started = False
-
     st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
     
     if not st.session_state.test_started:
@@ -116,13 +107,11 @@ elif st.session_state.selected_menu == "Сорил":
                         st.session_state.active_unit = f"{unit_name} - {var} хувилбар"
                         st.session_state.show_options = True
                 
-                # Сонгогдсон үед iMath шиг товчлуурууд гарч ирнэ
                 if st.session_state.get('show_options') and unit_name in st.session_state.get('active_unit', ''):
                     st.write("---")
                     c1, c2, c3, c4 = st.columns(4)
                     with c1:
                         if st.button("🟢 Сорил эхлэх", key=f"start_{i}"):
-                            import time
                             st.session_state.test_started = True
                             st.session_state.start_time = time.time()
                             st.rerun()
@@ -130,40 +119,37 @@ elif st.session_state.selected_menu == "Сорил":
                     with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
                     with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
     
-else:
-            # Сорил эхэлсэн үе (Зөвхөн Сорил цэс дотор ажиллана)
-            from streamlit_autorefresh import st_autorefresh
-            st_autorefresh(interval=1000, key="quizrefresh")
-
-            remaining = (40 * 60) - (time.time() - st.session_state.start_time)
+    else:
+        # Сорил эхэлсэн үе
+        st_autorefresh(interval=1000, key="quizrefresh")
+        remaining = (40 * 60) - (time.time() - st.session_state.start_time)
+        
+        if remaining <= 0:
+            st.error("⏰ Хугацаа дууслаа!")
+            st.session_state.test_started = False
+            if st.button("Буцах"):
+                st.rerun()
+        else:
+            mins, secs = divmod(int(remaining), 60)
+            st.sidebar.markdown(f"""
+                <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-top: 20px;">
+                    <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
+                    <p style="color: white; margin: 0;">Үлдсэн хугацаа</p>
+                </div>
+            """, unsafe_allow_html=True)
             
-            if remaining <= 0:
-                st.error("⏰ Хугацаа дууслаа!")
+            st.subheader(st.session_state.active_unit)
+            st.write("---")
+            st.write("### Асуулт 1")
+            st.radio("Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
+                     ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
+            
+            if st.button("✅ Сорил дуусгах"):
                 st.session_state.test_started = False
-                if st.button("Буцах"):
-                    st.rerun()
-            else:
-                mins, secs = divmod(int(remaining), 60)
-                st.sidebar.markdown(f"""
-                    <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-top: 20px;">
-                        <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
-                        <p style="color: white; margin: 0;">Үлдсэн хугацаа</p>
-                    </div>
-                """, unsafe_allow_html=True)
-                
-                st.subheader(st.session_state.active_unit)
-                st.write("---")
-                st.write("### Асуулт 1")
-                st.radio("Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
-                         ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
-                
-                if st.button("✅ Сорил дуусгах"):
-                    st.session_state.test_started = False
-                    st.success("Сорил дууслаа!")
-                    st.rerun()
+                st.success("Сорил дууслаа!")
+                st.rerun()
 
-# --- БУСАД ЦЭСҮҮД (ЭНЭ МӨРҮҮД ХАМГИЙН ЗҮҮН ТАЛААС ЭХЛЭХ ЁСТОЙ) ---
-
+# --- БУСАД ЦЭСҮҮД ---
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
     st.info("Удахгүй энэ хэсэгт даалгаврууд нэмэгдэнэ.")
@@ -178,4 +164,4 @@ elif st.session_state.selected_menu == "Клубын мэдээлэл":
 
 elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил МХБ":
     st.markdown('<p class="main-header">❤️ Хүмүүжил төлөвшил</p>', unsafe_allow_html=True)
-    st.info("Хүүхдийн хүмүүжил төлөвшлийн зөвлөгөө, мэдээлэл.")0
+    st.info("Хүүхдийн хүмүүжил төлөвшлийн зөвлөгөө, мэдээлэл.")
