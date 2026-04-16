@@ -147,7 +147,7 @@ else:
                 
                 # Хажуугийн цэсэнд хугацаа харуулах
                 st.sidebar.markdown(f"""
-                    <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center;">
+                    <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-top: 20px;">
                         <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
                         <p style="color: white; margin: 0;">Үлдсэн хугацаа</p>
                     </div>
@@ -166,5 +166,14 @@ else:
                     st.success("Сорил дууслаа!")
                     st.rerun()
 
-# --- ЭНЭ МӨРӨНД ЗАЙ БАЙХГҮЙ, ХАМГИЙН УРД ТАЛААС ЭХЛЭХ ЁСТОЙ ---
+# --- Энэ хэсэг нь бусад цэсүүдийг зөв харуулна ---
+elif st.session_state.selected_menu == "Даалгаврын сан":
+    st.header("📚 Даалгаврын сан")
+    st.write("Энэ хэсэгт удахгүй даалгаврууд нэмэгдэнэ.")
 
+elif st.session_state.selected_menu == "Цахим контент":
+    st.header("📺 Цахим контент")
+    st.write("Видео хичээлүүд бэлтгэгдэж байна.")
+
+elif st.session_state.selected_menu not in ["Нүүр хуудас", "Сорил"]:
+    st.write(f"### {st.session_state.selected_menu} хуудас бэлтгэгдэж байна.")
