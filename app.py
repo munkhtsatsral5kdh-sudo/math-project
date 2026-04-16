@@ -36,7 +36,7 @@ st.markdown("""
     
     /* "ЦЭС" гарчиг */
     .sidebar-title { 
-        color: white; text-align: center; font-size: 45px; font-weight: bold; 
+        color: white; text-align: center; font-size: 70px; font-weight: bold; 
         padding: 20px 0; margin-bottom: 0px;
     }
 
