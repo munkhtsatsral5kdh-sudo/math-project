@@ -154,15 +154,15 @@ else:
                 st.subheader(st.session_state.active_unit)
                 st.write("---")
                 st.write("### Асуулт 1")
-                q1 = st.radio("Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
-                              ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
+                st.radio("Тэгш өнцөгт ABC гурвалжны ∠C=90° бол sinA харьцааг нэрлэнэ үү?", 
+                         ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
                 
                 if st.button("✅ Сорил дуусгах"):
                     st.session_state.test_started = False
                     st.success("Сорил дууслаа!")
                     st.rerun()
 
-# --- БУСАД ЦЭСҮҮД (Энэ мөрүүд нь хамгийн зүүн гар талаас эхлэх ёстой) ---
+# --- БУСАД ЦЭСҮҮД (ЭНЭ МӨРҮҮД ХАМГИЙН ЗҮҮН ТАЛААС ЭХЛЭХ ЁСТОЙ) ---
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
     st.info("Удахгүй энэ хэсэгт даалгаврууд нэмэгдэнэ.")
@@ -177,4 +177,4 @@ elif st.session_state.selected_menu == "Клубын мэдээлэл":
 
 elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил МХБ":
     st.markdown('<p class="main-header">❤️ Хүмүүжил төлөвшил</p>', unsafe_allow_html=True)
-    st.info("Хүүхдийн хүмүүжил төлөвшлийн зөвлөгөө, мэдээлэл.")
+    st.info("Хүүхдийн хүмүүжил төлөвшлийн зөвлөгөө, мэдээлэл.")0
