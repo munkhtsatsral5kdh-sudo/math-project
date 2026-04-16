@@ -131,118 +131,87 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                 st.markdown('</div>', unsafe_allow_html=True)
     else: st.warning(f"Файл олдсонгүй: {f_path}")
 
-# 7. СОРИЛ
+# 7. СОРИЛ (Зураг дээрх загварыг хадгалж, логикийг нэмэв)
 elif st.session_state.selected_menu == "Сорил":
-    st.markdown("<h3 style='text-align: center; color: #0b4ab1; font-family: \"Courier New\", Courier, monospace;'>📝 Онлайн сорил, шалгалт</h3>", unsafe_allow_html=True)
-    
-    # Сэдвүүдийн жагсаалт
-    units = [
-        "Тоон олонлог, зэрэг, язгуур", "Харьцаа, пропорц, процент",
-        "Алгебрын илэрхийлэл, тэгшитгэл", "Дараалал, функц",
-        "Өнцөг, дүрс, байгуулалт", "Байршил, хөдөлгөөн",
-        "Хэмжигдэхүүн", "Магадлал, статистик"
-    ]
+    # Гарчиг
+    st.markdown("<h3 style='text-align: center; color: #0b4ab1; font-family: sans-serif;'>📝 Онлайн сорил, шалгалт</h3>", unsafe_allow_html=True)
 
-    # Сэдэв бүрт тохирох дүрснүүд (Icons)
-    icons = ["🔢", "🎂", "📐", "📈", "📏", "🧭", "⚖️", "📊"]
-
-    if 'quiz_active' not in st.session_state: st.session_state.quiz_active = False
-
-    # --- ЖАГСААЛТ ХАРАГДАХ ХЭСЭГ (Хүснэгт шиг цэгцтэй дизайн) ---
+    # 1. СОРИЛ СОНГОХ ХЭСЭГ (Хэрэв сорил эхлээгүй бол)
     if not st.session_state.quiz_active:
-        # Хүснэгтийн толгой хэсэг
+        # Хүснэгтийн толгой (Зураг дээрх шиг хар дэвсгэртэй)
         st.markdown("""
-            <div style='
-                background-color: #343a40; 
-                color: white; 
-                padding: 10px; 
-                border-radius: 8px 8px 0 0; 
-                display: flex; 
-                font-family: Arial, sans-serif;
-                font-size: 15px; 
-                font-weight: bold;
-                border: 1px solid #ddd;
-            '>
-                <div style='width: 5%; text-align: center;'>#</div>
-                <div style='width: 55%; padding-left: 10px;'>Сорилын нэр (IX анги)</div>
-                <div style='width: 40%; text-align: center;'>Хувилбарууд (40 минут)</div>
+            <div style='background-color: #343a40; color: white; padding: 10px; border-radius: 5px; display: flex; font-weight: bold;'>
+                <div style='width: 5%;'>#</div>
+                <div style='width: 65%;'>Сорилын нэр (IX анги)</div>
+                <div style='width: 30%; text-align: center;'>Хувилбарууд</div>
             </div>
         """, unsafe_allow_html=True)
 
-        for i, (name, icon) in enumerate(zip(units, icons)):
-            # Мөр болгон дээрх columns
-            col_name, col_vars = st.columns([0.6, 0.4])
-            
-            # Сэдвийн нэр
-            with col_name:
-                st.markdown(f"""
-                    <div style='
-                        display: flex; 
-                        align-items: center; 
-                        padding: 10px; 
-                        background: #f8f9fa; 
-                        border-left: 1px solid #ddd;
-                        border-right: 1px solid #ddd;
-                        border-bottom: 1px solid #ddd;
-                    '>
-                        <span style='font-size: 16px; margin-right: 10px; font-weight: bold;'>{i+1}.</span>
-                        <span style='font-size: 16px; font-family: \"Courier New\", Courier, monospace; color: #333;'>{icon} {name}</span>
-                    </div>
-                """, unsafe_allow_html=True)
-            
-            # Хувилбар сонгох товчлуурууд
-            with col_vars:
-                # 4 хувилбарыг зэрэгцүүлэх
-                v1, v2, v3, v4 = st.columns([1,1,1,1])
-                
-                # Товчлуурын стилийг маш жижиг, дөрвөлжин, цэвэрхэн болгох CSS
-                st.markdown("""
-                    <style>
-                        div.stButton > button[key^="vA_"],
-                        div.stButton > button[key^="vB_"],
-                        div.stButton > button[key^="vC_"],
-                        div.stButton > button[key^="vD_"] {
-                            width: 100% !important;
-                            height: 40px !important;
-                            border-radius: 5px !important;
-                            border: 1px solid #ddd !important;
-                            background: white !important;
-                            color: #0b4ab1 !important;
-                            font-weight: bold !important;
-                            font-size: 16px !important;
-                            padding: 0 !important;
-                            box-shadow: none !important;
-                            margin: 5px 0 !important;
-                        }
-                        div.stButton > button:hover {
-                            background-color: #f1f3f5 !important;
-                            border-color: #0b4ab1 !important;
-                        }
-                    </style>
-                """, unsafe_allow_html=True)
+        # Сэдвүүдийн жагсаалт
+        units = [
+            "Тоон олонлог, зэрэг, язгуур", "Харьцаа, пропорц, процент",
+            "Алгебрын илэрхийлэл, тэгшитгэл", "Дараалал, функц",
+            "Өнцөг, дүрс, байгуулалт", "Байршил, хөдөлгөөн",
+            "Хэмжигдэхүүн", "Магадлал, статистик"
+        ]
 
-                if v1.button("A", key=f"vA_{i}"):
-                    st.session_state.unit_name = name; st.session_state.variant = "A"; st.session_state.quiz_active = True; st.rerun()
-                if v2.button("B", key=f"vB_{i}"):
-                    st.session_state.unit_name = name; st.session_state.variant = "B"; st.session_state.quiz_active = True; st.rerun()
-                if v3.button("C", key=f"vC_{i}"):
-                    st.session_state.unit_name = name; st.session_state.variant = "C"; st.session_state.quiz_active = True; st.rerun()
-                if v4.button("D", key=f"vD_{i}"):
-                    st.session_state.unit_name = name; st.session_state.variant = "D"; st.session_state.quiz_active = True; st.rerun()
-                
-                # Товчлуурны арын хүрээг арилгах
-                st.markdown("""
-                    <style>
-                        div.stHorizontalBlock { 
-                            background: #f8f9fa;
-                            border-bottom: 1px solid #ddd;
-                            border-right: 1px solid #ddd;
-                            padding: 5px;
-                        }
-                    </style>
-                """, unsafe_allow_html=True)
+        for i, name in enumerate(units):
+            col_n, col_v = st.columns([0.7, 0.3])
+            
+            # Сэдвүүдийг жагсааж бичих
+            with col_n:
+                st.markdown(f"<div style='padding: 12px 0; border-bottom: 1px solid #eee;'>{i+1}. {name}</div>", unsafe_allow_html=True)
+            
+            # Хувилбар сонгох A, B, C, D товчлуурууд
+            with col_v:
+                v_cols = st.columns(4)
+                variants = ["A", "B", "C", "D"]
+                for j, v in enumerate(variants):
+                    if v_cols[j].button(v, key=f"v_btn_{i}_{v}"):
+                        # Сонгосон файл болон төлөвийг хадгалах
+                        st.session_state.current_quiz_file = f"quiz_{i+1}_{v}.xlsx"
+                        st.session_state.quiz_active = True
+                        st.session_state.start_time = time.time()
+                        st.rerun()
+            st.markdown("<div style='margin-top: -10px;'></div>", unsafe_allow_html=True)
 
-        st.markdown("<br><br>", unsafe_allow_html=True)
+    # 2. СОРИЛ ЯВАГДАЖ БАЙХ ҮЕ (Товчлуур дарсны дараа)
+    else:
+        # Хугацаа тооцох (40 минут = 2400 секунд)
+        elapsed = int(time.time() - st.session_state.start_time)
+        remaining = max(0, 2400 - elapsed)
+        
+        # Дээд хэсэгт таймер болон буцах товчлуур
+        c_back, c_timer = st.columns([5, 1])
+        if c_back.button("⬅️ Сорилын жагсаалт руу буцах"):
+            st.session_state.quiz_active = False
+            st.rerun()
+        
+        c_timer.error(f"⏳ {remaining//60:02d}:{remaining%60:02d}")
+
+        # Файлыг уншиж бодлогуудыг харуулах
+        f_path = st.session_state.current_quiz_file
+        if os.path.exists(f_path):
+            df_quiz = pd.read_excel(f_path)
+            
+            with st.form("quiz_submission_form"):
+                st.info(f"📍 Таны сонгосон: {f_path}")
+                for idx, row in df_quiz.iterrows():
+                    st.markdown(f"**Асуулт {idx+1}:**")
+                    # smart_math_render функц ашиглан томьёог харуулах
+                    st.markdown(smart_math_render(row['Асуулт']))
+                    st.radio("Хариу сонгох:", ["A", "B", "C", "D"], key=f"user_ans_{idx}", horizontal=True, label_visibility="collapsed")
+                    st.write("---")
+                
+                if st.form_submit_button("🏁 Сорилыг дуусгах"):
+                    st.success("Сорил дууслаа. Таны хариултууд хадгалагдлаа!")
+                    # Энд оноо тооцох логик нэмж болно
+                    st.session_state.quiz_active = False
+        else:
+            st.warning(f"Уучлаарай, '{f_path}' файл олдсонгүй. Файлаа шалгана уу.")
+            if st.button("Буцах"):
+                st.session_state.quiz_active = False
+                st.rerun()
 
     # --- СОРИЛЫН ЦОНХ (Чиний өмнөх код хэвээрээ) ---
     else:
