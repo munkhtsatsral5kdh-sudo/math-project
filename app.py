@@ -103,7 +103,7 @@ with st.sidebar:
             "container": {"background-color": "#0b4ab1", "padding": "0"},
             "icon": {"color": "white", "font-size": "14px"}, 
             "nav-link": {
-                "font-size": "12px",  /* Үгнүүдийг дахиад жижигсгэв */
+                "font-size": "16px",  /* Үгнүүдийг дахиад жижигсгэв */
                 "color": "white", 
                 "margin": "0px", 
                 "padding": "8px 10px",
