@@ -26,39 +26,29 @@ def smart_math_render(text):
     return text
 
 # 2. ДИЗАЙН (CSS)
-st.markdown("""
-    <style>
-    .stApp { background-color: #f0f2f6; }
-    [data-testid="stSidebar"] { background-color: #004aad !important; }
-    .sidebar-title { color: white; text-align: center; font-size: 32px; font-weight: bold; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.2); }
-    
-    .goal-box {
-        background: white; padding: 40px; border-radius: 20px;
-        border-left: 10px solid #004aad; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    }
-    .main-header { color: #004aad; font-size: 45px; font-weight: 800; margin-bottom: 20px; }
-    
-    /* Товчлуурын загвар */
-    div.stButton > button {
-        width: 100%; border-radius: 20px; border: none; background: white;
-        padding: 40px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        transition: all 0.3s ease; height: 200px; color: #004aad; font-weight: bold;
-        white-space: pre-line; /* Шинэ мөр авах боломжтой болгох */
-    }
-    div.stButton > button:hover {
-        transform: translateY(-5px); border: 1px solid #004aad;
-        box-shadow: 0 15px 35px rgba(0,74,173,0.1);
-    }
-    
-    .math-card {
-        background: white; padding: 25px; border-radius: 15px;
-        border: 1px solid #e0e0e0; margin-bottom: 20px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        color: black;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+/* Товчлуурыг илүү цэгцтэй болгох */
+div.stButton > button {
+    width: 100%; 
+    height: 180px; /* Өндрийг бага зэрэг намсгав */
+    border-radius: 15px; 
+    border: 1px solid #e0e0e0; 
+    background: white;
+    padding: 20px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease; 
+    color: #004aad; 
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
+div.stButton > button:hover {
+    transform: translateY(-5px); 
+    border: 1px solid #004aad;
+    box-shadow: 0 8px 25px rgba(0,74,173,0.15);
+}
 # 3. SIDEBAR (Цэс)
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
