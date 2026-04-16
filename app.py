@@ -19,19 +19,16 @@ st.set_page_config(page_title="Математик Багш", page_icon="📐", l
 def smart_math_render(text):
     if not isinstance(text, str): return text
     
-    # 1. Сонголтуудыг (A. B. C. D.) доош нь мөр шилжүүлэх
-    for label in ['A.', 'B.', 'C.', 'D.']:
-        if label in text:
-            text = text.replace(label, f'\n\n**{label}**')
-
-    # 2. LaTeX кодыг таних (\sqrt, \frac гэх мэт)
-    if '\\' in text and '$' not in text:
+    # 1. LaTeX тэмдэглэгээг таних (\frac, \sqrt, ^, \mathbb г.м)
+    # Хэрэв эдгээр тэмдэгтүүд байвал бүхэлд нь LaTeX ($ $) болгоно
+    special_chars = ['\\', '^', '_', '{', '}']
+    if any(char in text for char in special_chars) and '$' not in text:
         text = f"$ {text} $"
     
-    # 3. Энгийн 2/9 гэсэн бичиглэлийг маш хүчтэй танигчаар засах
-    # Энэ код нь тооны ард таслал, цэг байсан ч хамаагүй бутархай болгоно
-    text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
-    
+    # 2. Энгийн 1/3 гэсэн бичиглэлийг LaTeX бутархай болгох
+    if '/' in text and '$' not in text:
+        text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
+        
     return text
 
 # 3. ДИЗАЙН (Таны илгээсэн зургуудын өнгө)
@@ -85,16 +82,30 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                 for i, row in f_df.iterrows():
                     st.markdown('<div class="math-card">', unsafe_allow_html=True)
                     st.write(f"**Бодлого {i+1}**")
-                    # Энд ухаалаг хөрвүүлэгч ажиллаж байна
+                   # 1. Асуултыг ухаалгаар засаж харуулах
                     st.markdown(smart_math_render(row['Асуулт']))
                     
-                    ans = st.radio("Хариу:", ["A", "B", "C", "D"], key=f"ans_{lvl}_{i}", horizontal=True)
+                    # 2. Сонголтуудыг Excel-ээс уншиж, засаж бэлтгэх
+                    opts = [str(row[c]) for c in ['A', 'B', 'C', 'D']]
+                    rendered_opts = [smart_math_render(o) for o in opts]
+                    
+                    # 3. Сонголт хийх товчлуур (A, B, C, D гэж харагдана)
+                    ans_idx = st.radio("Хариу сонгох:", [0, 1, 2, 3], 
+                                     format_func=lambda x: ['A', 'B', 'C', 'D'][x],
+                                     key=f"ans_{lvl}_{i}", horizontal=True)
+                    ans = ['A', 'B', 'C', 'D'][ans_idx]
+                    
+                    # 4. Сонголтуудын утгыг (томьёог) доор нь цэгцтэй харуулах
+                    cols = st.columns(4)
+                    for idx, col in enumerate(cols):
+                        col.markdown(f"**{['A','B','C','D'][idx]}.** {rendered_opts[idx]}")
+
+                    # 5. Шалгах товчлуур
                     if st.button("Шалгах", key=f"chk_{lvl}_{i}"):
                         if str(ans).strip().upper() == str(row['Хариу']).strip().upper():
                             st.success("Зөв! ✅"); st.balloons()
-                        else: st.error(f"Буруу. Зөв: {row['Хариу']}")
-                    st.markdown('</div>', unsafe_allow_html=True)
-
+                        else: 
+                            st.error(f"Буруу. Зөв хариу: {row['Хариу']}")
 # 7. СОРИЛ (Цагтай систем)
 elif st.session_state.selected_menu == "Сорил":
     st.markdown('<h1 style="color:#1a3a5f; text-align:center;">📝 Онлайн сорил</h1>', unsafe_allow_html=True)
