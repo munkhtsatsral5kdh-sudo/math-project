@@ -28,17 +28,18 @@ st.markdown("""
     <style>
     .stApp { background-color: white; }
     
-    /* ХАЖУУГИЙН ЦЭС - Өргөнийг багасгасан (300px -> 260px) */
+    /* ХАЖУУГИЙН ЦЭС - Өргөнийг багасгасан */
     [data-testid="stSidebar"] { 
         background-color: #0b4ab1 !important; 
-        min-width: 260px !important;
-        max-width: 260px !important;
+        min-width: 250px !important;
+        max-width: 250px !important;
     }
     
-    /* Цэсний гарчиг - Хэмжээг багасгасан (45px -> 30px) */
+    /* "ЦЭС" гарчиг - ТОМ болгосон (45px) */
     .sidebar-title { 
-        color: white; text-align: center; font-size: 30px; font-weight: bold; 
-        padding: 20px 0; margin-bottom: 5px;
+        color: white; text-align: center; font-size: 45px; font-weight: bold; 
+        padding: 20px 0; margin-bottom: 0px;
+        letter-spacing: 2px;
     }
 
     /* "Бидний зорилго" хайрцаг */
@@ -49,7 +50,7 @@ st.markdown("""
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
     
-    /* ГАРЧИГ - Мөр хоорондын зайг багасгасан (line-height: 1.1) */
+    /* ГАРЧИГ - Мөр хоорондын зай бага */
     .main-header { 
         color: #0b4ab1; 
         font-size: 45px; 
@@ -58,10 +59,10 @@ st.markdown("""
         line-height: 1.1; 
     }
 
-    /* Төв хэсгийн 3 товчлуур */
+    /* Төв хэсгийн 3 товчлуур - ДӨРВӨЛЖИН болгохын тулд өндрийг багасгав */
     div.stButton > button {
         width: 100% !important; 
-        height: 280px !important; 
+        height: 200px !important;  /* 280-г 200 болгож багасгав */
         border-radius: 25px !important; 
         border: 1px solid #f0f0f0 !important;
         background: #fdfdfd !important;
@@ -70,15 +71,15 @@ st.markdown("""
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 20px !important;
+        padding: 10px !important;
         transition: all 0.3s ease-in-out !important;
     }
 
     div.stButton > button p {
-        font-size: 24px !important; 
+        font-size: 20px !important; /* Текстийг жаахан багасгав */
         font-weight: bold !important;
         color: #0b4ab1 !important;
-        line-height: 1.3 !important;
+        line-height: 1.2 !important;
     }
 
     div.stButton > button:hover {
@@ -108,9 +109,16 @@ with st.sidebar:
         default_index=current_index,
         styles={
             "container": {"background-color": "#0b4ab1", "padding": "0"},
-            "icon": {"color": "white", "font-size": "20px"}, 
-            "nav-link": {"font-size": "16px", "color": "white", "font-family": "Arial", "font-weight": "bold", "margin": "8px"},
-            "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
+            "icon": {"color": "white", "font-size": "18px"}, 
+            "nav-link": {
+                "font-size": "14px",  /* Текстийг жижиг болгосон */
+                "color": "white", 
+                "font-family": "Arial", 
+                "font-weight": "normal", 
+                "margin": "5px", 
+                "text-align": "left"
+            },
+            "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)", "font-weight": "bold"},
         }
     )
     if selected != st.session_state.selected_menu:
@@ -132,7 +140,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
                 <div class="main-header">Математикийн ертөнцөд тавтай морил!</div>
                 <div style="
                     font-size: 19px; 
-                    line-height: 1.5; 
+                    line-height: 1.4; 
                     color: #444; 
                     text-align: justify; 
                     text-indent: 20px;
@@ -141,21 +149,21 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns([1, 1, 1], gap="large")
+    st.markdown("<br>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([1, 1, 1], gap="medium")
     
     with c1:
-        if st.button("📺\n\nЦахим контент\n\nҮзэх", key="btn_1"):
+        if st.button("📺\n\nЦахим контент", key="btn_1"):
             st.session_state.selected_menu = "Цахим контент"
             st.rerun()
             
     with c2:
-        if st.button("📚\n\nДаалгаврын сан\n\nНээх", key="btn_2"):
+        if st.button("📚\n\nДаалгаврын сан", key="btn_2"):
             st.session_state.selected_menu = "Даалгаврын сан"
             st.rerun()
             
     with c3:
-        if st.button("📝\n\nСорил\n\nЭхлэх", key="btn_3"):
+        if st.button("📝\n\nСорил", key="btn_3"):
             st.session_state.selected_menu = "Сорил"
             st.rerun()
 
