@@ -124,7 +124,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
                 <div class="main-header">Математикийн ертөнцөд тавтай морил!</div>
                 <div style="
                     font-size: 24px; 
-                    line-height: 1.8; 
+                    line-height: 1; 
                     color: #444; 
                     text-align: justify;       /* Хоёр тал руу нь тэнцүү шахах */
                     text-justify: inter-word;  /* Үг хоорондын зайг жигдлэх */
