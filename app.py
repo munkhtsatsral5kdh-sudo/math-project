@@ -48,20 +48,19 @@ st.markdown("""
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
     
-    /* ГАРЧИГ - Мөр хоорондын зай бага */
+    /* ГАРЧИГ - Мөр хоорондын зай маш шахуу */
     .main-header { 
         color: #0b4ab1; 
         font-size: 45px; 
         font-weight: 800; 
         margin-bottom: 5px;
-        line-height: 1.0 !important; 
+        line-height: 0.9 !important; 
     }
 
-    /* Төв хэсгийн 3 товчлуур - Өргөнийг 100% болгож түгжив */
+    /* Төв хэсгийн 3 товчлуур - Өргөнийг дүүргэж, өндрийг багасгав */
     div.stButton > button {
         width: 100% !important; 
-        min-width: 100% !important;
-        height: 220px !important; 
+        height: 180px !important; /* Өндрийг багасгаж дөрвөлжин болгов */
         border-radius: 25px !important; 
         border: 1px solid #f0f0f0 !important;
         background: #fdfdfd !important;
@@ -70,7 +69,6 @@ st.markdown("""
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 10px !important;
         transition: all 0.3s ease-in-out !important;
     }
 
@@ -78,11 +76,13 @@ st.markdown("""
         font-size: 22px !important; 
         font-weight: bold !important;
         color: #0b4ab1 !important;
+        margin-top: 10px !important;
     }
 
     div.stButton > button:hover {
-        transform: translateY(-8px) !important;
+        transform: translateY(-5px) !important;
         border: 1px solid #0b4ab1 !important;
+        background: white !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -101,11 +101,13 @@ with st.sidebar:
         default_index=current_index,
         styles={
             "container": {"background-color": "#0b4ab1", "padding": "0"},
-            "icon": {"color": "white", "font-size": "16px"}, 
+            "icon": {"color": "white", "font-size": "14px"}, 
             "nav-link": {
-                "font-size": "13px",  /* Цэсний үгнүүдийг жижиг болгосон */
+                "font-size": "12px",  /* Үгнүүдийг дахиад жижигсгэв */
                 "color": "white", 
-                "margin": "2px", 
+                "margin": "0px", 
+                "padding": "8px 10px",
+                "text-align": "left"
             },
             "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
         }
@@ -134,21 +136,21 @@ if st.session_state.selected_menu == "Нүүр хуудас":
         """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    # БАГАНЫГ [1, 1, 1] ГЭЖ ТҮГЖИВ - Ингэснээр өргөн нь ижил болно
-    c1, c2, c3 = st.columns([1, 1, 1], gap="large")
+    # БАГАНУУДЫГ ЯГ ИЖИЛ [1, 1, 1] БОЛГОСОН
+    c1, c2, c3 = st.columns([1, 1, 1], gap="medium")
     
     with c1:
-        if st.button("📺\n\nЦахим\nконтент", key="btn_1"):
+        if st.button("📺\n\nЦахим контент", key="btn_1"):
             st.session_state.selected_menu = "Цахим контент"
             st.rerun()
             
     with c2:
-        if st.button("📚\n\nДаалгаврын\nсан", key="btn_2"):
+        if st.button("📚\n\nДаалгаврын сан", key="btn_2"):
             st.session_state.selected_menu = "Даалгаврын сан"
             st.rerun()
             
     with c3:
-        if st.button("📝\n\nСорил\n\n ", key="btn_3"):
+        if st.button("📝\n\nСорил", key="btn_3"):
             st.session_state.selected_menu = "Сорил"
             st.rerun()
 
