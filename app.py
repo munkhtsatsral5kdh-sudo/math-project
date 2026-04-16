@@ -121,7 +121,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
     with col2:
         st.markdown(f"""
             <div class="goal-box">
-                <div class="main-header" style="font-size: 32px; color: #0b4ab1; font-weight: 800; margin-bottom: 15px;">Математикийн ертөнцөд тавтай морил!</div>
+                <div class="main-header">Математикийн ертөнцөд тавтай морил!</div>
                 <div style="
                     font-size: 20px; 
                     line-height: 1.6; 
@@ -135,6 +135,10 @@ if st.session_state.selected_menu == "Нүүр хуудас":
 
     st.markdown("<br><br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3, gap="large")
+    
+    with c1:
+        if st.button("📺\n\nЦахим контент\n\nҮзэх", key="btn_1"):
+            st.session_state.selected_menu = "Цахим контент"
             st.rerun()
             
     with c2:
