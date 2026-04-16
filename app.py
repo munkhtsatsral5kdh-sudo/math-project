@@ -211,17 +211,21 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                     unit_df = df[df['Нэгж'] == unit_name]
                     
             for i, row in unit_df.iterrows():
-                        # Бодлогын дугаар
+                        # 1. Бодлогын дугаар
                         st.markdown(f"#### 🔹 Бодлого {i+1}:")
                         
-                        # Текстийг автомат шинэ мөрөнд шилжүүлэх (A, B, C, D-г доош нь цувуулна)
+                        # 2. Текстийг автоматаар шинэ мөрөнд шилжүүлэх (A, B, C, D-г доош нь цувуулна)
+                        # Excel-ээс ирсэн текстийг Python өөрөө засаж харуулна
                         raw_text = str(row['Асуулт'])
                         formatted_text = raw_text.replace("A.", "<br>A.").replace("B.", "<br>B.").replace("C.", "<br>C.").replace("D.", "<br>D.")
                         
-                        # Асуултыг харуулах
+                        # 3. Асуултыг LaTeX-тэй нь хамт харуулах
                         st.markdown(formatted_text, unsafe_allow_html=True)
                         
-                        # Хариу оруулах хэсэг
+                        # 4. Мөр хоорондын зай болон фонтыг тохируулах
+                        st.markdown("""<style>.stMarkdown p {font-family: 'Times New Roman', serif; font-size: 19px; line-height: 1.8;}</style>""", unsafe_allow_html=True)
+                        
+                        # 5. Хариу оруулах хэсэг
                         u_ans = st.text_input(f"Хариу (A, B, C, D):", key=f"q_in_{i}", placeholder="Жишээ нь: A")
                         
                         c1, c2 = st.columns([1, 4])
@@ -236,8 +240,6 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                                 with st.expander("💡 Тайлбар харах"):
                                     st.info(row['Бодолт'])
                         st.write("---")
-                                line-height: 2.0;
-                            }
                             </style>
                         """, unsafe_allow_html=True)
                         st.markdown(row['Асуулт'])
