@@ -119,7 +119,7 @@ with st.sidebar:
 
 # 4. НҮҮР ХУУДАС
 if st.session_state.selected_menu == "Нүүр хуудас":
-    col1, col2 = st.columns([1, 1.2], gap="large")
+    c1, c2, c3 = st.columns([1, 1, 1], gap="large")
     with col1:
         if os.path.exists("logo.gif"):
             with open("logo.gif", "rb") as f:
