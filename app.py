@@ -28,18 +28,16 @@ st.markdown("""
     <style>
     .stApp { background-color: white; }
     
-    /* ХАЖУУГИЙН ЦЭС - Өргөнийг багасгасан */
+    /* ХАЖУУГИЙН ЦЭС */
     [data-testid="stSidebar"] { 
         background-color: #0b4ab1 !important; 
         min-width: 250px !important;
-        max-width: 250px !important;
     }
     
-    /* "ЦЭС" гарчиг - ТОМ болгосон (45px) */
+    /* "ЦЭС" гарчиг - ТОМ */
     .sidebar-title { 
         color: white; text-align: center; font-size: 45px; font-weight: bold; 
         padding: 20px 0; margin-bottom: 0px;
-        letter-spacing: 2px;
     }
 
     /* "Бидний зорилго" хайрцаг */
@@ -55,14 +53,15 @@ st.markdown("""
         color: #0b4ab1; 
         font-size: 45px; 
         font-weight: 800; 
-        margin-bottom: 10px;
-        line-height: 1.1; 
+        margin-bottom: 5px;
+        line-height: 1.0 !important; 
     }
 
-    /* Төв хэсгийн 3 товчлуур - ДӨРВӨЛЖИН болгохын тулд өндрийг багасгав */
+    /* Төв хэсгийн 3 товчлуур - Өргөнийг 100% болгож түгжив */
     div.stButton > button {
         width: 100% !important; 
-        height: 200px !important;  /* 280-г 200 болгож багасгав */
+        min-width: 100% !important;
+        height: 220px !important; 
         border-radius: 25px !important; 
         border: 1px solid #f0f0f0 !important;
         background: #fdfdfd !important;
@@ -76,21 +75,14 @@ st.markdown("""
     }
 
     div.stButton > button p {
-        font-size: 20px !important; /* Текстийг жаахан багасгав */
+        font-size: 22px !important; 
         font-weight: bold !important;
         color: #0b4ab1 !important;
-        line-height: 1.2 !important;
     }
 
     div.stButton > button:hover {
         transform: translateY(-8px) !important;
-        box-shadow: 0 15px 40px rgba(0,74,177,0.15) !important;
         border: 1px solid #0b4ab1 !important;
-    }
-
-    .math-card {
-        background: white; padding: 25px; border-radius: 15px;
-        border: 1px solid #e0e0e0; margin-bottom: 20px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -109,16 +101,13 @@ with st.sidebar:
         default_index=current_index,
         styles={
             "container": {"background-color": "#0b4ab1", "padding": "0"},
-            "icon": {"color": "white", "font-size": "18px"}, 
+            "icon": {"color": "white", "font-size": "16px"}, 
             "nav-link": {
-                "font-size": "14px",  /* Текстийг жижиг болгосон */
+                "font-size": "13px",  /* Цэсний үгнүүдийг жижиг болгосон */
                 "color": "white", 
-                "font-family": "Arial", 
-                "font-weight": "normal", 
-                "margin": "5px", 
-                "text-align": "left"
+                "margin": "2px", 
             },
-            "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)", "font-weight": "bold"},
+            "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
         }
     )
     if selected != st.session_state.selected_menu:
@@ -138,32 +127,28 @@ if st.session_state.selected_menu == "Нүүр хуудас":
         st.markdown(f"""
             <div class="goal-box">
                 <div class="main-header">Математикийн ертөнцөд тавтай морил!</div>
-                <div style="
-                    font-size: 19px; 
-                    line-height: 1.4; 
-                    color: #444; 
-                    text-align: justify; 
-                    text-indent: 20px;
-                    font-family: 'Arial', sans-serif;
-                ">Сонирхолтой цахим хичээл, баялаг бодлогын сангаар дамжуулан математик сэтгэлгээгээ бие даан хөгжүүлж, ирээдүйн амжилтынхаа суурийг өнөөдөр тавихад тань бид туслах болно. Хамтдаа суралцаж, хамтдаа хөгжицгөөе!</div>
+                <div style="font-size: 19px; line-height: 1.4; color: #444; text-align: justify; text-indent: 20px;">
+                Сонирхолтой цахим хичээл, баялаг бодлогын сангаар дамжуулан математик сэтгэлгээгээ бие даан хөгжүүлж, ирээдүйн амжилтынхаа суурийг өнөөдөр тавихад тань бид туслах болно. Хамтдаа суралцаж, хамтдаа хөгжицгөөе!
+                </div>
             </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns([1, 1, 1], gap="medium")
+    # БАГАНЫГ [1, 1, 1] ГЭЖ ТҮГЖИВ - Ингэснээр өргөн нь ижил болно
+    c1, c2, c3 = st.columns([1, 1, 1], gap="large")
     
     with c1:
-        if st.button("📺\n\nЦахим контент", key="btn_1"):
+        if st.button("📺\n\nЦахим\nконтент", key="btn_1"):
             st.session_state.selected_menu = "Цахим контент"
             st.rerun()
             
     with c2:
-        if st.button("📚\n\nДаалгаврын сан", key="btn_2"):
+        if st.button("📚\n\nДаалгаврын\nсан", key="btn_2"):
             st.session_state.selected_menu = "Даалгаврын сан"
             st.rerun()
             
     with c3:
-        if st.button("📝\n\nСорил", key="btn_3"):
+        if st.button("📝\n\nСорил\n\n ", key="btn_3"):
             st.session_state.selected_menu = "Сорил"
             st.rerun()
 
@@ -186,20 +171,16 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
         else:
             for i, row in f_df.iterrows():
                 with st.form(key=f"form_{i}"):
-                    st.markdown('<div class="math-card">', unsafe_allow_html=True)
                     st.markdown(f"### 📝 Бодлого {i+1}")
                     st.markdown(smart_math_render(row['Асуулт']))
                     ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], key=f"ans_{i}", horizontal=True)
                     submit = st.form_submit_button("Шалгах")
-                    
                     if submit:
                         correct = str(row['Хариу']).strip().upper()
                         if ans == correct:
                             st.success("Зөв! ✅")
-                            st.balloons()
                         else:
                             st.error(f"Буруу байна. Зөв хариу: {correct}")
-                    st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.warning("data_bank.xlsx файл олдсонгүй.")
 
