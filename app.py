@@ -19,20 +19,20 @@ st.set_page_config(page_title="Математик Багш", page_icon="📐", l
 def smart_math_render(text):
     if not isinstance(text, str): return text
     
-    # 1. Хэрэв Excel дээр \frac{1}{3} гэх мэтээр бичсэн бол хоёр талд нь $ нэмнэ
-    # Энэ нь кодыг вэб дээр гоё томьёо болгож харуулна
-    if '\\frac' in text and '$' not in text:
-        text = f"${text}$"
-    
-    # 2. Хэрэв та 1/3 гэж бичсэн бол түүнийг нь \frac{1}{3} болгож LaTeX-д оруулна
-    text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
-    
-    # 3. Сонголтуудыг (A. B. C. D.) маш цэгцтэй доош нь харуулах
+    # 1. Сонголтуудыг (A. B. C. D.) бодлогоос тусгаарлаж доош нь мөр шилжүүлэх
     for label in ['A.', 'B.', 'C.', 'D.']:
         if label in text:
-            # Сонголтын өмнө 2 шинэ мөр авч, LaTeX-ээс гаргаж бичнэ
             text = text.replace(label, f'\n\n**{label}**')
-            
+
+    # 2. LaTeX кодыг таних (\ тэмдэгтээр эхэлсэн бүх зүйлийг танина)
+    # Зураг дээрх \sqrt, \mathbb гэх мэт улаан бичвэрүүдийг энд засна
+    if '\\' in text and '$' not in text:
+        text = f"$ {text} $"
+    
+    # 3. Энгийн 1/3 гэсэн бичиглэлийг LaTeX бутархай болгож хувиргах
+    if '/' in text and '$' not in text:
+        text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
+        
     return text
 
 # 3. ДИЗАЙН (Таны илгээсэн зургуудын өнгө)
