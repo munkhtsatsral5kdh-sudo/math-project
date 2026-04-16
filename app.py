@@ -37,6 +37,38 @@ st.markdown("""
     .math-card { background: white; padding: 25px; border-radius: 15px; border: 1px solid #e0e0e0; margin-bottom: 20px; }
     </style>
     """, unsafe_allow_html=True)
+st.markdown("""
+    <style>
+    /* "Шалгах" товчийг жижиг болгох */
+    div.stButton > button {
+        width: 120px !important;  /* Өргөнийг нь багасгав */
+        height: 45px !important;   /* Өндрийг нь тогтмол болгов */
+        font-size: 16px !important;
+        margin: 0 auto;
+        display: block;
+        border-radius: 10px !important;
+    }
+
+    /* Сорил хэсгийн A, B, C, D товчлууруудыг жижиг дөрвөлжин болгох */
+    div[data-testid="column"] button {
+        width: 50px !important;
+        height: 40px !important;
+        min-width: 50px !important;
+        padding: 0px !important;
+    }
+
+    /* Радио товчлуур (сонгох дугуй)-ын хэмжээг тохируулах */
+    div[data-testid="stMarkdownContainer"] p {
+        font-size: 18px !important;
+    }
+    
+    /* Сорил болон Даалгаврын сангийн асуултын текстийг цэгцлэх */
+    .stRadio > label {
+        font-size: 16px !important;
+        font-weight: bold;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # 3. SIDEBAR (Цэс)
 with st.sidebar:
