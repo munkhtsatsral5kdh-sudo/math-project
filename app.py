@@ -212,12 +212,26 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                     
             for i, row in unit_df.iterrows():
             for i, row in unit_df.iterrows():
-                        # 1. Бодлогын дугаарыг тод гаргах
                         st.markdown(f"#### 🔹 Бодлого {i+1}:")
                         
-                        # 2. Асуулт болон хувилбаруудыг LaTeX-ээр харуулах
-                        # Энэ функц нь Excel-ийн нэг нүдэнд байгаа текстийг 
-                        # автоматаар гоё хэлбэржүүлж харуулна.
+                        # Excel-ээс ирсэн текстийг автомат шинэ мөрөнд шилжүүлэх
+                        raw_text = str(row['Асуулт'])
+                        # A., B., C., D. бүрийн өмнө <br> (шинэ мөр) нэмэх
+                        formatted_text = raw_text.replace("A.", "<br>A.").replace("B.", "<br>B.").replace("C.", "<br>C.").replace("D.", "<br>D.")
+                        
+                        # Текстийг LaTeX-тэй нь хамт харуулах
+                        st.markdown(formatted_text, unsafe_allow_html=True)
+                        
+                        # Фонт болон мөр хоорондын зай
+                        st.markdown("""
+                            <style>
+                            .stMarkdown {
+                                font-family: 'Times New Roman', serif;
+                                font-size: 19px;
+                                line-height: 2.0;
+                            }
+                            </style>
+                        """, unsafe_allow_html=True)
                         st.markdown(row['Асуулт'])
                         
                         # 3. Мөр хоорондын зайг CSS-ээр тохируулах (Илүү цэвэрхэн)
