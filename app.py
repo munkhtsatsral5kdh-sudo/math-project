@@ -178,7 +178,6 @@ if remaining <= 0:
                 if st.button("✅ Сорил дуусгах"):
                     st.session_state.test_started = False
                     st.rerun()
-    # --- ДААЛГАВРЫН САН ---
     elif st.session_state.selected_menu == "Даалгаврын сан":
         import pandas as pd
         st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
