@@ -135,7 +135,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
                     line-height: 1.6; 
                     color: #444; 
                     text-align: justify; 
-                    text-indent: 40px;
+                    text-indent: 20px;
                     font-family: 'Arial', sans-serif;
                 ">Сонирхолтой цахим хичээл, баялаг бодлогын сангаар дамжуулан математик сэтгэлгээгээ бие даан хөгжүүлж, ирээдүйн амжилтынхаа суурийг өнөөдөр тавихад тань бид туслах болно. Хамтдаа суралцаж, хамтдаа хөгжицгөөе!</div>
             </div>
