@@ -109,12 +109,12 @@ elif st.session_state.selected_menu == "Сорил":
     if 'quiz_active' not in st.session_state: st.session_state.quiz_active = False
     if 'show_results' not in st.session_state: st.session_state.show_results = False
     if 'quiz_score' not in st.session_state: st.session_state.quiz_score = 0
-    if 'start_time' not in st.session_state: st.session_state.start_time = None
+    if 'selected_unit_name' not in st.session_state: st.session_state.selected_unit_name = None
 
     # ДЭЭД ЦЭС: Товчлуурууд
     m1, m2, m3, m4 = st.columns([1, 1, 1, 1.2])
     with m1:
-        if st.button("🚀 Эхлэх", use_container_width=True):
+        if st.button("🚀 Шалгалт Эхлэх", use_container_width=True):
             st.session_state.quiz_active = True
             st.session_state.show_results = False
             st.session_state.quiz_score = 0
@@ -122,13 +122,13 @@ elif st.session_state.selected_menu == "Сорил":
             st.rerun()
     with m2:
         if st.button("🎯 Оноо харах", use_container_width=True):
-            st.info(f"Таны сүүлийн оноо: {st.session_state.quiz_score}")
+            st.info(f"Таны авсан оноо: {st.session_state.quiz_score}")
     with m3:
         if st.button("❌ Алдаа харах", use_container_width=True):
             st.session_state.show_results = True
             st.rerun()
     with m4:
-        # 40 минутын хугацаа харуулах (Загвар)
+        # 40 минутын хугацаа харуулах
         st.markdown("<div style='background:black; color:#FF3333; padding:8px; border-radius:10px; text-align:center; font-family:monospace; font-size:22px; border: 2px solid #444;'>⏳ 40:00</div>", unsafe_allow_html=True)
 
     st.write("---")
@@ -137,7 +137,7 @@ elif st.session_state.selected_menu == "Сорил":
         if os.path.exists("data_bank.xlsx"):
             df = pd.read_excel("data_bank.xlsx")
             
-            # СЭДВИЙН НЭРС (Таны зураг дээрх нэрс)
+            # ТАНЫ ИЛГЭЭСЭН ЗУРГИЙН ДАГУУ 8 НЭГЖ СЭДЭВ
             unit_names = [
                 "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
                 "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
@@ -149,43 +149,42 @@ elif st.session_state.selected_menu == "Сорил":
                 "Үнэлгээний нэгж 8. Магадлал, статистик"
             ]
             
-            # Сорил авах нэгжийг сонгох
-            selected_unit = st.selectbox("Шалгалтын нэгж сонгох:", unit_names)
+            # ДЭД ЦОНХ: Нэгж сонгох
+            selected_unit = st.selectbox("Шалгалт өгөх нэгжээ сонгоно уу:", unit_names)
             
-            # Excel-ээс тухайн нэгжийн бодлогыг шүүх
-            # (Анхаарах: Excel-ийн 'Нэгж' баганад 1, 2, 3 гэсэн дугаар эсвэл нэр байх ёстой)
-            unit_id = selected_unit.split(".")[0].split(" ")[-1] # "1", "2" гэх мэт дугаарыг салгаж авна
+            # Excel-ээс тухайн нэгжийн бодлогыг шүүх (Нэгж баганаас 1, 2, 3... гэж хайна)
+            unit_number = re.search(r'\d+', selected_unit).group() 
             
             if 'current_quiz_df' not in st.session_state:
-                # Тухайн нэгжээс санамсаргүй 5 бодлого сонгох
-                unit_df = df[df['Нэгж'].astype(str).str.contains(unit_id)]
-                if unit_df.empty: 
-                    st.warning(f"'{selected_unit}' нэгжид бодлого олдсонгүй.")
+                unit_df = df[df['Нэгж'].astype(str).str.contains(unit_number)]
+                if unit_df.empty:
+                    st.warning(f"Уучлаарай, '{selected_unit}' нэгжид бодлого олдсонгүй.")
                     st.stop()
+                # Тухайн нэгжээс санамсаргүй 5 бодлого сонгох
                 st.session_state.current_quiz_df = unit_df.sample(n=min(5, len(unit_df)))
 
             user_answers = {}
             
             # БОДЛОГУУДЫГ ГАРГАХ
             for i, (idx, row) in enumerate(st.session_state.current_quiz_df.iterrows()):
-                st.markdown(f"### Бодлого {i+1}")
+                st.markdown(f"#### Бодлого {i+1}")
                 st.markdown(smart_math_render(row['Асуулт']))
                 
-                # 4 ХУВИЛБАРТАЙ СОНГОЛТ
-                user_answers[idx] = st.radio(f"Хувилбар {i+1}:", ["A", "B", "C", "D"], key=f"q_{idx}", horizontal=True)
+                # 4 ХУВИЛБАРТАЙ (A, B, C, D)
+                user_answers[idx] = st.radio(f"Хариулт сонгох {i+1}:", ["A", "B", "C", "D"], key=f"q_{idx}", horizontal=True)
                 
-                # ЗӨВ БОДОЛТ ХАРАХ (Алдаа харах дарагдсан үед)
+                # АЛДАА БА ЗӨВ БОДОЛТ ХАРАХ
                 if st.session_state.show_results:
                     correct_ans = str(row['Хариу']).strip().upper()
                     if user_answers[idx] == correct_ans:
-                        st.success(f"✅ Зөв! Хариу: {correct_ans}")
+                        st.success(f"✅ Зөв! (Хариу: {correct_ans})")
                     else:
                         st.error(f"❌ Буруу! Таны хариулт: {user_answers[idx]} | Зөв хариу: {correct_ans}")
                     
-                    with st.expander("📝 ЗӨВ БОДОЛТ"):
+                    with st.expander("📝 ЗӨВ БОДОЛТ ХАРАХ"):
                         st.markdown(f"""
-                            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 10px; border-left: 5px solid #28a745;">
-                                {row.get('Тайлбар', 'Энэ бодлогын дэлгэрэнгүй бодолт удахгүй нэмэгдэнэ.')}
+                            <div style="background-color: #f0faff; padding: 15px; border-radius: 10px; border-left: 5px solid #0b4ab1;">
+                                {row.get('Тайлбар', 'Энэ бодлогын тайлбар болон дэлгэрэнгүй бодолт одоогоор ороогүй байна.')}
                             </div>
                         """, unsafe_allow_html=True)
                 st.write("---")
@@ -202,13 +201,15 @@ elif st.session_state.selected_menu == "Сорил":
                     st.balloons()
                     st.rerun()
         else:
-            st.error("data_bank.xlsx файл олдсонгүй! Бодлогын сангаа оруулна уу.")
+            st.error("data_bank.xlsx файл олдсонгүй.")
     else:
         st.markdown(f"""
-            <div style="text-align: center; padding: 50px; background: #f8faff; border-radius: 20px;">
-                <h2 style="color: #0b4ab1;">IX АНГИ - ХИЧЭЭЛ, СУРГАЛТЫН ҮР ДҮНГ ҮНЭЛЭХ ШАЛГАЛТ</h2>
-                <p style="font-size: 18px;">Дээрх <b>'Эхлэх'</b> товчийг дарж сорилоо эхлээрэй.</p>
-                <p style="color: gray;">Хугацаа: 40 минут | 4 хувилбартай</p>
+            <div style="text-align: center; padding: 40px; border: 2px solid #0b4ab1; border-radius: 20px; background: #fdfdfd;">
+                <h2 style="color: #0b4ab1;">IX АНГИ - СУРГАЛТЫН ҮР ДҮНГ ҮНЭЛЭХ ШАЛГАЛТ</h2>
+                <p style="font-size: 18px; color: #555;">Нийт 8 нэгж хичээлээс сонгон өөрийгөө сориорой.</p>
+                <p style="color: #0b4ab1; font-weight: bold;">Хугацаа: 40 минут | Бодлого бүр 4 хувилбартай</p>
+                <hr>
+                <p>Эхлэх товчийг дарж сорилоо сонгоно уу.</p>
             </div>
         """, unsafe_allow_html=True)
 
