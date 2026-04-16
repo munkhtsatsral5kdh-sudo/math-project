@@ -15,65 +15,67 @@ if 'test_started' not in st.session_state:
 
 st.set_page_config(page_title="Математик Багш", page_icon="📐", layout="wide")
 
-# 2. ТАНЫ ИЛГЭЭСЭН ЗУРАГ ДЭЭРХ СУУРЬ ӨНГӨ (CSS)
-st.markdown(f"""
+# 2. ТАНЫ ЗУРАГ ДЭЭРХ СУУРЬ ӨНГӨ БОЛОН ДИЗАЙН
+st.markdown("""
     <style>
-    /* Суурь өнгө - Таны зураг дээрх цайвар сааралдуу цэнхэр */
-    .stApp {{ 
-        background-color: #eef2f6 !important; 
-    }}
+    /* Суурь өнгө - Таны илгээсэн зураг дээрх сааралдуу цэнхэр */
+    .stApp { 
+        background-color: #e9ecef !important; 
+    }
     
     /* Хажуугийн цэс - Гүн цэнхэр */
-    [data-testid="stSidebar"] {{ 
-        background-color: #1e3a5f !important; 
+    [data-testid="stSidebar"] { 
+        background-color: #1a3a5f !important; 
         min-width: 280px !important; 
-    }}
+    }
     
-    .sidebar-title {{ 
+    .sidebar-title { 
         color: #ffffff !important; 
         text-align: center; 
-        font-size: 28px !important; 
+        font-size: 26px !important; 
         font-weight: bold; 
-        padding: 25px 0; 
+        padding: 20px 0; 
         border-bottom: 1px solid rgba(255,255,255,0.1);
-    }}
+    }
     
     /* Зорилго хэсэг - Цагаан дэвсгэр, Тэгшлэлт, Догол мөр */
-    .goal-box {{
+    .goal-box {
         background: #ffffff; 
-        padding: 35px; 
-        border-radius: 8px; 
-        border-left: 8px solid #1e3a5f;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 40px; 
+        border-radius: 4px; 
+        border-top: 6px solid #1a3a5f;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         margin-top: 20px;
-    }}
-    .goal-text {{ 
+    }
+    .goal-text { 
         font-size: 20px !important; 
-        color: #2c3e50; 
-        line-height: 1.8; 
-        text-align: justify; 
-        text-indent: 50px; 
-    }}
+        color: #333333; 
+        line-height: 1.9; 
+        text-align: justify;    /* ХОЁР ТАЛЫН ЗАЙГ ИЖИЛ БОЛГОХ */
+        text-indent: 50px;      /* ЭХЛЭЛ ХЭСЭГТ ДОГОЛ МӨР АВАХ */
+        font-family: 'Times New Roman', serif;
+    }
 
-    /* Сорилтын товчлуурууд */
-    .stButton>button {{
-        border-radius: 6px !important;
+    /* Сорилтын товчлуурууд - Дөрвөлжин загвар */
+    .stButton>button {
+        border-radius: 4px !important;
         font-weight: 600 !important;
-        height: 45px !important;
-    }}
+        height: 48px !important;
+        transition: 0.3s;
+    }
     
     /* Бодлогын карт */
-    .math-card {{
+    .math-card {
         background: white; 
-        padding: 25px; 
-        border-radius: 12px; 
-        border: 1px solid #d1d9e6;
-        margin-bottom: 20px;
-    }}
+        padding: 30px; 
+        border-radius: 8px; 
+        border: 1px solid #dee2e6;
+        margin-bottom: 25px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. SIDEBAR
+# 3. SIDEBAR (Цэс)
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
     menu_options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил"]
@@ -82,47 +84,50 @@ with st.sidebar:
                            icons=['house', 'play-btn', 'book', 'pencil-square', 'people', 'heart'], 
                            default_index=0,
                            styles={
-                               "container": {"background-color": "#1e3a5f", "padding": "0px"},
-                               "nav-link": {"color": "#cbd5e0", "font-size": "17px", "text-align": "left", "margin":"10px"},
-                               "nav-link-selected": {"background-color": "#334e68", "color": "white"},
+                               "container": {"background-color": "#1a3a5f", "padding": "0px"},
+                               "nav-link": {"color": "#adb5bd", "font-size": "17px", "text-align": "left", "margin":"8px"},
+                               "nav-link-selected": {"background-color": "#2c4e7a", "color": "white", "font-weight": "bold"},
                            })
     if selected != st.session_state.selected_menu:
         st.session_state.selected_menu = selected
         st.rerun()
 
-# 4. EXCEL-ИЙН БИЧИГЛЭЛИЙГ ЦЭГЦЛЭХ
-def render_question(text):
-    if not isinstance(text, str): return
-    # A. B. C. D. шилжүүлэг
-    formatted = re.sub(r'([A-D]\.)', r'\n\n**\1**', text)
-    st.markdown(f'<div style="font-size:19px;">{formatted}</div>', unsafe_allow_html=True)
-
-# 5. ХУУДАСНУУД
+# 4. CONTENT - НҮҮР ХУУДАС
 if st.session_state.selected_menu == "Нүүр хуудас":
     c1, c2 = st.columns([1, 1.8], gap="large")
     with c1:
         if os.path.exists("logo.gif"):
             with open("logo.gif", "rb") as f:
                 st.markdown(f'<img src="data:image/gif;base64,{base64.b64encode(f.read()).decode()}" width="100%">', unsafe_allow_html=True)
-        st.markdown('<h2 style="color:#2ecc71; text-align:center; font-weight:bold;">МАТЕМАТИК БАГШ</h2>', unsafe_allow_html=True)
+        st.markdown('<h2 style="color:#28a745; text-align:center; font-weight:bold;">МАТЕМАТИК БАГШ</h2>', unsafe_allow_html=True)
     
     with c2:
-        st.markdown('<h1 style="color:#1e3a5f;">Бидний зорилго</h1>', unsafe_allow_html=True)
-        st.markdown(f'<div class="goal-box"><p class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая! Бид сурагч бүрт математик сэтгэлгээг хялбар бөгөөд сонирхолтой байдлаар хүргэхийг зорьж байна.</p></div>', unsafe_allow_html=True)
+        st.markdown('<h1 style="color:#1a3a5f; margin-bottom:10px;">Бидний зорилго</h1>', unsafe_allow_html=True)
+        st.markdown(f'''
+            <div class="goal-box">
+                <p class="goal-text">
+                    Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан 
+                    өөрөө өөрийнхөө мэдлэг чадварыг бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр 
+                    тавьцгаая! Бид сурагч бүрт математик сэтгэлгээг хялбар бөгөөд сонирхолтой байдлаар 
+                    хүргэхийг зорьж байна.
+                </p>
+            </div>
+        ''', unsafe_allow_html=True)
 
     st.write("---")
-    # Нүүр хуудасны 3 том карт
+    # Карт хэлбэртэй товчлуурууд
     cols = st.columns(3)
     items = [("📺", "Цахим контент"), ("📚", "Даалгаврын сан"), ("📝", "Сорил")]
     for i, (icon, title) in enumerate(items):
         with cols[i]:
-            st.markdown(f'<div style="background:white; padding:35px; border-radius:15px; text-align:center; border: 1px solid #d1d9e6;"><h1>{icon}</h1><h3>{title}</h3></div>', unsafe_allow_html=True)
-            if st.button(f"Орох ➡️", key=f"home_{i}", use_container_width=True):
+            st.markdown(f'<div style="background:white; padding:40px; border-radius:10px; text-align:center; border: 1px solid #dee2e6;"><h1>{icon}</h1><h3>{title}</h3></div>', unsafe_allow_html=True)
+            if st.button(f"{title} руу орох", key=f"nav_{i}", use_container_width=True):
                 st.session_state.selected_menu = title
                 st.rerun()
 
+# 5. CONTENT - ДААЛГАВРЫН САН
 elif st.session_state.selected_menu == "Даалгаврын сан":
-    st.markdown('<h1 style="color:#1e3a5f; text-align:center;">📚 Даалгаврын сан</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 style="color:#1a3a5f; text-align:center;">📚 Даалгаврын сан</h1>', unsafe_allow_html=True)
     if os.path.exists("data_bank.xlsx"):
         df = pd.read_excel("data_bank.xlsx")
         unit = st.selectbox("Сэдэв сонгох:", df['Нэгж'].unique())
@@ -134,17 +139,20 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                 for i, row in f_df.iterrows():
                     st.markdown('<div class="math-card">', unsafe_allow_html=True)
                     st.write(f"**Бодлого {i+1}**")
-                    render_question(row['Асуулт'])
+                    # Excel-ийн асуултыг форматлаж харуулах
+                    q_text = str(row['Асуулт']).replace('A.', '\n\n**A.**').replace('B.', '\n\n**B.**').replace('C.', '\n\n**C.**').replace('D.', '\n\n**D.**')
+                    st.markdown(q_text)
                     
-                    ans = st.radio("Сонголт:", ["A", "B", "C", "D"], key=f"q_{lvl}_{i}", horizontal=True)
+                    ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], key=f"q_{lvl}_{i}", horizontal=True)
                     if st.button("Шалгах", key=f"b_{lvl}_{i}"):
                         if str(ans).strip().upper() == str(row['Хариу']).strip().upper():
                             st.success("Зөв! ✅"); st.balloons()
                         else: st.error(f"Буруу. Зөв: {row['Хариу']}")
                     st.markdown('</div>', unsafe_allow_html=True)
 
+# 6. CONTENT - СОРИЛ
 elif st.session_state.selected_menu == "Сорил":
-    st.markdown('<h1 style="color:#1e3a5f; text-align:center;">📝 Онлайн сорил</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 style="color:#1a3a5f; text-align:center;">📝 Онлайн сорил</h1>', unsafe_allow_html=True)
     if not st.session_state.test_started:
         for i in range(1, 9):
             with st.expander(f"📌 Үнэлгээний нэгж {i}"):
@@ -154,9 +162,9 @@ elif st.session_state.selected_menu == "Сорил":
                         st.session_state.active_unit = f"Нэгж {i} - {var} хувилбар"
                 
                 if st.session_state.get('active_unit') and f"Нэгж {i}" in st.session_state.active_unit:
-                    st.write(f"**Сонгосон:** {st.session_state.active_unit}")
+                    st.markdown(f"**Сонгосон:** `{st.session_state.active_unit}`")
                     b1, b2, b3, b4 = st.columns(4)
-                    if b1.button("🟢 ЭХЛЭХ", key=f"st_{i}", use_container_width=True):
+                    if b1.button("🟢 ЭХЛЭХ", key=f"start_{i}", use_container_width=True):
                         st.session_state.test_started = True
                         st.session_state.start_time = time.time()
                         st.rerun()
@@ -170,8 +178,8 @@ elif st.session_state.selected_menu == "Сорил":
             st.error("⏰ Хугацаа дууслаа!"); st.session_state.test_started = False
         else:
             m, s = divmod(int(rem), 60)
-            st.sidebar.markdown(f'<div style="background-color:#d9534f; padding:20px; color:white; border-radius:8px; text-align:center;"><h2>⏱️ {m:02d}:{s:02d}</h2></div>', unsafe_allow_html=True)
+            st.sidebar.markdown(f'<div style="background-color:#d9534f; padding:20px; color:white; border-radius:4px; text-align:center;"><h2>⏱️ {m:02d}:{s:02d}</h2></div>', unsafe_allow_html=True)
             st.subheader(st.session_state.active_unit)
-            if st.button("🏁 СОРИЛ ДУУСГАХ"):
+            if st.button("🏁 СОРИЛ ДУУСГАХ", use_container_width=True):
                 st.session_state.test_started = False
                 st.rerun()
