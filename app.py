@@ -5,21 +5,19 @@ import base64
 import pandas as pd
 import re
 
-# 1. Сайтын ерөнхий тохиргоо
+# 1. Сайтын ерөнхий тохиргоо (Хамгийн дээд талд байх ёстой)
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
-# --- СИСТЕМ: ЦЭСНИЙ УДИРДЛАГА (Session State заавал байх ёстой) ---
+# --- СИСТЕМ: ЦЭСНИЙ УДИРДЛАГА (Session State) ---
 if 'selected_menu' not in st.session_state:
     st.session_state.selected_menu = "Нүүр хуудас"
 
 # УХААЛАГ МАТЕМАТИК ТАНИГЧ (LaTeX засагч)
 def smart_math_render(text):
     if not isinstance(text, str): return text
-    # Сонголтуудыг (A. B. C. D.) доош нь цувуулах
     for label in ['A.', 'B.', 'C.', 'D.']:
         if label in text:
             text = text.replace(label, f'\n\n**{label}**')
-    # LaTeX бичиглэлийг долларын тэмдэгт хавчуулж математик болгоно
     if ('\\' in text or '^' in text or '/' in text) and '$' not in text:
         clean_text = text.replace('\\displaystyle', '').strip()
         text = f"$\\displaystyle {clean_text}$"
@@ -38,13 +36,16 @@ st.markdown("""
     }
     .main-header { color: #004aad; font-size: 45px; font-weight: 800; margin-bottom: 20px; }
     
-    /* Товчлуурын загвар */
+    /* Товчлуурыг карт шиг харагдуулах загвар */
     div.stButton > button {
         width: 100%; border-radius: 20px; border: none; background: white;
         padding: 40px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        transition: all 0.3s ease; height: 200px; color: #004aad;
+        transition: all 0.3s ease; height: 200px; color: #004aad; font-weight: bold;
     }
-    div.stButton > button:hover { transform: translateY(-5px); border: 1px solid #004aad; }
+    div.stButton > button:hover {
+        transform: translateY(-5px); border: 1px solid #004aad;
+        box-shadow: 0 15px 35px rgba(0,74,173,0.1);
+    }
     
     .math-card {
         background: white; padding: 25px; border-radius: 15px;
@@ -61,11 +62,12 @@ with st.sidebar:
         menu_title=None, 
         options=["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил"],
         icons=['house', 'play-btn', 'book', 'pencil-square', 'people', 'heart'],
-        manual_select=st.session_state.selected_menu, # Холболт хийж байна
+        manual_select=st.session_state.selected_menu,
         default_index=0,
         styles={
-            "container": {"background-color": "#004aad"},
-            "nav-link": {"color": "white", "font-weight": "bold"},
+            "container": {"background-color": "#004aad", "padding": "0"},
+            "icon": {"color": "white", "font-size": "20px"}, 
+            "nav-link": {"font-size": "17px", "color": "white", "font-family": "Arial", "font-weight": "bold", "margin": "5px"},
             "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
         }
     )
@@ -92,7 +94,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             </div>
         """, unsafe_allow_html=True)
 
-    # Товчлууруудын баганыг тодорхойлсон хэсэг
+    # Доод талын 3 товчлуур (Багануудыг энд зарласан)
     st.markdown("<br><br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3, gap="medium")
     
@@ -134,7 +136,7 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                     st.markdown(f"### 📝 Бодлого {i+1}")
                     st.markdown(smart_math_render(row['Асуулт']))
                     ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], key=f"ans_{i}", horizontal=True)
-                    if st.button("Шалгах", key=f"btn_{i}"):
+                    if st.button("Шалгах", key=f"btn_chk_{i}"):
                         correct = str(row['Хариу']).strip().upper()
                         if ans == correct:
                             st.success("Зөв! ✅")
