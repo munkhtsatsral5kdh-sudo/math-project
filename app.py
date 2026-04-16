@@ -22,22 +22,17 @@ def smart_math_render(text):
     # 1. Сонголтуудыг (A. B. C. D.) доош нь цувуулах
     for label in ['A.', 'B.', 'C.', 'D.']:
         if label in text:
-            text = text.replace(label, f'\n\n **{label}**')
+            text = text.replace(label, f'\n\n**{label}**')
 
-    # 2. Текст доторх LaTeX командууд (\frac, \sqrt, \displaystyle г.м) 
-    # байвал шууд $...$ тэмдэгт хавчуулж математик болгоно.
-    if ('\\' in text or '^' in text) and '$' not in text:
-        # Бүх текстийг биш, зөвхөн томьёог танихын тулд илүү ухаалаг хандана
-        text = text.replace('\\displaystyle', '').strip() # Давхардал үүсэхээс сэргийлнэ
-        text = f"$\\displaystyle {text}$"
-
-    # 3. Хэрэв Excel дээр 6/13 гэж бичсэн бол түүнийг гоё бутархай болгоно
-    # Ингэхдээ аль хэдийн LaTeX болсон бол оролдохгүй
-    if '\\frac' not in text:
-        text = re.sub(r'(\d+)/(\d+)', r' $\\displaystyle \\frac{\1}{\2}$ ', text)
-        
-    return text
-
+    # 2. LaTeX кодыг маш найдвартай таних
+    # Хэрэв текст дотор \ (backslash) эсвэл ^ (зэрэг) байвал $ $ тэмдэгт заавал хавчуулна
+    if ('\\' in text or '^' in text or '/' in text) and '$' not in text:
+        # Хэрэв \displaystyle байвал түүнийг арилгаад өөрсдөө гоёор нэмнэ
+        clean_text = text.replace('\\displaystyle', '').strip()
+        text = f"$\\displaystyle {clean_text}$"
+    
+    # 3. Хэрэв энгийн бутархай (6/13) байвал \frac болгох
+    if '/' in text and '\\
 # 3. ДИЗАЙН
 st.markdown("""
     <style>
