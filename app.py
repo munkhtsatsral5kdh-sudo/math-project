@@ -122,7 +122,15 @@ if st.session_state.selected_menu == "Нүүр хуудас":
         st.markdown(f"""
             <div class="goal-box">
                 <div class="main-header">Бидний зорилго</div>
-                <div style="font-size: 24px; line-height: 1.6; color: #444;">
+                <div style="
+                    font-size: 24px; 
+                    line-height: 1.8; 
+                    color: #444; 
+                    text-align: justify;       /* Хоёр тал руу нь тэнцүү шахах */
+                    text-justify: inter-word;  /* Үг хоорондын зайг жигдлэх */
+                    text-indent: 50px;         /* Эхний мөрөнд догол мөр авах */
+                    font-family: 'Arial', sans-serif;
+                ">
                     Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, 
                     бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, 
                     ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!
