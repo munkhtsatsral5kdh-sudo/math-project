@@ -211,23 +211,31 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                     unit_df = df[df['Нэгж'] == unit_name]
                     
             for i, row in unit_df.iterrows():
-            for i, row in unit_df.iterrows():
+                        # Бодлогын дугаар
                         st.markdown(f"#### 🔹 Бодлого {i+1}:")
                         
-                        # Excel-ээс ирсэн текстийг автомат шинэ мөрөнд шилжүүлэх
+                        # Текстийг автомат шинэ мөрөнд шилжүүлэх (A, B, C, D-г доош нь цувуулна)
                         raw_text = str(row['Асуулт'])
-                        # A., B., C., D. бүрийн өмнө <br> (шинэ мөр) нэмэх
                         formatted_text = raw_text.replace("A.", "<br>A.").replace("B.", "<br>B.").replace("C.", "<br>C.").replace("D.", "<br>D.")
                         
-                        # Текстийг LaTeX-тэй нь хамт харуулах
+                        # Асуултыг харуулах
                         st.markdown(formatted_text, unsafe_allow_html=True)
                         
-                        # Фонт болон мөр хоорондын зай
-                        st.markdown("""
-                            <style>
-                            .stMarkdown {
-                                font-family: 'Times New Roman', serif;
-                                font-size: 19px;
+                        # Хариу оруулах хэсэг
+                        u_ans = st.text_input(f"Хариу (A, B, C, D):", key=f"q_in_{i}", placeholder="Жишээ нь: A")
+                        
+                        c1, c2 = st.columns([1, 4])
+                        with c1:
+                            if st.button(f"🔍 Шалгах", key=f"btn_{i}"):
+                                if str(u_ans).strip().upper() == str(row['Хариу']).strip().upper():
+                                    st.success("Зөв! ✅")
+                                else:
+                                    st.error(f"Буруу. Зөв хариу: {row['Хариу']}")
+                        with c2:
+                            if pd.notnull(row['Бодолт']):
+                                with st.expander("💡 Тайлбар харах"):
+                                    st.info(row['Бодолт'])
+                        st.write("---")
                                 line-height: 2.0;
                             }
                             </style>
