@@ -15,28 +15,26 @@ if 'test_started' not in st.session_state:
 
 st.set_page_config(page_title="Математик Багш", page_icon="📐", layout="wide")
 
-# 2. УХААЛАГ МАТЕМАТИК ТАНИГЧ (2400 бодлогыг автоматаар бутархай болгоно)
+# 2. УХААЛАГ МАТЕМАТИК ТАНИГЧ
 def smart_math_render(text):
     if not isinstance(text, str): return text
     
-    # 1. Сонголтуудыг (A. B. C. D.) доош нь мөр шилжүүлж цувуулах
+    # Сонголтуудыг (A. B. C. D.) доош нь мөр шилжүүлж цувуулах
     for label in ['A.', 'B.', 'C.', 'D.']:
         if label in text:
-            # Сонголтын өмнө шинэ мөр авч, тод болгоно
             text = text.replace(label, f'\n\n **{label}**')
 
-    # 2. LaTeX кодыг таних (\sqrt, \frac г.м)
+    # LaTeX кодыг таних (\sqrt, \frac г.м)
     special_chars = ['\\', '^', '_', '{', '}']
     if any(char in text for char in special_chars) and '$' not in text:
         text = f"$ {text} $"
     
-    # 3. Энгийн 6/13 гэсэн бичиглэлийг LaTeX бутархай болгох
-    # Текст доторх тоо/тоо хэлбэртэй бүх зүйлийг гоё бутархай болгоно
-    text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
+    # Энгийн 6/13 гэсэн бичиглэлийг LaTeX \displaystyle бутархай болгох (илүү том харагдана)
+    text = re.sub(r'(\d+)/(\d+)', r' $\\displaystyle \\frac{\1}{\2}$ ', text)
         
     return text
 
-# 3. ДИЗАЙН (Өнгө болон загвар)
+# 3. ДИЗАЙН
 st.markdown("""
     <style>
     .stApp { background-color: #eef2f6 !important; }
@@ -49,7 +47,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 4. SIDEBAR (Цэс)
+# 4. SIDEBAR
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
     menu_options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил"]
@@ -77,25 +75,30 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
         unit = st.selectbox("Сэдэв сонгох:", df['Нэгж'].unique())
         tabs = st.tabs(["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"])
         
-for i, row in f_df.iterrows():
-                    st.markdown('<div class="math-card">', unsafe_allow_html=True)
-                    
-                    # 1. Бодлогын дугаарыг тод гарчиг болгох
-                    st.markdown(f"### 📝 Бодлого {i+1}")
-                    
-                    # 2. Асуултыг ухаалгаар засаж харуулах (Сонголтууд энд цуврана)
-                    st.markdown(smart_math_render(row['Асуулт']))
-                    
-                    # 3. Хариулт сонгох radio button
-                    ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], 
-                                   key=f"ans_{lvl}_{idx}_{i}", horizontal=True)
-                    
-                    # 4. Шалгах товчлуур
-                    if st.button("Шалгах", key=f"chk_{lvl}_{idx}_{i}"):
-                        correct_ans = str(row['Хариу']).strip().upper()
-                        if str(ans).strip().upper() == correct_ans:
-                            st.success("Зөв! ✅"); st.balloons()
-                        else: 
-                            st.error(f"Буруу. Зөв хариу: {correct_ans}")
-                            
-                    st.markdown('</div>', unsafe_allow_html=True)
+        for idx, lvl in enumerate(["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"]):
+            with tabs[idx]:
+                f_df = df[(df['Нэгж'] == unit) & (df['Түвшин'] == lvl)]
+                if f_df.empty:
+                    st.info("Энэ түвшинд бодлого одоогоор байхгүй байна.")
+                else:
+                    for i, row in f_df.iterrows():
+                        st.markdown('<div class="math-card">', unsafe_allow_html=True)
+                        st.markdown(f"### 📝 Бодлого {i+1}")
+                        st.markdown(smart_math_render(row['Асуулт']))
+                        
+                        ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], 
+                                       key=f"ans_{lvl}_{idx}_{i}", horizontal=True)
+                        
+                        if st.button("Шалгах", key=f"chk_{lvl}_{idx}_{i}"):
+                            correct_ans = str(row['Хариу']).strip().upper()
+                            if str(ans).strip().upper() == correct_ans:
+                                st.success("Зөв! ✅"); st.balloons()
+                            else: 
+                                st.error(f"Буруу. Зөв хариу: {correct_ans}")
+                        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.warning("data_bank.xlsx файл олдсонгүй.")
+
+# 7. СОРИЛ
+elif st.session_state.selected_menu == "Сорил":
+    st.info("Сорил хэсэг удахгүй нэмэгдэнэ.")
