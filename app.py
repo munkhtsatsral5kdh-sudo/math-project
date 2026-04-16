@@ -31,13 +31,13 @@ st.markdown("""
     /* ХАЖУУГИЙН ЦЭС */
     [data-testid="stSidebar"] { 
         background-color: #0b4ab1 !important; 
-        min-width: 250px !important;
+        min-width: 260px !important;
     }
     
     /* "ЦЭС" гарчиг */
     .sidebar-title { 
-        color: white; text-align: center; font-size: 70px; font-weight: bold; 
-        padding: 20px 0; margin-bottom: 0px;
+        color: white; text-align: center; font-size: 45px; font-weight: bold; 
+        padding: 20px 0; margin-bottom: 10px;
     }
 
     /* "Бидний зорилго" хайрцаг */
@@ -48,23 +48,23 @@ st.markdown("""
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
     
-    /* ГАРЧИГ - Мөр хоорондын зай маш шахуу */
+    /* ГАРЧИГ */
     .main-header { 
         color: #0b4ab1; 
         font-size: 45px; 
         font-weight: 800; 
         margin-bottom: 5px;
-        line-height: 0.9 !important; 
+        line-height: 0.95 !important; 
     }
 
-    /* Төв хэсгийн 3 товчлуур - БҮРЭН ДҮҮРГЭХ ТООХИРГОО */
+    /* Төв хэсгийн 3 товчлуур */
     div.stButton {
         width: 100% !important;
     }
     
     div.stButton > button {
         width: 100% !important; 
-        height: 180px !important; 
+        height: 190px !important; 
         border-radius: 25px !important; 
         border: 1px solid #f0f0f0 !important;
         background: #fdfdfd !important;
@@ -80,13 +80,11 @@ st.markdown("""
         font-size: 22px !important; 
         font-weight: bold !important;
         color: #0b4ab1 !important;
-        margin-top: 10px !important;
     }
 
     div.stButton > button:hover {
         transform: translateY(-5px) !important;
         border: 1px solid #0b4ab1 !important;
-        background: white !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -105,15 +103,16 @@ with st.sidebar:
         default_index=current_index,
         styles={
             "container": {"background-color": "#0b4ab1", "padding": "0"},
-            "icon": {"color": "white", "font-size": "14px"}, 
+            "icon": {"color": "white", "font-size": "18px"}, 
             "nav-link": {
-                "font-size": "12px", 
+                "font-size": "16px",  # Хэмжээг 16px болгож томруулсан
                 "color": "white", 
-                "margin": "0px", 
-                "padding": "8px 10px",
-                "text-align": "left"
+                "margin": "5px 0px", 
+                "padding": "10px 15px",
+                "text-align": "left",
+                "font-weight": "500"
             },
-            "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
+            "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)", "font-weight": "bold"},
         }
     )
     if selected != st.session_state.selected_menu:
@@ -142,7 +141,6 @@ if st.session_state.selected_menu == "Нүүр хуудас":
     st.markdown("<br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns([1, 1, 1], gap="medium")
     
-    # ЭНД use_container_width=True НЭМСЭН
     with c1:
         if st.button("📺\n\nЦахим контент", key="btn_1", use_container_width=True):
             st.session_state.selected_menu = "Цахим контент"
@@ -158,32 +156,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             st.session_state.selected_menu = "Сорил"
             st.rerun()
 
-# 5. ДААЛГАВРЫН САН (Код хэвээрээ...)
-elif st.session_state.selected_menu == "Даалгаврын сан":
-    st.markdown("<h1 style='color: #0b4ab1; text-align: center;'>📚 Бодлогын сан</h1>", unsafe_allow_html=True)
-    if os.path.exists("data_bank.xlsx"):
-        df = pd.read_excel("data_bank.xlsx")
-        sc1, sc2 = st.columns(2)
-        with sc1:
-            unit = st.selectbox("Сэдэв сонгох:", df['Нэгж'].unique())
-        with sc2:
-            level = st.radio("Түвшин:", ["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"], horizontal=True)
-        f_df = df[(df['Нэгж'] == unit) & (df['Түвшин'] == level)]
-        if f_df.empty:
-            st.info("Энэ хэсэгт бодлого хараахан ороогүй байна.")
-        else:
-            for i, row in f_df.iterrows():
-                with st.form(key=f"form_{i}"):
-                    st.markdown(f"### 📝 Бодлого {i+1}")
-                    st.markdown(smart_math_render(row['Асуулт']))
-                    ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], key=f"ans_{i}", horizontal=True)
-                    submit = st.form_submit_button("Шалгах")
-                    if submit:
-                        correct = str(row['Хариу']).strip().upper()
-                        if ans == correct: st.success("Зөв! ✅")
-                        else: st.error(f"Буруу байна. Зөв хариу: {correct}")
-    else:
-        st.warning("data_bank.xlsx файл олдсонгүй.")
+# 5. БУСАД ХУУДАСНУУД
 else:
     st.markdown(f"<h1 style='color: #0b4ab1; text-align: center; margin-top: 50px;'>{st.session_state.selected_menu}</h1>", unsafe_allow_html=True)
     st.info("Энэ хэсэг удахгүй нэмэгдэнэ.")
