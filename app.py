@@ -25,6 +25,7 @@ st.markdown("""
     .custom-card { background: white; border-radius: 25px; padding: 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #eee; height: 250px; }
     .card-icon { font-size: 50px; margin-bottom: 10px; }
     .card-title { color: #004aad; font-size: 22px; font-weight: bold; }
+    .stMarkdown p { font-family: 'Times New Roman', serif; font-size: 19px; line-height: 1.8; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -32,7 +33,10 @@ st.markdown("""
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
     options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшил МХБ"]
-    current_index = options.index(st.session_state.selected_menu)
+    
+    current_index = 0
+    if st.session_state.selected_menu in options:
+        current_index = options.index(st.session_state.selected_menu)
     
     selected = option_menu(
         menu_title=None, 
@@ -49,6 +53,7 @@ with st.sidebar:
     st.session_state.selected_menu = selected
 
 # 5. ХУУДАСНУУДЫН УДИРДЛАГА
+
 # --- НҮҮР ХУУДАС ---
 if st.session_state.selected_menu == "Нүүр хуудас":
     col1, col2 = st.columns([1, 1.5], gap="large")
@@ -59,7 +64,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
                 data_url = base64.b64encode(data).decode("utf-8")
             st.markdown(f'<img src="data:image/gif;base64,{data_url}" width="100%">', unsafe_allow_html=True)
         else:
-            st.warning("logo.gif олдсонгүй")
+            st.info("Лого бэлтгэгдэж байна")
             
     with col2:
         st.markdown('<p class="main-header" style="text-align:left;">Бидний зорилго</p>', unsafe_allow_html=True)
@@ -103,47 +108,12 @@ elif st.session_state.selected_menu == "Сорил":
             with st.expander(f"🔹 {unit_name}"):
                 cols = st.columns(4)
                 for j, var in enumerate(['A', 'B', 'C', 'D']):
-                    if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
+                    if cols[j].button(f"{var} хувилбар", key=f"quiz_btn_{i}_{var}"):
                         st.session_state.active_unit = f"{unit_name} - {var} хувилбар"
                         st.session_state.show_options = True
                 
-                if st.session_state.get('show_options') and unit_name in st.session_state.get('active_unit', ''):
-                    st.write("---")
-                    c1, c2, c3, c4 = st.columns(4)
-                    with c1:
-                        if st.button("🟢 Сорил эхлэх", key=f"start_{i}"):
-                            st.session_state.test_started = True
-                            st.session_state.start_time = time.time()
-                            st.rerun()
-                    with c2: st.button("🔵 Дүн харах", key=f"res_{i}")
-                    with c3: st.button("⚪ Алдаа шалгах", key=f"chk_{i}")
-                    with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
-   # --- СОРИЛ ХЭСЭГ ---
-elif st.session_state.selected_menu == "Сорил":
-    st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
-    
-    if not st.session_state.test_started:
-        units = [
-            "Үнэлгээний нэгж 1. Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
-            "Үнэлгээний нэгж 2. Харьцаа, пропорц, процент",
-            "Үнэлгээний нэгж 3. Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
-            "Үнэлгээний нэгж 4. Дараалал, функц",
-            "Үнэлгээний нэгж 5. Өнцөг, дүрс, байгуулалт",
-            "Үнэлгээний нэгж 6. Байршил, хөдөлгөөн, хувиргалт",
-            "Үнэлгээний нэгж 7. Хэмжигдэхүүн",
-            "Үнэлгээний нэгж 8. Магадлал, статистик"
-        ]
-
-        for i, unit_name in enumerate(units, 1):
-            with st.expander(f"🔹 {unit_name}"):
-                cols = st.columns(4)
-                for j, var in enumerate(['A', 'B', 'C', 'D']):
-                    if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
-                        st.session_state.active_unit = f"{unit_name} - {var} хувилбар"
-                        st.session_state.show_options = True
-                
-                if st.session_state.get('show_options') and unit_name in st.session_state.get('active_unit', ''):
-                    st.write("---")
+                if st.session_state.get('show_options') and st.session_state.get('active_unit', '').startswith(unit_name):
+                    st.write(f"**Сонгогдсон:** {st.session_state.active_unit}")
                     c1, c2, c3, c4 = st.columns(4)
                     with c1:
                         if st.button("🟢 Сорил эхлэх", key=f"start_{i}"):
@@ -155,37 +125,45 @@ elif st.session_state.selected_menu == "Сорил":
                     with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
     
     else:
-            st_autorefresh(interval=1000, key="quizrefresh")
-            remaining = (40 * 60) - (time.time() - st.session_state.start_time)
-if remaining <= 0:
-                st.error("⏰ Хугацаа дууслаа!")
-                st.session_state.test_started = False
-                if st.button("Буцах"):
-                    st.rerun()
-            else:
-                mins, secs = divmod(int(remaining), 60)
-                st.sidebar.markdown(f"""
-                    <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-top: 20px;">
-                        <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
-                        <p style="color: white; margin: 0;">Үлдсэн хугацаа</p>
-                    </div>
-                """, unsafe_allow_html=True)
+        st_autorefresh(interval=1000, key="quizrefresh")
+        remaining = (40 * 60) - (time.time() - st.session_state.start_time)
+        
+        if remaining <= 0:
+            st.error("⏰ Хугацаа дууслаа!")
+            st.session_state.test_started = False
+            if st.button("Буцах"):
+                st.rerun()
+        else:
+            mins, secs = divmod(int(remaining), 60)
+            st.sidebar.markdown(f"""
+                <div style="background-color: #ff4b4b; padding: 10px; border-radius: 10px; text-align: center; margin-top: 20px;">
+                    <h2 style="color: white; margin: 0;">⏱️ {mins:02d}:{secs:02d}</h2>
+                    <p style="color: white; margin: 0;">Үлдсэн хугацаа</p>
+                </div>
+            """, unsafe_allow_html=True)
 
-                st.subheader(st.session_state.active_unit)
-                st.write("---")
-                
-                # Сорил дуусгах товч
-                if st.button("✅ Сорил дуусгах"):
-                    st.session_state.test_started = False
-                    st.rerun()
-    elif st.session_state.selected_menu == "Даалгаврын сан":
-        import pandas as pd
-        st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
+            st.subheader(st.session_state.active_unit)
+            st.write("---")
+            st.info("Сорил явагдаж байна. Бодлогоо бодоод хариугаа тэмдэглээрэй.")
+            
+            if st.button("✅ Сорил дуусгах"):
+                st.session_state.test_started = False
+                st.rerun()
+
+# --- ДААЛГАВРЫН САН ---
+elif st.session_state.selected_menu == "Даалгаврын сан":
+    import pandas as pd
+    st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
+    if not os.path.exists("data_bank.xlsx"):
+        st.error("data_bank.xlsx файл олдсонгүй!")
+    else:
         try:
             df = pd.read_excel("data_bank.xlsx")
-            for unit_name in ["Нэгж 1"]:
-                with st.expander(f"🔹 {unit_name}", expanded=True):
-                    unit_df = df[df['Нэгж'] == unit_name]
+            # Excel-ийн бүх нэгжүүдийг автоматаар унших
+            unique_units = df['Нэгж'].unique()
+            for unit in unique_units:
+                with st.expander(f"🔹 {unit}", expanded=True):
+                    unit_df = df[df['Нэгж'] == unit]
                     for i, row in unit_df.iterrows():
                         st.markdown(f"#### 🔹 Бодлого {i+1}:")
                         
@@ -194,7 +172,6 @@ if remaining <= 0:
                         q_text = raw_q.replace("A.", "\n\nA.").replace("B.", "\n\nB.").replace("C.", "\n\nC.").replace("D.", "\n\nD.")
                         st.markdown(q_text)
                         
-                        # Хариу оруулах
                         u_ans = st.text_input(f"Хариу (A, B, C, D):", key=f"q_{i}", placeholder="Жишээ нь: A")
                         c1, c2 = st.columns([1, 4])
                         with c1:
@@ -208,24 +185,18 @@ if remaining <= 0:
                                 with st.expander("💡 Тайлбар харах"):
                                     st.info(str(row['Бодолт']))
                         st.write("---")
-            st.markdown("<style>.stMarkdown p {font-family:'Times New Roman'; font-size:18px; line-height:1.8;}</style>", unsafe_allow_html=True)
         except Exception as e:
-            st.error(f"Алдаа гарлаа: {e}")
-                                with st.expander("💡 Тайлбар харах"):
-                                    st.info(str(row['Бодолт']))
-                        st.write("---")
-            st.markdown("<style>.stMarkdown p {font-family:'Times New Roman'; font-size:18px; line-height:1.8;}</style>", unsafe_allow_html=True)
-        except Exception as e:
-            st.error(f"Алдаа гарлаа: {e}")
+            st.error(f"Файл уншихад алдаа гарлаа: {e}")
 
-    elif st.session_state.selected_menu == "Цахим контент":
-        st.markdown('<p class="main-header">📺 Цахим контент</p>', unsafe_allow_html=True)
-        st.info("Видео хичээлүүд бэлтгэгдэж байна.")
+# --- БУСАД ЦЭСҮҮД ---
+elif st.session_state.selected_menu == "Цахим контент":
+    st.markdown('<p class="main-header">📺 Цахим контент</p>', unsafe_allow_html=True)
+    st.info("Видео хичээлүүд бэлтгэгдэж байна.")
 
-    elif st.session_state.selected_menu == "Клубын мэдээлэл":
-        st.markdown('<p class="main-header">🏢 Клубын мэдээлэл</p>', unsafe_allow_html=True)
-        st.info("Математикийн клубын мэдээлэл.")
+elif st.session_state.selected_menu == "Клубын мэдээлэл":
+    st.markdown('<p class="main-header">🏢 Клубын мэдээлэл</p>', unsafe_allow_html=True)
+    st.info("Математикийн клубын мэдээлэл.")
 
-    elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил МХБ":
-        st.markdown('<p class="main-header">❤️ Хүмүүжил төлөвшил</p>', unsafe_allow_html=True)
-        st.info("Зөвлөгөө мэдээлэл.")
+elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил МХБ":
+    st.markdown('<p class="main-header">❤️ Хүмүүжил төлөвшил</p>', unsafe_allow_html=True)
+    st.info("Зөвлөгөө мэдээлэл.")
