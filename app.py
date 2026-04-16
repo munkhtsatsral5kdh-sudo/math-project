@@ -131,7 +131,7 @@ elif st.session_state.selected_menu == "Сорил":
                     with c4: st.button("🔴 Бодолт", key=f"sol_{i}")
     
 else:
-            # Сорил эхэлсэн үе (Зөвхөн "Сорил" цэс дээр харагдана)
+            # Сорил эхэлсэн үе (Зөвхөн Сорил цэс дотор ажиллана)
             from streamlit_autorefresh import st_autorefresh
             st_autorefresh(interval=1000, key="quizrefresh")
 
@@ -162,7 +162,7 @@ else:
                     st.success("Сорил дууслаа!")
                     st.rerun()
 
-# --- БУСАД ЦЭСҮҮДИЙН ХЭСЭГ (Энэ хэсэг маш чухал) ---
+# --- БУСАД ЦЭСҮҮД (Энэ мөрүүд нь хамгийн зүүн гар талаас эхлэх ёстой) ---
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
     st.info("Удахгүй энэ хэсэгт даалгаврууд нэмэгдэнэ.")
