@@ -210,13 +210,27 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                 with st.expander(f"🔹 {unit_name}", expanded=True):
                     unit_df = df[df['Нэгж'] == unit_name]
                     
-                    for i, row in unit_df.iterrows():
-                        # Асуултыг гоё хайрцаг дотор, тусдаа фонттой харуулах
-                        st.markdown(f"""
-                        <div class="question-box">
-                            <b>Бодлого {i+1}:</b><br>
-                            {row['Асуулт']}
-                        </div>
+            for i, row in unit_df.iterrows():
+            for i, row in unit_df.iterrows():
+                        # 1. Бодлогын дугаарыг тод гаргах
+                        st.markdown(f"#### 🔹 Бодлого {i+1}:")
+                        
+                        # 2. Асуулт болон хувилбаруудыг LaTeX-ээр харуулах
+                        # Энэ функц нь Excel-ийн нэг нүдэнд байгаа текстийг 
+                        # автоматаар гоё хэлбэржүүлж харуулна.
+                        st.markdown(row['Асуулт'])
+                        
+                        # 3. Мөр хоорондын зайг CSS-ээр тохируулах (Илүү цэвэрхэн)
+                        st.markdown("""
+                            <style>
+                            .stMarkdown p {
+                                font-family: 'Times New Roman', serif;
+                                font-size: 19px;
+                                line-height: 2.0; /* Зайг 2 дахин ихэсгэв */
+                                color: #1E1E1E;
+                                margin-bottom: 15px;
+                            }
+                            </style>
                         """, unsafe_allow_html=True)
                         
                         # Хариу оруулах хэсэг
