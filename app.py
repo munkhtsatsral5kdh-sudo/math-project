@@ -6,7 +6,7 @@ import time
 from streamlit_autorefresh import st_autorefresh
 import pandas as pd
 
-# 1. Санах ойн тохиргоо
+# 1. Сонгогдсон цэсийг санах ойд хадгалах
 if 'selected_menu' not in st.session_state:
     st.session_state.selected_menu = "Нүүр хуудас"
 if 'test_started' not in st.session_state:
@@ -15,16 +15,19 @@ if 'test_started' not in st.session_state:
 # 2. Вэбсайтын ерөнхий тохиргоо
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
-# 3. ДИЗАЙН (CSS) - Өмнөх загварыг хадгалав
+# 3. ДИЗАЙН (CSS)
 st.markdown("""
     <style>
     .stApp { background-color: #f8f9fa; }
     [data-testid="stSidebar"] { background-color: #004aad !important; min-width: 300px !important; }
     .sidebar-title { color: #ffffff !important; text-align: center; font-size: 40px !important; font-weight: bold; padding: 20px 0; border-bottom: 2px solid rgba(255,255,255,0.3); margin-bottom: 20px; }
-    .main-header { color: #004aad !important; font-size: 45px !important; font-weight: 900; text-align: center; margin-bottom: 20px; }
+    .main-header { color: #004aad !important; font-size: 50px !important; font-weight: 900; text-align: center; margin-bottom: 20px; }
     .goal-text { font-size: 22px !important; color: #333; line-height: 1.6; background: white; padding: 30px; border-left: 15px solid #004aad; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-    /* Бодлогын текстийн фонт */
-    .problem-text { font-family: 'Times New Roman', serif; font-size: 22px; line-height: 1.8; color: #1a1a1a; white-space: pre-wrap; margin-bottom: 15px; }
+    .custom-card { background: white; border-radius: 25px; padding: 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #eee; height: 250px; }
+    .card-icon { font-size: 50px; margin-bottom: 10px; }
+    .card-title { color: #004aad; font-size: 22px; font-weight: bold; }
+    /* Бодлогын текст */
+    .problem-text { font-family: 'Times New Roman', serif; font-size: 20px; line-height: 1.8; color: #1a1a1a; white-space: pre-wrap; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -33,10 +36,9 @@ with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
     options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшил МХБ"]
     
-    try:
+    current_index = 0
+    if st.session_state.selected_menu in options:
         current_index = options.index(st.session_state.selected_menu)
-    except:
-        current_index = 0
     
     selected = option_menu(
         menu_title=None, 
@@ -52,64 +54,85 @@ with st.sidebar:
     )
     st.session_state.selected_menu = selected
 
+# 5. ХУУДАСНУУДЫН УДИРДЛАГА
+
 # --- НҮҮР ХУУДАС ---
 if st.session_state.selected_menu == "Нүүр хуудас":
-    st.markdown('<p class="main-header">Бидний зорилго</p>', unsafe_allow_html=True)
-    st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, амжилтын эхлэлийг тавьцгаая!</div>', unsafe_allow_html=True)
+    col1, col2 = st.columns([1, 1.5], gap="large")
+    with col1:
+        if os.path.exists("logo.gif"):
+            with open("logo.gif", "rb") as f:
+                data = f.read()
+                data_url = base64.b64encode(data).decode("utf-8")
+            st.markdown(f'<img src="data:image/gif;base64,{data_url}" width="100%">', unsafe_allow_html=True)
+    with col2:
+        st.markdown('<p class="main-header" style="text-align:left;">Бидний зорилго</p>', unsafe_allow_html=True)
+        st.markdown('<div class="goal-text">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл, бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div>', unsafe_allow_html=True)
 
-# --- ДААЛГАВРЫН САН (Шинэчлэгдсэн) ---
+# --- СОРИЛ ХЭСЭГ (Таны эх код хэвээрээ) ---
+elif st.session_state.selected_menu == "Сорил":
+    st.markdown('<p class="main-header">📝 Онлайн сорилтын систем</p>', unsafe_allow_html=True)
+    if not st.session_state.test_started:
+        units = ["Үнэлгээний нэгж 1", "Үнэлгээний нэгж 2", "Үнэлгээний нэгж 3", "Үнэлгээний нэгж 4", "Үнэлгээний нэгж 5", "Үнэлгээний нэгж 6", "Үнэлгээний нэгж 7", "Үнэлгээний нэгж 8"]
+        for i, unit_name in enumerate(units, 1):
+            with st.expander(f"🔹 {unit_name}"):
+                cols = st.columns(4)
+                for j, var in enumerate(['A', 'B', 'C', 'D']):
+                    if cols[j].button(f"{var} хувилбар", key=f"btn_{i}_{var}"):
+                        st.session_state.active_unit = f"{unit_name} - {var} хувилбар"
+                        st.session_state.show_options = True
+                if st.session_state.get('show_options') and st.session_state.active_unit.startswith(unit_name):
+                    c1, c2, c3, c4 = st.columns(4)
+                    with c1:
+                        if st.button("🟢 Эхлэх", key=f"start_{i}"):
+                            st.session_state.test_started = True
+                            st.session_state.start_time = time.time()
+                            st.rerun()
+    else:
+        st_autorefresh(interval=1000, key="quiz_refresh")
+        remaining = (40 * 60) - (time.time() - st.session_state.start_time)
+        if remaining <= 0:
+            st.error("⏰ Хугацаа дууслаа!")
+            st.session_state.test_started = False
+        else:
+            mins, secs = divmod(int(remaining), 60)
+            st.sidebar.metric("⏱️ Үлдсэн хугацаа", f"{mins:02d}:{secs:02d}")
+            st.subheader(st.session_state.active_unit)
+            if st.button("✅ Дуусгах"):
+                st.session_state.test_started = False
+                st.rerun()
+
+# --- ДААЛГАВРЫН САН (Текст зассан + Radio + Balloons) ---
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
-    if not os.path.exists("data_bank.xlsx"):
-        st.error("data_bank.xlsx файл олдсонгүй!")
-    else:
-        try:
-            df = pd.read_excel("data_bank.xlsx")
-            unique_units = df['Нэгж'].unique()
-            for unit in unique_units:
-                with st.expander(f"🔹 {unit}", expanded=True):
-                    unit_df = df[df['Нэгж'] == unit]
-                    for i, row in unit_df.iterrows():
-                        st.markdown(f"### 💠 Бодлого {i+1}:")
-                        
-                        # Текстийг LaTeX биш, ердийн хэлбэрээр харуулах
-                        raw_q = str(row['Асуулт'])
-                        formatted_q = raw_q.replace("A.", "\n\n**A.**").replace("B.", "\n\n**B.**").replace("C.", "\n\n**C.**").replace("D.", "\n\n**D.**")
-                        
-                        st.markdown(f'<div class="problem-text">{formatted_q}</div>', unsafe_allow_html=True)
-                        
-                        # Сонгох хэлбэр
-                        choice = st.radio(
-                            "Хариултаа сонгоно уу:",
-                            ["Сонгох", "A", "B", "C", "D"],
-                            key=f"radio_db_{i}",
-                            horizontal=True
-                        )
-                        
-                        col1, col2 = st.columns([1, 4])
-                        with col1:
-                            if st.button(f"🔍 Шалгах", key=f"check_db_{i}"):
-                                if choice == "Сонгох":
-                                    st.warning("Хариултаа сонгоно уу!")
-                                elif choice.strip().upper() == str(row['Хариу']).strip().upper():
-                                    st.success("Зөв! ✅")
-                                    st.balloons() # Зөв хариулахад бөмбөлөг хөөрнө 🎈
-                                else:
-                                    st.error(f"Буруу. Зөв: {row['Хариу']}")
-                        with col2:
-                            if pd.notnull(row['Бодолт']):
-                                with st.expander("💡 Тайлабар харах"):
-                                    st.info(str(row['Бодолт']))
-                        st.write("---")
-        except Exception as e:
-            st.error(f"Алдаа: {e}")
+    try:
+        df = pd.read_excel("data_bank.xlsx")
+        for unit in df['Нэгж'].unique():
+            with st.expander(f"🔹 {unit}", expanded=True):
+                unit_df = df[df['Нэгж'] == unit]
+                for i, row in unit_df.iterrows():
+                    st.markdown(f"#### 💠 Бодлого {i+1}:")
+                    # Текстийг цэвэрхэн харуулах
+                    q_text = str(row['Асуулт']).replace("A.", "\n\n**A.**").replace("B.", "\n\n**B.**").replace("C.", "\n\n**C.**").replace("D.", "\n\n**D.**")
+                    st.markdown(f'<div class="problem-text">{q_text}</div>', unsafe_allow_html=True)
+                    
+                    # Сонгох хэсэг
+                    choice = st.radio("Хариулт:", ["Сонгох", "A", "B", "C", "D"], key=f"r_{i}", horizontal=True)
+                    
+                    if st.button(f"🔍 Шалгах", key=f"b_{i}"):
+                        if choice == "Сонгох": st.warning("Хариултаа сонгоно уу.")
+                        elif choice.strip().upper() == str(row['Хариу']).strip().upper():
+                            st.success("Зөв! ✅")
+                            st.balloons()
+                        else: st.error(f"Буруу. Зөв хариу: {row['Хариу']}")
+                    
+                    if pd.notnull(row['Бодолт']):
+                        with st.expander("💡 Тайлбар"): st.info(str(row['Бодолт']))
+                    st.write("---")
+    except Exception as e: st.error(f"Алдаа: {e}")
 
-# --- СОРИЛ ХЭСЭГ ---
-elif st.session_state.selected_menu == "Сорил":
-    st.markdown('<p class="main-header">📝 Онлайн сорил</p>', unsafe_allow_html=True)
-    st.info("Сорилтын систем бэлтгэгдэж байна.")
-
-# Бусад цэсүүд
-else:
-    st.markdown(f'<p class="main-header">{st.session_state.selected_menu}</p>', unsafe_allow_html=True)
-    st.info("Тун удахгүй...")
+# --- БУСАД ---
+elif st.session_state.selected_menu == "Цахим контент":
+    st.info("Видео хичээлүүд бэлтгэгдэж байна.")
+elif st.session_state.selected_menu == "Клубын мэдээлэл":
+    st.info("Клубын мэдээл
