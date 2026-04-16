@@ -3,9 +3,8 @@ from streamlit_option_menu import option_menu
 import os
 import base64
 import pandas as pd
-import re
 
-# 1. Сайтын ерөнхий тохиргоо (Хамгийн дээд талд байх ёстой)
+# 1. Сайтын ерөнхий тохиргоо (Хамгийн дээд талд)
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
 # --- СИСТЕМ: ЦЭСНИЙ УДИРДЛАГА (Session State) ---
@@ -14,10 +13,13 @@ if 'selected_menu' not in st.session_state:
 
 # УХААЛАГ МАТЕМАТИК ТАНИГЧ (LaTeX засагч)
 def smart_math_render(text):
-    if not isinstance(text, str): return text
+    if not isinstance(text, str): return str(text)
+    # Сонголтуудыг шинэ мөрөнд гаргах
     for label in ['A.', 'B.', 'C.', 'D.']:
         if label in text:
             text = text.replace(label, f'\n\n**{label}**')
+    
+    # Хэрэв LaTeX тэмдэгт байгаад $ тэмдэг байхгүй бол нэмэх
     if ('\\' in text or '^' in text or '/' in text) and '$' not in text:
         clean_text = text.replace('\\displaystyle', '').strip()
         text = f"$\\displaystyle {clean_text}$"
@@ -36,11 +38,12 @@ st.markdown("""
     }
     .main-header { color: #004aad; font-size: 45px; font-weight: 800; margin-bottom: 20px; }
     
-    /* Товчлуурыг карт шиг харагдуулах загвар */
+    /* Товчлуурын загвар */
     div.stButton > button {
         width: 100%; border-radius: 20px; border: none; background: white;
         padding: 40px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         transition: all 0.3s ease; height: 200px; color: #004aad; font-weight: bold;
+        white-space: pre-line; /* Шинэ мөр авах боломжтой болгох */
     }
     div.stButton > button:hover {
         transform: translateY(-5px); border: 1px solid #004aad;
@@ -51,6 +54,7 @@ st.markdown("""
         background: white; padding: 25px; border-radius: 15px;
         border: 1px solid #e0e0e0; margin-bottom: 20px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        color: black;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -58,12 +62,15 @@ st.markdown("""
 # 3. SIDEBAR (Цэс)
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
+    # Индексийг автоматаар олох
+    menu_options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил"]
+    current_index = menu_options.index(st.session_state.selected_menu)
+    
     selected = option_menu(
         menu_title=None, 
-        options=["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил"],
+        options=menu_options,
         icons=['house', 'play-btn', 'book', 'pencil-square', 'people', 'heart'],
-        manual_select=st.session_state.selected_menu,
-        default_index=0,
+        default_index=current_index,
         styles={
             "container": {"background-color": "#004aad", "padding": "0"},
             "icon": {"color": "white", "font-size": "20px"}, 
@@ -71,7 +78,10 @@ with st.sidebar:
             "nav-link-selected": {"background-color": "rgba(255,255,255,0.2)"},
         }
     )
-    st.session_state.selected_menu = selected
+    # Цэс солигдсон эсэхийг шалгах
+    if selected != st.session_state.selected_menu:
+        st.session_state.selected_menu = selected
+        st.rerun()
 
 # 4. НҮҮР ХУУДАС
 if st.session_state.selected_menu == "Нүүр хуудас":
@@ -81,6 +91,8 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             with open("logo.gif", "rb") as f:
                 data_url = base64.b64encode(f.read()).decode("utf-8")
             st.markdown(f'<img src="data:image/gif;base64,{data_url}" width="100%">', unsafe_allow_html=True)
+        else:
+            st.info("Logo.gif олдсонгүй.")
     
     with col2:
         st.markdown(f"""
@@ -94,24 +106,18 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             </div>
         """, unsafe_allow_html=True)
 
-    # Доод талын 3 товчлуур (Багануудыг энд зарласан)
     st.markdown("<br><br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3, gap="medium")
     
-    with c1:
-        if st.button("📺\n\n**Цахим контент**\n\nҮзэх", key="btn_1"):
-            st.session_state.selected_menu = "Цахим контент"
-            st.rerun()
-            
-    with c2:
-        if st.button("📚\n\n**Даалгаврын сан**\n\nНээх", key="btn_2"):
-            st.session_state.selected_menu = "Даалгаврын сан"
-            st.rerun()
-            
-    with c3:
-        if st.button("📝\n\n**Сорил**\n\nЭхлэх", key="btn_3"):
-            st.session_state.selected_menu = "Сорил"
-            st.rerun()
+    if c1.button("📺\n\nЦахим контент\n\nҮзэх", key="btn_1"):
+        st.session_state.selected_menu = "Цахим контент"
+        st.rerun()
+    if c2.button("📚\n\nДаалгаврын сан\n\nНээх", key="btn_2"):
+        st.session_state.selected_menu = "Даалгаврын сан"
+        st.rerun()
+    if c3.button("📝\n\nСорил\n\nЭхлэх", key="btn_3"):
+        st.session_state.selected_menu = "Сорил"
+        st.rerun()
 
 # 5. ДААЛГАВРЫН САН
 elif st.session_state.selected_menu == "Даалгаврын сан":
@@ -131,12 +137,15 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
             st.info("Энэ хэсэгт бодлого хараахан ороогүй байна.")
         else:
             for i, row in f_df.iterrows():
-                with st.container():
+                # Form ашиглах нь товчлуур дарахад хуудас дахин ачаалж хариу алга болохоос сэргийлнэ
+                with st.form(key=f"form_{i}"):
                     st.markdown('<div class="math-card">', unsafe_allow_html=True)
                     st.markdown(f"### 📝 Бодлого {i+1}")
                     st.markdown(smart_math_render(row['Асуулт']))
                     ans = st.radio("Хариу сонгох:", ["A", "B", "C", "D"], key=f"ans_{i}", horizontal=True)
-                    if st.button("Шалгах", key=f"btn_chk_{i}"):
+                    submit = st.form_submit_button("Шалгах")
+                    
+                    if submit:
                         correct = str(row['Хариу']).strip().upper()
                         if ans == correct:
                             st.success("Зөв! ✅")
