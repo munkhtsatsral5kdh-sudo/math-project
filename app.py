@@ -186,45 +186,53 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
         import pandas as pd
         st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
         
+        # --- ФОНТ БОЛОН ЗАЙГ ТОХИРУУЛАХ CSS ---
+        st.markdown("""
+            <style>
+            @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
+            .question-box {
+                font-family: 'Times New Roman', serif;
+                font-size: 18px;
+                line-height: 1.8;
+                color: #2c3e50;
+                background-color: #f9f9f9;
+                padding: 15px;
+                border-left: 5px solid #3498db;
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
         try:
-            # Excel файлаа унших
             df = pd.read_excel("data_bank.xlsx")
-            
-            # Нэгжүүдийг жагсааж харуулах
             for unit_name in ["Нэгж 1"]:
-                with st.expander(f"🔹 {unit_name}"):
-                    # Зөвхөн тухайн нэгжийн бодлогуудыг шүүж харуулах
+                with st.expander(f"🔹 {unit_name}", expanded=True):
                     unit_df = df[df['Нэгж'] == unit_name]
                     
                     for i, row in unit_df.iterrows():
-                        st.markdown(f"**Бодлого {i+1}:** {row['Асуулт']}")
+                        # Асуултыг гоё хайрцаг дотор, тусдаа фонттой харуулах
+                        st.markdown(f"""
+                        <div class="question-box">
+                            <b>Бодлого {i+1}:</b><br>
+                            {row['Асуулт']}
+                        </div>
+                        """, unsafe_allow_html=True)
                         
-                        # Хариу шалгах талбар
-                        u_ans = st.text_input(f"Хариу оруулах ({i+1}):", key=f"q_input_{i}")
+                        # Хариу оруулах хэсэг
+                        u_ans = st.text_input(f"Хариу (A, B, C, D):", key=f"q_in_{i}", placeholder="Жишээ нь: A")
                         
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            if st.button(f"🔍 Шалгах", key=f"q_btn_{i}"):
-                                if str(u_ans).strip().lower() == str(row['Хариу']).strip().lower():
+                        c1, c2 = st.columns([1, 4])
+                        with c1:
+                            if st.button(f"🔍 Шалгах", key=f"btn_{i}"):
+                                if str(u_ans).strip().upper() == str(row['Хариу']).strip().upper():
                                     st.success("Зөв! ✅")
                                 else:
                                     st.error(f"Буруу. Зөв хариу: {row['Хариу']}")
-                        with col2:
-                            with st.expander("💡 Бодолт харах"):
-                                st.info(f"Тайлбар: {row['Бодолт']}")
+                        with c2:
+                            if pd.notnull(row['Бодолт']):
+                                with st.expander("💡 Тайлбар харах"):
+                                    st.info(row['Бодолт'])
                         st.write("---")
         except Exception as e:
-            st.error(f"Файл уншихад алдаа гарлаа: {e}")
-            st.info("data_bank.xlsx файл GitHub-д байгаа эсэхийг шалгаарай.")
-# --- БУСАД ЦЭСҮҮД ---
-elif st.session_state.selected_menu == "Цахим контент":
-    st.markdown('<p class="main-header">📺 Цахим контент</p>', unsafe_allow_html=True)
-    st.info("Видео хичээлүүд бэлтгэгдэж байна.")
-
-elif st.session_state.selected_menu == "Клубын мэдээлэл":
-    st.markdown('<p class="main-header">👥 Клубын мэдээлэл</p>', unsafe_allow_html=True)
-    st.info("Математикийн клубын мэдээлэл.")
-
-elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил МХБ":
-    st.markdown('<p class="main-header">❤️ Хүмүүжил төлөвшил</p>', unsafe_allow_html=True)
-    st.info("Зөвлөгөө мэдээлэл.")
+            st.error(f"Алдаа гарлаа: {e}")
