@@ -34,7 +34,7 @@ st.markdown("""
         min-width: 250px !important;
     }
     
-    /* "ЦЭС" гарчиг - ТОМ */
+    /* "ЦЭС" гарчиг */
     .sidebar-title { 
         color: white; text-align: center; font-size: 45px; font-weight: bold; 
         padding: 20px 0; margin-bottom: 0px;
@@ -57,10 +57,14 @@ st.markdown("""
         line-height: 0.9 !important; 
     }
 
-    /* Төв хэсгийн 3 товчлуур - Өргөнийг дүүргэж, өндрийг багасгав */
+    /* Төв хэсгийн 3 товчлуур - БҮРЭН ДҮҮРГЭХ ТООХИРГОО */
+    div.stButton {
+        width: 100% !important;
+    }
+    
     div.stButton > button {
         width: 100% !important; 
-        height: 180px !important; /* Өндрийг багасгаж дөрвөлжин болгов */
+        height: 180px !important; 
         border-radius: 25px !important; 
         border: 1px solid #f0f0f0 !important;
         background: #fdfdfd !important;
@@ -103,7 +107,7 @@ with st.sidebar:
             "container": {"background-color": "#0b4ab1", "padding": "0"},
             "icon": {"color": "white", "font-size": "14px"}, 
             "nav-link": {
-                "font-size": "16px",  /* Үгнүүдийг дахиад жижигсгэв */
+                "font-size": "12px", 
                 "color": "white", 
                 "margin": "0px", 
                 "padding": "8px 10px",
@@ -136,28 +140,27 @@ if st.session_state.selected_menu == "Нүүр хуудас":
         """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    # БАГАНУУДЫГ ЯГ ИЖИЛ [1, 1, 1] БОЛГОСОН
     c1, c2, c3 = st.columns([1, 1, 1], gap="medium")
     
+    # ЭНД use_container_width=True НЭМСЭН
     with c1:
-        if st.button("📺\n\nЦахим контент", key="btn_1"):
+        if st.button("📺\n\nЦахим контент", key="btn_1", use_container_width=True):
             st.session_state.selected_menu = "Цахим контент"
             st.rerun()
             
     with c2:
-        if st.button("📚\n\nДаалгаврын сан", key="btn_2"):
+        if st.button("📚\n\nДаалгаврын сан", key="btn_2", use_container_width=True):
             st.session_state.selected_menu = "Даалгаврын сан"
             st.rerun()
             
     with c3:
-        if st.button("📝\n\nСорил", key="btn_3"):
+        if st.button("📝\n\nСорил", key="btn_3", use_container_width=True):
             st.session_state.selected_menu = "Сорил"
             st.rerun()
 
-# 5. ДААЛГАВРЫН САН
+# 5. ДААЛГАВРЫН САН (Код хэвээрээ...)
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown("<h1 style='color: #0b4ab1; text-align: center;'>📚 Бодлогын сан</h1>", unsafe_allow_html=True)
-    
     if os.path.exists("data_bank.xlsx"):
         df = pd.read_excel("data_bank.xlsx")
         sc1, sc2 = st.columns(2)
@@ -165,9 +168,7 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
             unit = st.selectbox("Сэдэв сонгох:", df['Нэгж'].unique())
         with sc2:
             level = st.radio("Түвшин:", ["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"], horizontal=True)
-            
         f_df = df[(df['Нэгж'] == unit) & (df['Түвшин'] == level)]
-        
         if f_df.empty:
             st.info("Энэ хэсэгт бодлого хараахан ороогүй байна.")
         else:
@@ -179,13 +180,10 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                     submit = st.form_submit_button("Шалгах")
                     if submit:
                         correct = str(row['Хариу']).strip().upper()
-                        if ans == correct:
-                            st.success("Зөв! ✅")
-                        else:
-                            st.error(f"Буруу байна. Зөв хариу: {correct}")
+                        if ans == correct: st.success("Зөв! ✅")
+                        else: st.error(f"Буруу байна. Зөв хариу: {correct}")
     else:
         st.warning("data_bank.xlsx файл олдсонгүй.")
-
 else:
     st.markdown(f"<h1 style='color: #0b4ab1; text-align: center; margin-top: 50px;'>{st.session_state.selected_menu}</h1>", unsafe_allow_html=True)
     st.info("Энэ хэсэг удахгүй нэмэгдэнэ.")
