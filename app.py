@@ -19,20 +19,21 @@ st.set_page_config(page_title="Математик Багш", page_icon="📐", l
 def smart_math_render(text):
     if not isinstance(text, str): return text
     
-    # 1. Сонголтуудыг (A. B. C. D.) бодлогоос тусгаарлаж доош нь мөр шилжүүлэх
-    for label in ['A.', 'B.', 'C.', 'D.']:
-        if label in text:
-            text = text.replace(label, f'\n\n**{label}**')
-
-    # 2. LaTeX кодыг таних (\ тэмдэгтээр эхэлсэн бүх зүйлийг танина)
-    # Зураг дээрх \sqrt, \mathbb гэх мэт улаан бичвэрүүдийг энд засна
+    # 1. LaTeX кодыг таних (\sqrt, \frac гэх мэт)
+    # Текст дотор \ тэмдэг байвал түүнийг LaTeX орчинд ($ $) оруулна
     if '\\' in text and '$' not in text:
         text = f"$ {text} $"
     
-    # 3. Энгийн 1/3 гэсэн бичиглэлийг LaTeX бутархай болгож хувиргах
+    # 2. Энгийн 2/9 гэсэн бичиглэлийг LaTeX бутархай болгож, шинэ мөрөнд гаргах
+    # \n\n нэмснээр асуултаас тусдаа шинэ мөрөнд харагдана
     if '/' in text and '$' not in text:
-        text = re.sub(r'(\d+)/(\d+)', r' $\\frac{\1}{\2}$ ', text)
-        
+        text = re.sub(r'(\d+)/(\d+)', r'\n\n $ \\frac{\1}{\2} $ \n\n', text)
+    
+    # 3. Сонголтуудыг (A. B. C. D.) маш тодорхой салгаж, шинэ мөрөнд гаргах
+    for label in ['A.', 'B.', 'C.', 'D.']:
+        if label in text:
+            text = text.replace(label, f'\n\n**{label}**')
+            
     return text
 
 # 3. ДИЗАЙН (Таны илгээсэн зургуудын өнгө)
