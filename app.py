@@ -204,18 +204,19 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
             </style>
         """, unsafe_allow_html=True)
 
-        try:
+try:
             df = pd.read_excel("data_bank.xlsx")
             for unit_name in ["Нэгж 1"]:
                 with st.expander(f"🔹 {unit_name}", expanded=True):
                     unit_df = df[df['Нэгж'] == unit_name]
                     for i, row in unit_df.iterrows():
                         st.markdown(f"#### 🔹 Бодлого {i+1}:")
-                        # Excel-ийн нэг мөр текстийг автоматаар салгаж харуулах (Цаг хэмнэнэ)
-                        q_text = str(row['Асуулт']).replace("A.", "\n\nA.").replace("B.", "\n\nB.").replace("C.", "\n\nC.").replace("D.", "\n\nD.")
+                        # Excel-ийн нэг мөр текстийг автоматаар салгаж харуулах
+                        raw_q = str(row['Асуулт'])
+                        q_text = raw_q.replace("A.", "\n\nA.").replace("B.", "\n\nB.").replace("C.", "\n\nC.").replace("D.", "\n\nD.")
                         st.markdown(q_text)
                         
-                        # Хариу оруулах болон шалгах
+                        # Хариу оруулах
                         u_ans = st.text_input(f"Хариу (A, B, C, D):", key=f"q_{i}", placeholder="Жишээ нь: A")
                         c1, c2 = st.columns([1, 4])
                         with c1:
@@ -227,45 +228,22 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                         with c2:
                             if pd.notnull(row['Бодолт']):
                                 with st.expander("💡 Тайлбар харах"):
-                                    st.info(row['Бодолт'])
+                                    st.info(str(row['Бодолт']))
                         st.write("---")
-            # Фонт болон зайг тохируулах (Алдаа гаргахгүй байхаар нэг мөрөнд)
+            # Загвар тохируулах
             st.markdown("<style>.stMarkdown p {font-family:'Times New Roman'; font-size:18px; line-height:1.8;}</style>", unsafe_allow_html=True)
         except Exception as e:
-            st.error(f"Алдаа: {e}")
-                                    st.info(row['Бодолт'])
-                        st.write("---")
-                            </style>
-                        """, unsafe_allow_html=True)
-                        st.markdown(row['Асуулт'])
-                        
-                        # 3. Мөр хоорондын зайг CSS-ээр тохируулах (Илүү цэвэрхэн)
-                        st.markdown("""
-                            <style>
-                            .stMarkdown p {
-                                font-family: 'Times New Roman', serif;
-                                font-size: 19px;
-                                line-height: 2.0; /* Зайг 2 дахин ихэсгэв */
-                                color: #1E1E1E;
-                                margin-bottom: 15px;
-                            }
-                            </style>
-                        """, unsafe_allow_html=True)
-                        
-                        # Хариу оруулах хэсэг
-                        u_ans = st.text_input(f"Хариу (A, B, C, D):", key=f"q_in_{i}", placeholder="Жишээ нь: A")
-                        
-                        c1, c2 = st.columns([1, 4])
-                        with c1:
-                            if st.button(f"🔍 Шалгах", key=f"btn_{i}"):
-                                if str(u_ans).strip().upper() == str(row['Хариу']).strip().upper():
-                                    st.success("Зөв! ✅")
-                                else:
-                                    st.error(f"Буруу. Зөв хариу: {row['Хариу']}")
-                        with c2:
-                            if pd.notnull(row['Бодолт']):
-                                with st.expander("💡 Тайлбар харах"):
-                                    st.info(row['Бодолт'])
-                        st.write("---")
-        except Exception as e:
-            st.error(f"Алдаа гарлаа: {e}")
+            st.error(f"Файл уншихад алдаа гарлаа: {e}")
+            st.info("data_bank.xlsx файл GitHub-д байгаа эсэхийг шалгаарай.")
+
+    elif st.session_state.selected_menu == "Цахим контент":
+        st.markdown('<p class="main-header">📺 Цахим контент</p>', unsafe_allow_html=True)
+        st.info("Видео хичээлүүд бэлтгэгдэж байна.")
+
+    elif st.session_state.selected_menu == "Клубын мэдээлэл":
+        st.markdown('<p class="main-header">🏢 Клубын мэдээлэл</p>', unsafe_allow_html=True)
+        st.info("Математикийн клубын мэдээлэл.")
+
+    elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил МХБ":
+        st.markdown('<p class="main-header">❤️ Хүмүүжил төлөвшил</p>', unsafe_allow_html=True)
+        st.info("Зөвлөгөө мэдээлэл.")
