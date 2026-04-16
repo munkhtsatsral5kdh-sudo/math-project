@@ -178,8 +178,8 @@ elif st.session_state.selected_menu == "Сорил":
                      ["AC/AB", "BC/AB", "BC/AC", "AC/BC"], key="q1")
             
             if st.button("✅ Сорил дуусгах"):
-                st.session_state.test_started = False
-                st.rerun()
+            st.session_state.test_started = False
+            st.rerun()
 
     # --- ДААЛГАВРЫН САН ---
     elif st.session_state.selected_menu == "Даалгаврын сан":
