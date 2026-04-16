@@ -48,20 +48,28 @@ st.markdown("""
     }
     .main-header { color: #0b4ab1; font-size: 55px; font-weight: 800; margin-bottom: 10px; }
 
-    /* Төв хэсгийн 3 товчлуур (Хуучин зураг дээрх шиг том, өргөн) */
+    /* Төв хэсгийн 3 товчлуур - Хэмжээг нь ижилсүүлэх */
     div.stButton > button {
         width: 100% !important; 
-        height: 380px !important; /* Өндрийг эрс нэмсэн */
-        border-radius: 30px !important; 
+        height: 280px !important;    /* Бүх товчлуурын өндөр адилхан байна */
+        border-radius: 25px !important; 
         border: 1px solid #f0f0f0 !important;
         background: #fdfdfd !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
-        transition: all 0.3s ease-in-out !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        white-space: pre-wrap !important;
+        padding: 20px !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+    /* Хулгана очих үед өөрчлөгдөх загвар */
+    div.stButton > button:hover {
+        transform: translateY(-8px) !important;
+        box-shadow: 0 15px 35px rgba(11, 74, 177, 0.1) !important;
+        border: 1px solid #0b4ab1 !important;
+        background: #ffffff !important;
     }
 
     /* Товчлуур доторх бичиг */
