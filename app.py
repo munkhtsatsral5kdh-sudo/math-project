@@ -183,15 +183,39 @@ elif st.session_state.selected_menu == "Сорил":
 
 # --- ДААЛГАВРЫН САН ---
 elif st.session_state.selected_menu == "Даалгаврын сан":
-    st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
-    units = ["Нэгж 1", "Нэгж 2", "Нэгж 3", "Нэгж 4", "Нэгж 5", "Нэгж 6", "Нэгж 7", "Нэгж 8"]
-    for unit in units:
-        with st.expander(f"🔹 {unit}"):
-            tab1, tab2, tab3 = st.tabs(["🧠 Мэдлэг ойлголт", "🛠️ Чадвар", "🚀 Хэрэглээ"])
-            with tab1: st.info(f"{unit}-ийн Мэдлэг ойлголтын 100 бодлого энд байршина.")
-            with tab2: st.info(f"{unit}-ийн Чадварын 100 бодлого энд байршина.")
-            with tab3: st.info(f"{unit}-ийн Хэрэглээний 100 бодлого энд байршина.")
-
+        import pandas as pd
+        st.markdown('<p class="main-header">📚 Даалгаврын сан</p>', unsafe_allow_html=True)
+        
+        try:
+            # Excel файлаа унших
+            df = pd.read_excel("data_bank.xlsx")
+            
+            # Нэгжүүдийг жагсааж харуулах
+            for unit_name in ["Нэгж 1"]:
+                with st.expander(f"🔹 {unit_name}"):
+                    # Зөвхөн тухайн нэгжийн бодлогуудыг шүүж харуулах
+                    unit_df = df[df['Нэгж'] == unit_name]
+                    
+                    for i, row in unit_df.iterrows():
+                        st.write(f"**Бодлого {i+1}:** {row['Асуулт']}")
+                        
+                        # Хариу шалгах талбар
+                        u_ans = st.text_input(f"Хариу оруулах ({i+1}):", key=f"q_input_{i}")
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.button(f"🔍 Шалгах", key=f"q_btn_{i}"):
+                                if str(u_ans).strip().lower() == str(row['Хариу']).strip().lower():
+                                    st.success("Зөв! ✅")
+                                else:
+                                    st.error(f"Буруу. Зөв хариу: {row['Хариу']}")
+                        with col2:
+                            with st.expander("💡 Бодолт харах"):
+                                st.info(f"Тайлбар: {row['Бодолт']}")
+                        st.write("---")
+        except Exception as e:
+            st.error(f"Файл уншихад алдаа гарлаа: {e}")
+            st.info("data_bank.xlsx файл GitHub-д байгаа эсэхийг шалгаарай.")
 # --- БУСАД ЦЭСҮҮД ---
 elif st.session_state.selected_menu == "Цахим контент":
     st.markdown('<p class="main-header">📺 Цахим контент</p>', unsafe_allow_html=True)
