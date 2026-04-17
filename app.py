@@ -28,23 +28,31 @@ st.markdown("""
     [data-testid="stSidebar"] { background-color: #0b4ab1 !important; min-width: 260px !important; }
     .sidebar-title { color: white; text-align: center; font-size: 45px; font-weight: bold; padding: 20px 0; }
     
-    /* 1. НҮҮР ХУУДАСНЫ ТОМ ТОВЧЛУУРУУД (btn_1, btn_2, btn_3) */
+    /* 1. НҮҮР ХУУДАСНЫ ТОМ ТОВЧЛУУРУУД */
     div.stButton > button[key^="btn_"] {
         width: 100% !important;
         height: 250px !important;
         border-radius: 25px !important;
         background: #fdfdfd !important;
         box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important;
-        border: 1px solid #f0f0f0 !important;
+        border: 2px solid #0b4ab1 !important; /* Хүрээг тод болгов */
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
+        transition: transform 0.3s ease !important;
     }
+
+    div.stButton > button[key^="btn_"]:hover {
+        transform: scale(1.02);
+        background-color: #f0f7ff !important;
+    }
+
     div.stButton > button[key^="btn_"] p {
-        font-size: 24px !important; /* Нүүр хуудасны текстийн хэмжээ */
+        font-size: 26px !important;
         font-weight: bold !important;
         color: #0b4ab1 !important;
+        line-height: 1.2 !important;
     }
 
     /* 2. ДААЛГАВРЫН САНГИЙН "ШАЛГАХ" ТОВЧ (check_) */
