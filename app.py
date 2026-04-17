@@ -125,41 +125,68 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
 
 # 6. СОРИЛ (Slate -> State алдаа засагдсан)
 elif st.session_state.selected_menu == "Сорил":
-    if 'quiz_active' not in st.session_state: st.session_state.quiz_active = False
-    
-    if not st.session_state.quiz_active:
-        st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📝 Онлайн сорил, шалгалт</h3>", unsafe_allow_html=True)
-        quiz_units = ["Тоон олонлог...", "Харьцаа...", "Алгебр...", "Дараалал...", "Өнцөг...", "Байршил...", "Хэмжигдэхүүн", "Магадлал..."]
-        
-        for i, name in enumerate(quiz_units):
-            col_n, col_v = st.columns([0.7, 0.3])
-            col_n.markdown(f"<div style='padding: 15px 0; border-bottom: 1px solid #eee;'>{i+1}. {name}</div>", unsafe_allow_html=True)
-            with col_v:
-                v_cols = st.columns(4)
-                for j, v in enumerate(["A", "B", "C", "D"]):
-                    if v_cols[j].button(v, key=f"q_{i}_{v}"):
-                        # Файлын нэрийг жижиг үсгээр унших (v.lower())
-                        st.session_state.quiz_file = f"quiz_{i+1}_{v.lower()}.xlsx"
-                        st.session_state.quiz_active = True
-                        st.rerun()
-    else:
-        if st.button("⬅️ Сорил цуцлах"): 
-            st.session_state.quiz_active = False; st.rerun()
-            
-        if os.path.exists(st.session_state.quiz_file):
-            df_q = pd.read_excel(st.session_state.quiz_file)
-            with st.form("quiz_form"):
-                for idx, row in df_q.iterrows():
-                    st.markdown(f"**Бодлого {idx+1}:**")
-                    st.markdown(smart_math_render(row['Асуулт']))
-                    st.radio("Хариу:", ["A", "B", "C", "D"], key=f"ans_{idx}", horizontal=True)
-                    st.divider()
-                if st.form_submit_button("🏁 Дуусгах"):
-                    st.success("Сорил дууслаа!"); st.session_state.quiz_active = False
-        else:
-            st.error(f"⚠️ Файл олдсонгүй: {st.session_state.quiz_file}")
-            if st.button("Буцах"): st.session_state.quiz_active = False; st.rerun()
+        if 'quiz_active' not in st.session_state: st.session_state.quiz_active = False
+        if 'start_time' not in st.session_state: st.session_state.start_time = None
+        if 'submitted' not in st.session_state: st.session_state.submitted = False
 
+        if not st.session_state.quiz_active:
+            st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📝 Онлайн шалгалт (40 минут)</h3>", unsafe_allow_html=True)
+            with st.container():
+                st.info("Бүртгүүлээд 'Эхлүүлэх' товч дарснаар цаг тоолж эхэлнэ.")
+                c1, c2 = st.columns(2)
+                with c1:
+                    s_school = st.text_input("Сургууль:", key="std_school")
+                    s_class = st.text_input("Анги:", key="std_class")
+                with c2:
+                    s_name = st.text_input("Нэр:", key="std_name")
+                    topic_list = ["Тоон олонлог", "Харьцаа", "Алгебр", "Дараалал", "Өнцөг", "Байршил", "Хэмжигдэхүүн", "Магадлал"]
+                    s_topic = st.selectbox("Сэдэв:", range(len(topic_list)), format_func=lambda x: f"{x+1}. {topic_list[x]}")
+                    s_ver = st.selectbox("Хувилбар:", ["A", "B", "C", "D"])
+
+            if st.button("🚀 Шалгалт эхлүүлэх"):
+                if s_school and s_class and s_name:
+                    st.session_state.quiz_file = f"quiz_{s_topic + 1}_{s_ver.lower()}.xlsx"
+                    st.session_state.quiz_active = True
+                    st.session_state.start_time = time.time()
+                    st.session_state.submitted = False
+                    st.rerun()
+                else: st.error("⚠️ Мэдээллээ бүрэн бөглөнө үү!")
+
+        elif st.session_state.quiz_active and not st.session_state.submitted:
+            rem = (40 * 60) - (time.time() - st.session_state.start_time)
+            if rem <= 0:
+                st.error("⏰ Хугацаа дууслаа!")
+                rem = 0
+            
+            m, s = divmod(int(rem), 60)
+            st.sidebar.metric("⏳ Үлдсэн хугацаа", f"{m:02d}:{s:02d}")
+
+            if os.path.exists(st.session_state.quiz_file):
+                df_q = pd.read_excel(st.session_state.quiz_file)
+                with st.form("quiz_form"):
+                    st.write(f"✍️ Сурагч: {st.session_state.std_name}")
+                    for idx, row in df_q.iterrows():
+                        if pd.isna(row['Асуулт']): continue
+                        st.markdown(f"#### {idx+1}. {smart_math_render(row['Асуулт'])}")
+                        if idx < 12: st.radio("Сонгох:", ["A", "B", "C", "D"], key=f"ans_{idx}", horizontal=True)
+                        else: st.text_input("Хариу:", key=f"ans_{idx}")
+                    
+                    if st.form_submit_button("🏁 Дуусгах"):
+                        st.session_state.submitted = True
+                        st.rerun()
+            else:
+                st.error("Файл олдсонгүй."); st.button("Буцах", on_click=lambda: setattr(st.session_state, 'quiz_active', False))
+
+        elif st.session_state.submitted:
+            df_q = pd.read_excel(st.session_state.quiz_file)
+            score = sum(1 for i, r in df_q.iterrows() if str(st.session_state.get(f"ans_{i}", "")).strip().upper() == str(r['Хариу']).strip().upper())
+            st.success(f"🎊 {st.session_state.std_name}, та {score} оноо авлаа!")
+            st.markdown(f"### [✅ БАГШ РУУ ДҮНГ ИЛГЭЭХ](https://docs.google.com/forms/d/e/ТАНИЙ_ФОРМ_ID/viewform?entry.1={st.session_state.std_name}&entry.2={score})")
+            if st.button("Нүүр хуудас"):
+                st.session_state.quiz_active = False
+                st.session_state.submitted = False
+                st.rerun()
+                
 # 7. БУСАД ХЭСЭГ (Цэсийг эвдэхгүй үлдээв)
 elif st.session_state.selected_menu == "Цахим контент":
     st.markdown("<h1 style='color: #0b4ab1;'>📺 Цахим хичээлүүд</h1>", unsafe_allow_html=True)
