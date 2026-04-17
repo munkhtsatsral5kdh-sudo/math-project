@@ -168,5 +168,5 @@ elif st.session_state.selected_menu == "Сорил":
 
 elif st.session_state.selected_menu == "Клубын мэдээлэл":
     st.markdown("<h1 style='color: #0b4ab1;'>👥 Математикийн клуб</h1>", unsafe_allow_html=True)
-elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил":
+elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил-Судалгаа":
     st.markdown("<h1 style='color: #0b4ab1;'>❤️ Хүүхдийн хүмүүжил, зөвлөгөө</h1>", unsafe_allow_html=True)
