@@ -102,7 +102,7 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
             st.markdown('</div>', unsafe_allow_html=True)
     else: st.warning(f"⚠️ {f_path} файл олдсонгүй.")
 
-# 6. СОРИЛ (ЗАСАГДСАН ХУВИЛБАР)
+# 6. СОРИЛ
 elif st.session_state.selected_menu == "Сорил":
     if 'quiz_active' not in st.session_state: st.session_state.quiz_active = False
     if 'start_time' not in st.session_state: st.session_state.start_time = None
@@ -143,7 +143,7 @@ elif st.session_state.selected_menu == "Сорил":
         if os.path.exists(st.session_state.quiz_file):
             df_q = pd.read_excel(st.session_state.quiz_file)
             with st.form("quiz_form"):
-                st.write(f"✍️ Сурагч: {st.session_state.std_name}")
+                st.write(f"✍️ Сурагч: {st.session_state.get('std_name', 'Нэргүй')}")
                 for idx, row in df_q.iterrows():
                     if pd.isna(row['Асуулт']): continue
                     st.markdown(f"#### {idx+1}. {smart_math_render(row['Асуулт'])}")
@@ -165,17 +165,19 @@ elif st.session_state.selected_menu == "Сорил":
             if u_ans == str(r['Хариу']).strip().upper(): score += 1
             ans_list.append(f"Б{i+1}:{u_ans}")
         
-        st.success(f"🎊 {st.session_state.std_name}, та {score} оноо авлаа!")
-        # 169-р мөрөөс эхлэн солих хэсэг:
-            base_url = "https://docs.google.com/forms/d/e/1FAIpQLSeTx7RrYs6FAFhz2wHjDrCv-7B3lVo7Z1wJwQK5GlWCv9tCPQ/viewform?usp=pp_url"
-            params = (
-                f"&entry.1509480631={st.session_state.std_name}"
-                f"&entry.1060596625={st.session_state.std_class}"
-                f"&entry.914038754={score}"
-                f"&entry.71530140={', '.join(ans_list)}"
-            )
-            full_url = base_url + params
-            st.markdown(f"### [✅ БАГШ РУУ ДҮНГ ИЛГЭЭХ]({full_url})")
+        st.success(f"🎊 {st.session_state.get('std_name', 'Сурагч')}, та {score} оноо авлаа!")
+        
+        # ДҮН ИЛГЭЭХ ХЭСЭГ (ЗАЙ ЗАССАН)
+        base_url = "https://docs.google.com/forms/d/e/1FAIpQLSeTx7RrYs6FAFhz2wHjDrCv-7B3lVo7Z1wJwQK5GlWCv9tCPQ/viewform?usp=pp_url"
+        params = (
+            f"&entry.1509480631={st.session_state.get('std_name', '')}"
+            f"&entry.1060596625={st.session_state.get('std_class', '')}"
+            f"&entry.914038754={score}"
+            f"&entry.71530140={', '.join(ans_list)}"
+        )
+        full_url = base_url + params
+        st.markdown(f"### [✅ БАГШ РУУ ДҮНГ ИЛГЭЭХ]({full_url})")
+
         if st.button("Нүүр хуудас"):
             st.session_state.quiz_active = False
             st.session_state.submitted = False
@@ -186,5 +188,5 @@ elif st.session_state.selected_menu == "Цахим контент":
     st.markdown("<h1 style='color: #0b4ab1;'>📺 Цахим хичээлүүд</h1>", unsafe_allow_html=True)
 elif st.session_state.selected_menu == "Клубын мэдээлэл":
     st.markdown("<h1 style='color: #0b4ab1;'>👥 Клуб</h1>", unsafe_allow_html=True)
-elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил":
+elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил төлөвшил -Судалгаа":
     st.markdown("<h1 style='color: #0b4ab1;'>❤️ Зөвлөгөө</h1>", unsafe_allow_html=True)
