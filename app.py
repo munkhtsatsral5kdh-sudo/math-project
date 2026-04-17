@@ -45,7 +45,7 @@ st.markdown("""
 # 3. SIDEBAR (Цэс)
 with st.sidebar:
     st.markdown('<p class="sidebar-title">ЦЭС</p>', unsafe_allow_html=True)
-    menu_options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил"]
+    menu_options = ["Нүүр хуудас", "Цахим контент", "Даалгаврын сан", "Сорил", "Клубын мэдээлэл", "Хүүхдийн хүмүүжил төлөвшил -Судалгаа"]
     current_idx = menu_options.index(st.session_state.selected_menu) if st.session_state.selected_menu in menu_options else 0
     selected = option_menu(
         menu_title=None, options=menu_options,
@@ -79,7 +79,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
 # 5. ДААЛГАВРЫН САН
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📚 Бодлогын сан</h3>", unsafe_allow_html=True)
-    units = ["Тоон олонлог", "Харьцаа", "Алгебр", "Дараалал", "Өнцөг", "Байршил", "Хэмжигдэхүүн", "Магадлал"]
+    units = ["Тоон олонлог, зэрэг, язгуур, тоог жиших тоймлох", "Харьцаа, пропорц, процент", "Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш", "Дараалал функц", "Өнцөг дүрс байгуулалт", "Байршил, хөдөлгөөн, хувиргалт", "Хэмжигдэхүүн", "Магадлал, статистик"]
     col_u, col_l = st.columns([0.6, 0.4])
     with col_u: u_choice = st.selectbox("Сэдэв сонгох:", units)
     with col_l: l_choice = st.radio("Түвшин:", ["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"], horizontal=True)
@@ -118,7 +118,7 @@ elif st.session_state.selected_menu == "Сорил":
                 s_class = st.text_input("Анги:", key="std_class")
             with c2:
                 s_name = st.text_input("Нэр:", key="std_name")
-                topic_list = ["Тоон олонлог", "Харьцаа", "Алгебр", "Дараалал", "Өнцөг", "Байршил", "Хэмжигдэхүүн", "Магадлал"]
+                topic_list = ["Тоон олонлог, зэрэг, язгуур, тоог жиших тоймлох", "Харьцаа, пропорц, процент", "Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш", "Дараалал функц", "Өнцөг дүрс байгуулалт", "Байршил, хөдөлгөөн, хувиргалт", "Хэмжигдэхүүн", "Магадлал, статистик"]
                 s_topic = st.selectbox("Сэдэв:", range(len(topic_list)), format_func=lambda x: f"{x+1}. {topic_list[x]}")
                 s_ver = st.selectbox("Хувилбар:", ["A", "B", "C", "D"])
 
