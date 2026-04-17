@@ -167,16 +167,26 @@ elif st.session_state.selected_menu == "Сорил":
         
         st.success(f"🎊 {st.session_state.get('std_name', 'Сурагч')}, та {score} оноо авлаа!")
         
-        # ДҮН ИЛГЭЭХ ХЭСЭГ (ЗАЙ ЗАССАН)
-        base_url = "https://docs.google.com/forms/d/e/1FAIpQLSeTx7RrYs6FAFhz2wHjDrCv-7B3lVo7Z1wJwQK5GlWCv9tCPQ/viewform?usp=pp_url"
+        # 1. ШИНЭ ФОРМЫН ТОХИРГОО
+        base_url = "https://docs.google.com/forms/d/e/1FAIpQLSeM9y7SN_kMvo0KfZZgt1A1_UM01mbm18s2cAizZQzGZtKfhw/formResponse"
+        
         params = (
-            f"&entry.1509480631={st.session_state.get('std_name', '')}"
-            f"&entry.1060596625={st.session_state.get('std_class', '')}"
-            f"&entry.914038754={score}"
-            f"&entry.71530140={', '.join(ans_list)}"
+            f"?entry.1163331065={st.session_state.get('std_name', '')}"
+            f"&entry.589452758={st.session_state.get('std_class', '')}"
+            f"&entry.599767365={score}"
+            f"&entry.1997083807={', '.join(ans_list)}"
+            f"&submit=Submit"
         )
         full_url = base_url + params
-        st.markdown(f"### [✅ БАГШ РУУ ДҮНГ ИЛГЭЭХ]({full_url})")
+
+        # 2. ИЛГЭЭХ ТОВЧЛУУР
+        st.markdown(f"""
+            <a href="{full_url}" target="_blank" style="text-decoration: none;">
+                <div style="background-color: #28a745; color: white; padding: 15px; border-radius: 10px; text-align: center; font-size: 20px; font-weight: bold; margin-top: 20px;">
+                    ✅ БАГШ РУУ ДҮНГ ИЛГЭЭХ (ЭНД ДАРНА УУ)
+                </div>
+            </a>
+        """, unsafe_allow_html=True)
 
         if st.button("Нүүр хуудас"):
             st.session_state.quiz_active = False
