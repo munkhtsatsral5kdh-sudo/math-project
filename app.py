@@ -166,9 +166,16 @@ elif st.session_state.selected_menu == "Сорил":
             ans_list.append(f"Б{i+1}:{u_ans}")
         
         st.success(f"🎊 {st.session_state.std_name}, та {score} оноо авлаа!")
-        # Энд ТАНИЙ_ФОРМ_ID-г өөрийнхөөрөө солино
-        form_link = f"https://docs.google.com/forms/d/e/ТАНИЙ_ФОРМ_ID/viewform?entry.1={st.session_state.std_name}&entry.2={st.session_state.std_class}&entry.3={score}&entry.4={', '.join(ans_list)}"
-        st.markdown(f"### [✅ БАГШ РУУ ДҮНГ ИЛГЭЭХ]({form_link})")
+        # 169-р мөрөөс эхлэн солих хэсэг:
+            base_url = "https://docs.google.com/forms/d/e/1FAIpQLSeTx7RrYs6FAFhz2wHjDrCv-7B3lVo7Z1wJwQK5GlWCv9tCPQ/viewform?usp=pp_url"
+            params = (
+                f"&entry.1509480631={st.session_state.std_name}"
+                f"&entry.1060596625={st.session_state.std_class}"
+                f"&entry.914038754={score}"
+                f"&entry.71530140={', '.join(ans_list)}"
+            )
+            full_url = base_url + params
+            st.markdown(f"### [✅ БАГШ РУУ ДҮНГ ИЛГЭЭХ]({full_url})")
         if st.button("Нүүр хуудас"):
             st.session_state.quiz_active = False
             st.session_state.submitted = False
