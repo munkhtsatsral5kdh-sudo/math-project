@@ -15,16 +15,11 @@ if 'selected_menu' not in st.session_state:
 # 1. МАТЕМАТИК БИЧИГЛЭЛИЙГ САЙЖРУУЛСАН ТАНИГЧ
 def smart_math_render(text):
     if not isinstance(text, str): return str(text)
-    
-    # Сонголтуудыг шинэ мөрөнд гаргах
     for label in ['A.', 'B.', 'C.', 'D.']:
         if label in text:
             text = text.replace(label, f'\n\n**{label}**')
-    
-    # LaTeX бичиглэл таних (бутархай, язгуур, зэрэг гэх мэт)
     keywords = ['\\', '^', '_', '/', '{', '}']
     is_math = any(kw in text for kw in keywords)
-    
     if is_math and '$' not in text:
         clean_text = text.replace('\\displaystyle', '').strip()
         return f"$\\displaystyle {clean_text}$"
@@ -38,7 +33,6 @@ st.markdown("""
     .sidebar-title { color: white; text-align: center; font-size: 45px; font-weight: bold; padding: 20px 0; }
     .goal-box { background: white; padding: 25px; border-radius: 20px; border: 1px solid #f0f2f6; border-left: 10px solid #0b4ab1; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .main-header { color: #0b4ab1; font-size: 45px; font-weight: 800; line-height: 0.95 !important; }
-    
     div.stButton > button[key^="btn_"] {
         width: 100% !important; height: 190px !important;
         border-radius: 25px !important; background: #fdfdfd !important;
@@ -47,7 +41,6 @@ st.markdown("""
         align-items: center !important; justify-content: center !important;
     }
     div.stButton > button[key^="btn_"] p { font-size: 22px !important; font-weight: bold !important; color: #0b4ab1 !important; }
-    
     div[data-testid="column"] button[key^="q_btn_"] {
         width: 50px !important; height: 40px !important; min-width: 50px !important; padding: 0px !important;
     }
@@ -83,10 +76,24 @@ if st.session_state.selected_menu == "Нүүр хуудас":
     if c2.button("📚\n\nДаалгаврын сан", key="btn_2"): st.session_state.selected_menu = "Даалгаврын сан"; st.rerun()
     if c3.button("📝\n\nСорил", key="btn_3"): st.session_state.selected_menu = "Сорил"; st.rerun()
 
-# 5. ЦАХИМ КОНТЕНТ
+# 5. ЦАХИМ КОНТЕНТ (ШИНЭЧЛЭГДСЭН - Өөрийн бичлэг оруулах)
 elif st.session_state.selected_menu == "Цахим контент":
-    st.markdown("<h1 style='color: #0b4ab1;'>📺 Цахим хичээлүүд</h1>", unsafe_allow_html=True)
-    st.video("https://www.youtube.com/watch?v=your_video_id")
+    st.markdown("<h1 style='color: #0b4ab1;'>📺 Миний хийсэн хичээлүүд</h1>", unsafe_allow_html=True)
+    
+    # Хичээлийн сонголтууд
+    video_option = st.selectbox("Үзэх хичээлээ сонгоно уу:", ["Хичээл 1", "Хичээл 2"])
+    
+    if video_option == "Хичээл 1":
+        if os.path.exists("video1.mp4"): # video1.mp4 гэсэн файл байгаа эсэхийг шалгана
+            st.video("video1.mp4")
+        else:
+            st.warning("Бичлэгийн файл (video1.mp4) олдсонгүй.")
+            
+    elif video_option == "Хичээл 2":
+        if os.path.exists("video2.mp4"):
+            st.video("video2.mp4")
+        else:
+            st.warning("Бичлэгийн файл (video2.mp4) олдсонгүй.")
 
 # 6. ДААЛГАВРЫН САН
 elif st.session_state.selected_menu == "Даалгаврын сан":
@@ -112,7 +119,7 @@ elif st.session_state.selected_menu == "Даалгаврын сан":
                         with st.expander("Бодолт харах"): st.markdown(smart_math_render(row['Бодолт']))
             st.write("---")
 
-# 7. СОРИЛ (ЗАСВАР ОРСОН ХЭСЭГ)
+# 7. СОРИЛ
 elif st.session_state.selected_menu == "Сорил":
     if 'quiz_active' not in st.session_state: st.session_state.quiz_active = False
     if 'quiz_finished' not in st.session_state: st.session_state.quiz_finished = False
@@ -170,21 +177,10 @@ elif st.session_state.selected_menu == "Сорил":
             max_score += pts
             if u_ans == c_ans: total_score += pts
             log.append(f"Б{idx+1}:{u_ans}")
-
         st.balloons()
-        st.markdown(f"""
-            <div style='text-align: center; padding: 30px; border: 2px solid #0b4ab1; border-radius: 20px;'>
+        st.markdown(f"""<div style='text-align: center; padding: 30px; border: 2px solid #0b4ab1; border-radius: 20px;'>
                 <h2 style='color: #0b4ab1;'>{st.session_state.std_info['name']}</h2>
-                <p>{st.session_state.std_info['school']} | {st.session_state.std_info['class']}</p>
-                <hr>
-                <p style='font-size: 20px;'>Нийт авсан оноо:</p>
-                <h1 style='font-size: 72px; color: #0b4ab1;'>{total_score:g} / {max_score:g}</h1>
-                <div style='background: #eef5ff; padding: 10px; border-radius: 10px; display: inline-block;'>
-                    <b>Гүйцэтгэл: {int((total_score/max_score)*100)}%</b>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-
+                <h1 style='font-size: 72px; color: #0b4ab1;'>{total_score:g} / {max_score:g}</h1></div>""", unsafe_allow_html=True)
         g_url = "https://docs.google.com/forms/d/e/1FAIpQLSeM9y7SN_kMvo0KfZZgt1A1_UM01mbm18s2cAizZQzGZtKfhw/formResponse"
         p = f"?entry.1163331065={st.session_state.std_info['name']} ({st.session_state.std_info['school']})&entry.589452758={st.session_state.std_info['class']}&entry.599767365={total_score}/{max_score}&entry.1997083807={', '.join(log)}&submit=Submit"
         st.markdown(f'<a href="{g_url + p}" target="_blank" style="text-decoration:none;"><div style="background-color:#28a745;color:white;padding:18px;border-radius:12px;text-align:center;font-weight:bold;margin-top:20px;">🚀 БАГШ РУУ ДҮНГ ИЛГЭЭХ</div></a>', unsafe_allow_html=True)
@@ -193,8 +189,16 @@ elif st.session_state.selected_menu == "Сорил":
             st.session_state.selected_menu = "Нүүр хуудас"
             st.rerun()
 
-# 8. БУСАД
+# 8. КЛУБЫН МЭДЭЭЛЭЛ (ШИНЭЧЛЭГДСЭН - Зураг оруулах)
 elif st.session_state.selected_menu == "Клубын мэдээлэл":
-    st.markdown("<h1 style='color: #0b4ab1;'>👥 Клуб</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: #0b4ab1;'>👥 Математикийн клуб</h1>", unsafe_allow_html=True)
+    st.write("Манай клубын үйл ажиллагааны зургуудаас:")
+    
+    if os.path.exists("club_photo.jpg"):
+        st.image("club_photo.jpg", caption="Математикийн клубын сурагчид", use_container_width=True)
+    else:
+        st.info("Клубын зураг (club_photo.jpg) хараахан ороогүй байна.")
+
+# 9. ХҮҮХДИЙН ХҮМҮҮЖИЛ
 elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил":
     st.markdown("<h1 style='color: #0b4ab1;'>❤️ Зөвлөгөө</h1>", unsafe_allow_html=True)
