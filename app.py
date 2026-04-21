@@ -189,7 +189,6 @@ elif st.session_state.selected_menu == "Сорил":
             st.session_state.selected_menu = "Нүүр хуудас"
             st.rerun()
 
-# 8. КЛУБЫН МЭДЭЭЛЭЛ (ШИНЭЧЛЭГДСЭН - Зураг оруулах)
 # 8. КЛУБЫН МЭДЭЭЛЭЛ (ШИНЭЧЛЭГДСЭН)
 elif st.session_state.selected_menu == "Клубын мэдээлэл":
     st.markdown("<h1 style='color: #0b4ab1; text-align: center;'>👥 Математикийн клуб</h1>", unsafe_allow_html=True)
