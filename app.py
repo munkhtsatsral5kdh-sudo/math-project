@@ -65,7 +65,7 @@ if st.session_state.selected_menu == "Нүүр хуудас":
             with open("logo.gif", "rb") as f: data_url = base64.b64encode(f.read()).decode("utf-8")
             st.markdown(f'<img src="data:image/gif;base64,{data_url}" style="width: 100%; border-radius: 20px;">', unsafe_allow_html=True)
     with col2:
-        st.markdown('<div class="goal-box"><div class="main-header">Математикийн ертөнцөд тавтай морил!</div><div style="font-size: 19px; line-height: 1.4; color: #444; text-align: justify; text-indent: 20px;">Хамтдаа суралцаж, хамтдаа хөгжицгөөе!</div></div>', unsafe_allow_html=True)
+        st.markdown('<div class="goal-box"><div class="main-header">Математикийн ертөнцөөр хамтдаа аялж, сонирхолтой цахим хичээл,  бодлогын сангаар дамжуулан өөрийн мэдлэг чадвараа бие даан ахиулж, ирээдүйн амжилтынхаа эхлэлийг өнөөдөр тавьцгаая!</div><div style="font-size: 19px; line-height: 1.4; color: #444; text-align: justify; text-indent: 20px;">Хамтдаа суралцаж, хамтдаа хөгжицгөөе!</div></div>', unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3, gap="medium")
