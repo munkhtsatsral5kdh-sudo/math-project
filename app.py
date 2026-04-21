@@ -190,14 +190,43 @@ elif st.session_state.selected_menu == "Сорил":
             st.rerun()
 
 # 8. КЛУБЫН МЭДЭЭЛЭЛ (ШИНЭЧЛЭГДСЭН - Зураг оруулах)
+# 8. КЛУБЫН МЭДЭЭЛЭЛ (ШИНЭЧЛЭГДСЭН)
 elif st.session_state.selected_menu == "Клубын мэдээлэл":
-    st.markdown("<h1 style='color: #0b4ab1;'>👥 Математикийн клуб</h1>", unsafe_allow_html=True)
-    st.write("Манай клубын үйл ажиллагааны зургуудаас:")
+    st.markdown("<h1 style='color: #0b4ab1; text-align: center;'>👥 Математикийн клуб</h1>", unsafe_allow_html=True)
     
-    if os.path.exists("club_photo.jpg"):
-        st.image("club_photo.jpg", caption="Математикийн клубын сурагчид", use_container_width=True)
-    else:
-        st.info("Клубын зураг (club_photo.jpg) хараахан ороогүй байна.")
+    # Текстэн мэдээлэл оруулах хэсэг
+    st.markdown("""
+    <div style='background-color: #f0f5ff; padding: 20px; border-radius: 15px; border-left: 5px solid #0b4ab1; margin-bottom: 20px;'>
+        <h3>Манай клубын зорилго:</h3>
+        <p style='font-size: 18px;'>
+            Математикт сонирхолтой сурагчдыг нэгтгэх, логик сэтгэлгээг хөгжүүлэх, 
+            олимпиад уралдаанд бэлтгэх болон математикийн гайхамшгийг хамтдаа нээхэд оршино.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Хоёр баганаар зураг болон бичлэг харуулах
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("📸 Клубын зураг")
+        if os.path.exists("club_photo.jpg"):
+            st.image("club_photo.jpg", caption="Клубын үйл ажиллагаа", use_container_width=True)
+        else:
+            st.info("Бидэнд одоогоор зураг байхгүй байна. (club_photo.jpg файлыг хийнэ үү)")
+
+    with col2:
+        st.subheader("🎥 Клубын танилцуулга")
+        if os.path.exists("club_video.mp4"):
+            st.video("club_video.mp4")
+        else:
+            st.info("Клубын бичлэг ороогүй байна. (club_video.mp4 файлыг хийнэ үү)")
+
+    # Нэмэлт мэдээлэл (текст)
+    st.divider()
+    st.markdown("#### ✨ Клубын амжилтаас")
+    st.write("- 2025 оны Эрдэнэ сумын математикийн олимпиадад 9а ангийн сурагч Б.Тэмүүлэн дэд байрт, ")
+    st.write("- Улсын математикийн уралдааны тусгай байр")
 
 # 9. ХҮҮХДИЙН ХҮМҮҮЖИЛ
 elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил":
