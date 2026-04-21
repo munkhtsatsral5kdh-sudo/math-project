@@ -76,24 +76,26 @@ if st.session_state.selected_menu == "Нүүр хуудас":
     if c2.button("📚\n\nДаалгаврын сан", key="btn_2"): st.session_state.selected_menu = "Даалгаврын сан"; st.rerun()
     if c3.button("📝\n\nСорил", key="btn_3"): st.session_state.selected_menu = "Сорил"; st.rerun()
 
-# 5. ЦАХИМ КОНТЕНТ (ШИНЭЧЛЭГДСЭН - Өөрийн бичлэг оруулах)
+# 5. ЦАХИМ КОНТЕНТ (ЛИНКЭЭР БИЧЛЭГ ОРУУЛАХ)
 elif st.session_state.selected_menu == "Цахим контент":
-    st.markdown("<h1 style='color: #0b4ab1;'>📺 Миний хийсэн хичээлүүд</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='color: #0b4ab1;'>📺 Цахим хичээлүүд</h1>", unsafe_allow_html=True)
+    st.write("Доорх жагсаалтаас үзэх хичээлээ сонгоно уу.")
+
+    # Хичээлүүдийн линкийг энд тохируулна
+    # Хэрэв Google Drive бол дээр заасан шиг "https://drive.google.com/uc?id=..." хэлбэртэй байна
+    lessons = {
+        "Хичээл 1: Тоон олонлог (YouTube)": "https://www.youtube.com/watch?v=яг_таны_линк_1",
+        "Хичээл 2: Пропорц (Google Drive)": "https://drive.google.com/uc?id=таны_драйв_ID",
+        "Хичээл 3: Алгебр (Линк)": "https://www.youtube.com/watch?v=яг_таны_линк_3"
+    }
+
+    # Хичээл сонгох цэс
+    selected_lesson = st.selectbox("Хичээл сонгох:", list(lessons.keys()))
+
+    # Сонгосон бичлэгийг харуулах
+    st.video(lessons[selected_lesson])
     
-    # Хичээлийн сонголтууд
-    video_option = st.selectbox("Үзэх хичээлээ сонгоно уу:", ["Хичээл 1", "Хичээл 2"])
-    
-    if video_option == "Хичээл 1":
-        if os.path.exists("video1.mp4"): # video1.mp4 гэсэн файл байгаа эсэхийг шалгана
-            st.video("video1.mp4")
-        else:
-            st.warning("Бичлэгийн файл (video1.mp4) олдсонгүй.")
-            
-    elif video_option == "Хичээл 2":
-        if os.path.exists("video2.mp4"):
-            st.video("video2.mp4")
-        else:
-            st.warning("Бичлэгийн файл (video2.mp4) олдсонгүй.")
+    st.info(f"Одоо үзэж буй: {selected_lesson}")
 
 # 6. ДААЛГАВРЫН САН
 elif st.session_state.selected_menu == "Даалгаврын сан":
