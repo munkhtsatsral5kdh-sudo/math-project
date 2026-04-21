@@ -4,6 +4,7 @@ import os
 import base64
 import pandas as pd
 import time
+
 # 1. Сайтын ерөнхий тохиргоо
 st.set_page_config(page_title="Математикийн багшийн туслах", page_icon="📐", layout="wide")
 
@@ -30,42 +31,20 @@ st.markdown("""
     .sidebar-title { color: white; text-align: center; font-size: 45px; font-weight: bold; padding: 20px 0; margin-bottom: 10px; }
     .goal-box { background: white; padding: 25px; border-radius: 20px; border: 1px solid #f0f2f6; border-left: 10px solid #0b4ab1; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .main-header { color: #0b4ab1; font-size: 45px; font-weight: 800; margin-bottom: 5px; line-height: 0.95 !important; }
-    div.stButton { width: 100% !important; }
-    div.stButton > button { width: 100% !important; height: 190px !important; border-radius: 25px !important; border: 1px solid #f0f0f0 !important; background: #fdfdfd !important; box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; transition: all 0.3s ease-in-out !important; }
-    div.stButton > button p { font-size: 22px !important; font-weight: bold !important; color: #0b4ab1 !important; }
-    .math-card { background: white; padding: 25px; border-radius: 15px; border: 1px solid #e0e0e0; margin-bottom: 20px; }
-    </style>
-    """, unsafe_allow_html=True)
-st.markdown("""
-    <style>
-    /* "Шалгах" товчийг жижиг болгох */
-    div.stButton > button {
-        width: 120px !important;  /* Өргөнийг нь багасгав */
-        height: 45px !important;   /* Өндрийг нь тогтмол болгов */
-        font-size: 16px !important;
-        margin: 0 auto;
-        display: block;
-        border-radius: 10px !important;
-    }
-
-    /* Сорил хэсгийн A, B, C, D товчлууруудыг жижиг дөрвөлжин болгох */
+    
+    /* Үндсэн товчлуурууд */
+    .home-btn { width: 100% !important; height: 190px !important; border-radius: 25px !important; border: 1px solid #f0f0f0 !important; background: #fdfdfd !important; box-shadow: 0 10px 25px rgba(0,0,0,0.05) !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; cursor: pointer; }
+    
+    /* Сорил хэсгийн A, B, C, D товчлуурууд */
     div[data-testid="column"] button {
         width: 50px !important;
         height: 40px !important;
         min-width: 50px !important;
         padding: 0px !important;
     }
-
-    /* Радио товчлуур (сонгох дугуй)-ын хэмжээг тохируулах */
-    div[data-testid="stMarkdownContainer"] p {
-        font-size: 18px !important;
-    }
     
-    /* Сорил болон Даалгаврын сангийн асуултын текстийг цэгцлэх */
-    .stRadio > label {
-        font-size: 16px !important;
-        font-weight: bold;
-    }
+    /* Шалгах товч */
+    .check-btn { width: 120px !important; height: 45px !important; border-radius: 10px !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -96,104 +75,55 @@ if st.session_state.selected_menu == "Нүүр хуудас":
     st.markdown("<br>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns([1, 1, 1], gap="medium")
     with c1:
-        if st.button("📺\n\nЦахим контент", key="btn_1", use_container_width=True): st.session_state.selected_menu = "Цахим контент"; st.rerun()
+        if st.button("📺\n\nЦахим контент", key="btn_1"): st.session_state.selected_menu = "Цахим контент"; st.rerun()
     with c2:
-        if st.button("📚\n\nДаалгаврын сан", key="btn_2", use_container_width=True): st.session_state.selected_menu = "Даалгаврын сан"; st.rerun()
+        if st.button("📚\n\nДаалгаврын сан", key="btn_2"): st.session_state.selected_menu = "Даалгаврын сан"; st.rerun()
     with c3:
-        if st.button("📝\n\nСорил", key="btn_3", use_container_width=True): st.session_state.selected_menu = "Сорил"; st.rerun()
+        if st.button("📝\n\nСорил", key="btn_3"): st.session_state.selected_menu = "Сорил"; st.rerun()
 
 # 5. ЦАХИМ КОНТЕНТ
 elif st.session_state.selected_menu == "Цахим контент":
     st.markdown("<h1 style='color: #0b4ab1;'>📺 Цахим хичээлүүд</h1>", unsafe_allow_html=True)
-    # Энд чи видеогоо оруулна
-    st.write("Доорх хичээлүүдийг үзэж мэдлэгээ баталгаажуулаарай.")
-    st.video("https://www.youtube.com/watch?v=your_video_id") # Жишээ видео
+    st.video("https://www.youtube.com/watch?v=your_video_id")
 
-# 5. ДААЛГАВРЫН САН (24 ФАЙЛТАЙ ХҮСНЭГТЭН ЗАГВАР)
+# 6. ДААЛГАВРЫН САН
 elif st.session_state.selected_menu == "Даалгаврын сан":
     st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📚 Бодлогын сан</h3>", unsafe_allow_html=True)
-    
-    # Таны илгээсэн яг тэр нэрс
-    units = [
-        "Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох",
-        "Харьцаа, пропорц, процент",
-        "Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш",
-        "Дараалал, функц",
-        "Өнцөг, дүрс, байгуулалт",
-        "Байршил, хөдөлгөөн, хувиргалт",
-        "Хэмжигдэхүүн",
-        "Магадлал, статистик"
-    ]
-    
-    # Сэдэв болон Түвшин сонгох (Зураг дээрх шиг)
+    units = ["Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох", "Харьцаа, пропорц, процент", "Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш", "Дараалал, функц", "Өнцөг, дүрс, байгуулалт", "Байршил, хөдөлгөөн, хувиргалт", "Хэмжигдэхүүн", "Магадлал, статистик"]
     col_u, col_l = st.columns([0.6, 0.4])
-    with col_u:
-        u_choice = st.selectbox("Сэдэв сонгох:", units)
-    with col_l:
-        l_choice = st.radio("Түвшин:", ["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"], horizontal=True)
-
-    # Файлын нэр үүсгэх (Нэгж_Түвшин.xlsx)
-    u_idx = units.index(u_choice) + 1
-    levels = {"Мэдлэг ойлголт": 1, "Чадвар": 2, "Хэрэглээ": 3}
-    l_idx = levels[l_choice]
-    f_path = f"task_{u_idx}_{l_idx}.xlsx"
-
-    st.divider()
-
-    # Excel файлыг уншиж бодлогуудыг харуулах
+    with col_u: u_choice = st.selectbox("Сэдэв сонгох:", units)
+    with col_l: l_choice = st.radio("Түвшин:", ["Мэдлэг ойлголт", "Чадвар", "Хэрэглээ"], horizontal=True)
+    
+    f_path = f"task_{units.index(u_choice) + 1}_{{'Мэдлэг ойлголт': 1, 'Чадвар': 2, 'Хэрэглээ': 3}[l_choice]}.xlsx"
     if os.path.exists(f_path):
-        try:
-            df_tasks = pd.read_excel(f_path)
-            st.success(f"📍 {u_choice} - {l_choice} түвшний {len(df_tasks)} бодлого олдлоо.")
-            
-            for idx, row in df_tasks.iterrows():
-                # Бодлого бүрийг цэвэрхэн хайрцагт харуулах
-                with st.container():
-                    st.markdown(f"#### 📝 Бодлого {idx+1}")
-                    st.markdown(smart_math_render(row['Асуулт']))
-                    
-                    # Хариулт сонгох хэсэг
-                    user_ans = st.radio(f"Хариу сонгох ({idx+1}):", ["A", "B", "C", "D"], 
-                                       key=f"task_ans_{u_idx}_{l_idx}_{idx}", 
-                                       horizontal=True, label_visibility="collapsed")
-                    
-                    # Шалгах товчлуур
-                    if st.button(f"Шалгах {idx+1}", key=f"check_{idx}"):
-                        correct_ans = str(row['Хариу']).strip().upper()
-                        if user_ans == correct_ans:
-                            st.success(f"✅ Зөв! (Хариу: {correct_ans})")
-                        else:
-                            st.error(f"❌ Буруу. Зөв хариу: {correct_ans}")
-                            if 'Бодолт' in row and pd.notna(row['Бодолт']):
-                                with st.expander("Бодолт харах"):
-                                    st.markdown(smart_math_render(row['Бодолт']))
-                st.write("---")
-        except Exception as e:
-            st.error(f"Файл уншихад алдаа гарлаа: {e}")
-    else:
-        st.warning(f"⚠️ '{f_path}' файл олдсонгүй. Файлаа системд байршуулна уу.")
-# 7. СОРИЛ (Оноо, Алдаа, Бодолттой хувилбар)
+        df_tasks = pd.read_excel(f_path)
+        for idx, row in df_tasks.iterrows():
+            st.markdown(f"#### 📝 Бодлого {idx+1}")
+            st.markdown(smart_math_render(row['Асуулт']))
+            user_ans = st.radio(f"Хариу сонгох ({idx+1}):", ["A", "B", "C", "D"], key=f"t_{idx}", horizontal=True)
+            if st.button(f"Шалгах {idx+1}", key=f"c_{idx}"):
+                correct = str(row['Хариу']).strip().upper()
+                if user_ans == correct: st.success(f"✅ Зөв! (Хариу: {correct})")
+                else: 
+                    st.error(f"❌ Буруу. Зөв хариу: {correct}")
+                    if 'Бодолт' in row and pd.notna(row['Бодолт']):
+                        with st.expander("Бодолт харах"): st.markdown(smart_math_render(row['Бодолт']))
+            st.divider()
+
+# 7. СОРИЛ (Нэгтгэсэн хувилбар)
 elif st.session_state.selected_menu == "Сорил":
-    # Шаардлагатай session_state-уудыг үүсгэх
     if 'quiz_active' not in st.session_state: st.session_state.quiz_active = False
     if 'quiz_finished' not in st.session_state: st.session_state.quiz_finished = False
 
-    # --- 1-Р ШАТ: ЖАГСААЛТ ХАРАГДАХ ХЭСЭГ ---
     if not st.session_state.quiz_active and not st.session_state.quiz_finished:
         st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📝 Онлайн сорил, шалгалт</h3>", unsafe_allow_html=True)
-        st.markdown("""
-            <div style='background-color: #343a40; color: white; padding: 10px; border-radius: 5px; display: flex; font-weight: bold;'>
-                <div style='width: 5%;'>#</div><div style='width: 65%;'>Сорилын нэр (IX анги)</div><div style='width: 30%; text-align: center;'>Хувилбарууд</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-        quiz_units = [
-            "Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох", "Харьцаа, пропорц, процент",
-            "Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш", "Дараалал, функц",
-            "Өнцөг, дүрс, байгуулалт", "Байршил, хөдөлгөөн, хувиргалт",
-            "Хэмжигдэхүүн", "Магадлал, статистик"
-        ]
-
+        # Сурагчийн мэдээлэл авах
+        col_name, col_class = st.columns(2)
+        with col_name: st.session_state.std_name = st.text_input("Сурагчийн нэр:")
+        with col_class: st.session_state.std_class = st.selectbox("Анги:", ["9а", "9б", "9в", "9г"])
+        
+        st.markdown("""<div style='background-color: #343a40; color: white; padding: 10px; border-radius: 5px; display: flex; font-weight: bold;'><div style='width: 10%;'>#</div><div style='width: 60%;'>Сорилын нэр (IX анги)</div><div style='width: 30%; text-align: center;'>Хувилбарууд</div></div>""", unsafe_allow_html=True)
+        quiz_units = ["Тоон олонлог, зэрэг, язгуур, тоог жиших, тоймлох", "Харьцаа, пропорц, процент", "Алгебрын илэрхийлэл, тэгшитгэл, тэнцэтгэл биш", "Дараалал, функц", "Өнцөг, дүрс, байгуулалт", "Байршил, хөдөлгөөн, хувиргалт", "Хэмжигдэхүүн", "Магадлал, статистик"]
         for i, name in enumerate(quiz_units):
             col_n, col_v = st.columns([0.7, 0.3])
             col_n.markdown(f"<div style='padding: 15px 0; border-bottom: 1px solid #eee;'>{i+1}. {name}</div>", unsafe_allow_html=True)
@@ -201,21 +131,17 @@ elif st.session_state.selected_menu == "Сорил":
                 v_cols = st.columns(4)
                 for j, v in enumerate(["A", "B", "C", "D"]):
                     if v_cols[j].button(v, key=f"q_{i}_{v}"):
-                        st.session_state.quiz_file = f"quiz_{i+1}_{v}.xlsx"
-                        st.session_state.quiz_active = True
-                        st.session_state.start_time = time.time()
-                        st.rerun()
+                        if st.session_state.std_name:
+                            st.session_state.quiz_file = f"quiz_{i+1}_{v}.xlsx"
+                            st.session_state.quiz_active = True
+                            st.session_state.start_time = time.time()
+                            st.rerun()
+                        else: st.warning("Нэрээ оруулна уу!")
 
-    # --- 2-Р ШАТ: СОРИЛ БОДОЖ БАЙХ ҮЕ ---
     elif st.session_state.quiz_active:
         remaining = max(0, 2400 - int(time.time() - st.session_state.start_time))
-        c_back, c_timer = st.columns([5, 1])
-        if c_back.button("⬅️ Жагсаалт руу буцах"):
-            st.session_state.quiz_active = False; st.rerun()
-        
         mins, secs = divmod(remaining, 60)
-        c_timer.error(f"⏳ {mins:02d}:{secs:02d}")
-
+        st.error(f"⏳ Үлдсэн хугацаа: {mins:02d}:{secs:02d}")
         if os.path.exists(st.session_state.quiz_file):
             df_q = pd.read_excel(st.session_state.quiz_file)
             with st.form("quiz_form"):
@@ -224,62 +150,44 @@ elif st.session_state.selected_menu == "Сорил":
                     st.markdown(f"**Бодлого {idx+1}:**")
                     st.markdown(smart_math_render(row['Асуулт']))
                     user_answers[idx] = st.radio("Сонгох:", ["A", "B", "C", "D"], key=f"ans_{idx}", horizontal=True)
-                
                 if st.form_submit_button("🏁 Дуусгах"):
                     st.session_state.results = user_answers
                     st.session_state.quiz_active = False
                     st.session_state.quiz_finished = True
                     st.rerun()
-        
         if remaining > 0: time.sleep(1); st.rerun()
 
-    # --- 3-Р ШАТ: ОНОО, АЛДАА, БОДОЛТ ХАРАХ ХЭСЭГ ---
     elif st.session_state.quiz_finished:
-        st.markdown("<h3 style='text-align: center; color: #0b4ab1;'>📊 Сорилын дүн</h3>", unsafe_allow_html=True)
         df_q = pd.read_excel(st.session_state.quiz_file)
-        
-        # Оноо тооцох
         correct_count = 0
+        ans_log = []
         for idx, row in df_q.iterrows():
-            if str(st.session_state.results[idx]) == str(row['Хариу']).strip().upper():
-                correct_count += 1
+            u_ans = st.session_state.results[idx]
+            c_ans = str(row['Хариу']).strip().upper()
+            if u_ans == c_ans: correct_count += 1
+            ans_log.append(f"Б{idx+1}:{u_ans}")
         
-        score_percent = (correct_count / len(df_q)) * 100
+        st.balloons()
+        st.success(f"📊 {st.session_state.std_name}, та {len(df_q)}-аас {correct_count} оноо авлаа.")
+
+        # --- GOOGLE FORM РУУ ИЛГЭЭХ ХЭСЭГ ---
+        base_url = "https://docs.google.com/forms/d/e/1FAIpQLSeM9y7SN_kMvo0KfZZgt1A1_UM01mbm18s2cAizZQzGZtKfhw/formResponse"
+        params = f"?entry.1163331065={st.session_state.std_name}&entry.589452758={st.session_state.std_class}&entry.599767365={correct_count}&entry.1997083807={', '.join(ans_log)}&submit=Submit"
         
-        # Онооны самбар
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Нийт асуулт", len(df_q))
-        c2.metric("Зөв хариулсан", correct_count)
-        c3.metric("Гүйцэтгэл", f"{score_percent:.1f}%")
-
-        st.divider()
-
-        # Алдаа болон Бодолт хянах
-        st.subheader("📝 Алдаа болон Бодолт хянах")
-        for idx, row in df_q.iterrows():
-            user_ans = st.session_state.results[idx]
-            correct_ans = str(row['Хариу']).strip().upper()
-            
-            with st.expander(f"Бодлого {idx+1}: {'✅ Зөв' if user_ans == correct_ans else '❌ Буруу'}"):
-                st.markdown(smart_math_render(row['Асуулт']))
-                st.write(f"**Таны хариулт:** {user_ans}")
-                st.write(f"**Зөв хариулт:** {correct_ans}")
-                
-                if 'Бодолт' in row and pd.notna(row['Бодолт']):
-                    st.info("**Бодолт:**")
-                    st.markdown(smart_math_render(row['Бодолт']))
-                else:
-                    st.warning("Энэ бодлогод тайлбар оруулаагүй байна.")
-
+        st.markdown(f"""<a href="{base_url + params}" target="_blank" style="text-decoration: none;"><div style="background-color: #28a745; color: white; padding: 15px; border-radius: 10px; text-align: center; font-size: 20px; font-weight: bold;">✅ БАГШ РУУ ДҮНГ ИЛГЭЭХ (ЭНД ДАРНА УУ)</div></a>""", unsafe_allow_html=True)
+        
+        with st.expander("Алдаа болон бодолт хянах"):
+            for idx, row in df_q.iterrows():
+                u_ans = st.session_state.results[idx]
+                c_ans = str(row['Хариу']).strip().upper()
+                st.write(f"Бодлого {idx+1}: {'✅' if u_ans == c_ans else '❌'}")
+                if 'Бодолт' in row: st.markdown(smart_math_render(row['Бодолт']))
+        
         if st.button("Дахин сорил өгөх"):
-            st.session_state.quiz_finished = False
-            st.rerun()
-# 8. КЛУБЫН МЭДЭЭЛЭЛ
-elif st.session_state.selected_menu == "Клубын мэдээлэл":
-    st.markdown("<h1 style='color: #0b4ab1;'>👥 Математикийн клуб</h1>", unsafe_allow_html=True)
-    st.write("Манай клубын үйл ажиллагаа, бүртгэл энд байна.")
+            st.session_state.quiz_finished = False; st.rerun()
 
-# 9. ХҮҮХДИЙН ХҮМҮҮЖИЛ
+# 8 & 9. БУСАД ЦЭС
+elif st.session_state.selected_menu == "Клубын мэдээлэл":
+    st.markdown("<h1 style='color: #0b4ab1;'>👥 Клуб</h1>", unsafe_allow_html=True)
 elif st.session_state.selected_menu == "Хүүхдийн хүмүүжил":
-    st.markdown("<h1 style='color: #0b4ab1;'>❤️ Хүүхдийн хүмүүжил, зөвлөгөө</h1>", unsafe_allow_html=True)
-    st.info("Хүүхдээ хэрхэн хөгжүүлэх талаарх багшийн зөвлөгөөнүүд.")
+    st.markdown("<h1 style='color: #0b4ab1;'>❤️ Зөвлөгөө</h1>", unsafe_allow_html=True)
